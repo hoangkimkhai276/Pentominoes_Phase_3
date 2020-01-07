@@ -2,6 +2,10 @@ package knapsack;
 
 import javafxstuff.Point3D;
 
+/**
+ * {@code Edge3D} objects represent a line-piece in 3D space.<br>
+ * it contains of two {@code Point3D} objects
+ */
 public class Edge3D {
 
 	public final Point3D point_1;
