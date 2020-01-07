@@ -116,14 +116,30 @@ public final class Colors {
 	/**
 	 * Showcases a little GUI that shows randomly generated colors in a grid pattern<br>
 	 * Clicking with the mouse re-generates the colors.
-	 * @param args not used
+	 * @param args can be used to specify the criteria for generating colors:<blockquote>
+	 * <b>#1</b>) ({@code int}) {@code count} specifies the desired (maximum) number of colors generated <br>
+	 * <b>#2</b>) ({@code float}) {@code brightness} specifies the desired (minimum) brightness of the colors being generated<br>
+	 * <b>#3</b>) ({@code float}) {@code transparency} specifies the transparency ({@code 1.0f - alpha}) of the colors being generated<br>
+	 * <b>#4</b>) ({@code boolean}) {@code sorted} specifies whether to sort the resulting colors or not<br>
+	 * <b>#5</b>) ({@code int}) {@code minimal_color_distance} specifies the minimum distance colors need to have from each other in order to be distinct
+	 * </blockquote>They default to: ({@code 10 0.8 0.0 false 80})
 	 */
 	public static void main(String[] args) {
-		int count = 20;
-		float brightness = 0.8f;
-		float transparency = 0f;
-		boolean sorted = false;
-		minimal_color_distance = 80;
+		int count;
+		float brightness, transparency;
+		boolean sorted;
+		
+		if (args.length >= 1) count = Integer.parseInt(args[0]);
+		else count = 10;
+		if (args.length >= 2) brightness = (float)Double.parseDouble(args[1]);
+		else brightness = 0.8f;
+		if (args.length >= 3) transparency = (float)Double.parseDouble(args[2]);
+		else transparency = 0f;
+		if (args.length >= 4) sorted = Boolean.parseBoolean(args[3]);
+		else sorted = false;
+		if (args.length >= 5) try {
+			minimal_color_distance = Integer.parseInt(args[4]);
+		} catch (Exception e) {}
 
 		Color[] colors = getRandomColors(count, brightness, transparency, sorted);
 		JFrame frame = new JFrame("colors!!!");
