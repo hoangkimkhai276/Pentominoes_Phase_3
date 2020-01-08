@@ -18,6 +18,7 @@ enum SortState {
 	 * @see {@linkplain Parcels#VOLUME_SORT}*/
 	VOLUME, 
 	/** not sorted in any particular way */
+	
 	NONE;
 }
 
