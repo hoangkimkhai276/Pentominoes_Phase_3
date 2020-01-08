@@ -45,4 +45,24 @@ public final class Parcels {
 		};
 	}
 	
+	public static Parcel[] createParcelPermutations(Parcel parcel) {
+		ArrayList<Parcel> permutations = new ArrayList<Parcel>();
+		for (int i=0; i < 4; i++) {
+			for (int j=0; j < 4; j++) {
+				for (int k=0; k < 4; k++) {
+					permutations.add(parcel.copy());
+					parcel.rotateHeight();
+				}
+				parcel.rotateWidth();
+			}
+			parcel.rotateLength();
+		}
+		ArrayList<Parcel> list = new ArrayList<Parcel>();
+		for (Parcel p : permutations)
+			if (!list.contains(p)) list.add(p);
+		Parcel[] result = new Parcel[list.size()];
+		for (int i=0; i < result.length; i++) result[i] = list.get(i);
+		return result;
+	}
+	
 }
