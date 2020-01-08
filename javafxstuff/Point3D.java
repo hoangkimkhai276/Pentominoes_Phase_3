@@ -102,7 +102,7 @@ public class Point3D {
     }
     
     /**
-     * @param other_point: co-ordinates are copied to this point's co-ordinates
+     * @param other_point : co-ordinates are copied to this point's co-ordinates
      * @author pascal anema
      */
     public void set(Point3D other_point) {
