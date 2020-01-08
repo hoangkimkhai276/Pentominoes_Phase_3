@@ -4,7 +4,7 @@ import javafxstuff.Point3D;
 
 /**
  * {@code Edge3D} objects represent a line-piece in 3D space.<br>
- * it contains of two {@code Point3D} objects
+ * it contains of two {@link #Point3D} objects
  */
 public class Edge3D {
 
@@ -14,8 +14,6 @@ public class Edge3D {
 	public Edge3D(Point3D a, Point3D b) {
 		point_1 = a;
 		point_2 = b;
-		
-		System.out.println("hello");
 	}
 	
 	public String toString() {
