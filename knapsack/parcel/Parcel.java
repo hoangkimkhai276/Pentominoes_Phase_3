@@ -1,6 +1,9 @@
 package knapsack.parcel;
 
 import java.awt.Color;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import javafxstuff.Point3D;
 import knapsack.Edge3D;
@@ -78,11 +81,11 @@ public abstract class Parcel {
 		Parcel p = (Parcel)o;
 		if (!p.origin.equals(origin)) return false;
 		if (p.getValue() != getValue() || !p.getClass().equals(getClass())) return false;
-		Point3D[] pgrid = p.getPoints();
-		Point3D[] tgrid = getPoints();
-		for (int i=0; i < pgrid.length; i++)
-			if (!pgrid[i].equals(tgrid[i])) return false;
-		// as soon as there is a point that isn't the same in both objects, return false
+		
+		HashSet<Point3D> pset = new HashSet<Point3D>(Arrays.asList(p.getOccupiedGrids()));
+		HashSet<Point3D> tset = new HashSet<Point3D>(Arrays.asList(getOccupiedGrids()));
+		if (!pset.equals(tset)) return false;
+		// as soon as there is a point that isn't in both objects' occupied-grid-space, return false
 		return true;
 	}
 
