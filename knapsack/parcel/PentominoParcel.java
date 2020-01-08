@@ -47,7 +47,10 @@ public class PentominoParcel extends Parcel {
 	}
 	
 	public String toString() {
-		return "["+length+"x"+width+"x"+height+"]: "+relative_origin_points.toString();
+		String points = "";
+		for (Point3D p : relative_origin_points)
+			points += "("+p.getX()+", "+p.getY()+", "+p.getZ()+") ";
+		return "{["+length+"x"+width+"x"+height+"]:"+points+"}";
 	}
 	
 	private void calculateCubes() {

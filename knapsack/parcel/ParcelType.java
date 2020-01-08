@@ -35,7 +35,12 @@ public class ParcelType {
 		if (o==this) return true;
 		if (!(o instanceof ParcelType)) return false;
 		if (((ParcelType)o).ID != ID) return false;
+		if (!((ParcelType)o).parcel.getOrigin().equals(parcel.getOrigin())) return false;
 		return true;
+	}
+	@Override
+	public String toString() {
+		return "<"+ID+">"+parcel.toString();
 	}
 	
 }
