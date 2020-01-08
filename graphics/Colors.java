@@ -26,7 +26,7 @@ public final class Colors {
 	public static int minimal_color_distance = 80;
 
 	/**
-	 * Generates a random color based on the {@code minimal_color_distance} as step_size per R, G or B value to gradually move towards the specified
+	 * Generates a random color based on the {@link #minimal_color_distance} as step_size per R, G or B value to gradually move towards the specified
 	 * minimal brightness. The color also gets the specified transparency after generating the RGB values.
 	 * @param min_brightness the minimal brightness a generated color should be, with the brightness of a color being calculated as the
 	 *   sum of all RGB integer values divided by {@code (255x2)}, thereby giving a maximum brightness of {@code 765/520 = 1.5f}
@@ -52,22 +52,17 @@ public final class Colors {
 	}
 
 	/**
-	 * Generates a certain amount of random colors using the {@code Colors.randomColor} method while keeping to
-	 *  the {@code minimal_color_distance} between each color.
-	 * @param amount amount of colors to be generated; could generate less if no color can be found that is the right
-	 *  distance away from the other generated colors.
-	 * @param brightness minimal brightness value for the colors generated as specified by the {@code Colors.randomColor} method
-	 * @param transparency the transparency value given to the generated colors as specified by the {@code Colors.randomColor} method
-	 * @return An array of colors, generated randomly using the specified criteria (length of the array is equal to the amount of colors
-	 * generated and thus not always equal to {@code amount})
+	 * Generates a certain amount of random colors using the {@link #randomColor} method while keeping to
+	 *  the {@link #minimal_color_distance} between each color.
+	 * @see #getRandomColors(int, float, float, boolean)
 	 */
 	public static Color[] getRandomColors(int amount, float brightness, float transparency) {
 		return getRandomColors(amount, brightness, transparency, false);
 	}
 
 	/**
-	 * Generates a certain amount of random colors using the {@code Colors.randomColor} method while keeping to
-	 *  the {@code minimal_color_distance} between each color.
+	 * Generates a certain amount of random colors using the {@link #randomColor} method while keeping to
+	 *  the {@link #minimal_color_distance} between each color.<br>It can also apply a rudimentary sorting algorithm to the resulting colors.
 	 * @param amount amount of colors to be generated; could generate less if no color can be found that is the right
 	 *  distance away from the other generated colors.
 	 * @param brightness minimal brightness value for the colors generated as specified by the {@code Colors.randomColor} method
@@ -117,12 +112,13 @@ public final class Colors {
 	 * Showcases a little GUI that shows randomly generated colors in a grid pattern<br>
 	 * Clicking with the mouse re-generates the colors.
 	 * @param args can be used to specify the criteria for generating colors:<blockquote>
-	 * <b>#1</b>) ({@code int}) {@code count} specifies the desired (maximum) number of colors generated <br>
-	 * <b>#2</b>) ({@code float}) {@code brightness} specifies the desired (minimum) brightness of the colors being generated<br>
-	 * <b>#3</b>) ({@code float}) {@code transparency} specifies the transparency ({@code 1.0f - alpha}) of the colors being generated<br>
-	 * <b>#4</b>) ({@code boolean}) {@code sorted} specifies whether to sort the resulting colors or not<br>
-	 * <b>#5</b>) ({@code int}) {@code minimal_color_distance} specifies the minimum distance colors need to have from each other in order to be distinct
+	 * <b>#1</b>) ({@code int}) {@code count}<br>
+	 * <b>#2</b>) ({@code float}) {@code brightness}<br>
+	 * <b>#3</b>) ({@code float}) {@code transparency}<br>
+	 * <b>#4</b>) ({@code boolean}) {@code sorted}<br>
+	 * <b>#5</b>) ({@code int}) {@link #minimal_color_distance}
 	 * </blockquote>They default to: ({@code 10 0.8 0.0 false 80})
+	 * @see #getRandomColors(int, float, float, boolean)
 	 */
 	public static void main(String[] args) {
 		int count;
