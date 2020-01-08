@@ -16,4 +16,5 @@ knapsack/parcel/PentominoParcel.class
 knapsack/parcel/SimpleParcel.class
 .classpath
 .project
+/.idea/
 /bin/
