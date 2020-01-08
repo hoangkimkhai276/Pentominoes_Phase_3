@@ -14,6 +14,8 @@ public class Edge3D {
 	public Edge3D(Point3D a, Point3D b) {
 		point_1 = a;
 		point_2 = b;
+		
+		System.out.println("hello");
 	}
 	
 	public String toString() {
