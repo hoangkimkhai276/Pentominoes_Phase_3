@@ -46,6 +46,10 @@ public class Knapsack implements Variables {
 		parcels = new ArrayList<Parcel>();
 		sorted = SortState.NONE;
 		occupied_cubes = BigInteger.ZERO; // empty array
+		
+		
+		System.out.println("permission");
+		
 	}
 	public Knapsack(double length, double width, double height) {
 		this((int)(2d * length), (int)(2d * width), (int)(2d * height));
