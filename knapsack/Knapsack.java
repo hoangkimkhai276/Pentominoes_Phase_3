@@ -8,26 +8,41 @@ import knapsack.parcel.Parcel;
 import knapsack.parcel.Parcels;
 
 enum SortState {
-	DISTANCE, VALUE, VOLUME, NONE;
+	/** Sorted by distance to the origin (0,0,0)
+	 * @see {@linkplain Parcels#DISTANCE_SORT}*/
+	DISTANCE,
+	/** Sorted by value
+	 * @see {@linkplain Parcels#VALUE_SORT}*/
+	VALUE,
+	/** Sorted by volume
+	 * @see {@linkplain Parcels#VOLUME_SORT}*/
+	VOLUME, 
+	/** not sorted in any particular way */
+	NONE;
 }
 
+/**
+ * The {@code Knapsack} represents a 3-dimensional rectangular container made for holding {@link Parcel} objects.<br>
+ * It stores the parcels in an {@link ArrayList} and keeps track of the occupied grids in the {@code Knapsack}
+ *  with a {@link BigInteger}.<br><br>
+ * The {@code Knapsack} class provides methods for fitting parcels into itself.
+ */
 public class Knapsack implements Variables {
-
-	/** x-direction size, in 0.5 meters */
-	private final int length;
-	/** y-direction size, in 0.5 meters */
-	private final int width;
-	/** z-direction size, in 0.5 meters */
-	private final int height;
+	
+	/**
+	 * The shape of this {@code Knapsack} which specifies the {@code length}, {@code width} and {@code height} of this {@code Knapsack}
+	 * @see Cube#length
+	 * @see Cube#width
+	 * @see Cube#height
+	 */
+	private final Cube shape;
 	
 	private ArrayList<Parcel> parcels;
 	private SortState sorted;
 	private BigInteger occupied_cubes;
 	
 	public Knapsack(int length, int width, int height) {
-		this.length = length;
-		this.width = width;
-		this.height = height;
+		this.shape = new Cube(length, width, height, Point3D.ZERO);
 		parcels = new ArrayList<Parcel>();
 		sorted = SortState.NONE;
 		occupied_cubes = BigInteger.ZERO; // empty array
@@ -41,15 +56,15 @@ public class Knapsack implements Variables {
 
 	/** x-direction size, in 0.5 meters */
 	public int getLength() {
-		return length;
+		return shape.getLength();
 	}
 	/** y-direction size, in 0.5 meters */
 	public int getWidth() {
-		return width;
+		return shape.getWidth();
 	}
 	/** z-direction size, in 0.5 meters */
 	public int getHeight() {
-		return height;
+		return shape.getHeight();
 	}
 	
 	public void add(Parcel to_add) {
@@ -69,11 +84,11 @@ public class Knapsack implements Variables {
 			setBit((int)point.getX(), (int)point.getY(), (int)point.getZ(), set);
 	}
 	private void setBit(int x, int y, int z, boolean set) {
-		if (set) occupied_cubes = occupied_cubes.setBit(z * width * length + y * length + x);
-		else occupied_cubes = occupied_cubes.clearBit(z * width * length + y * length + x);
+		if (set) occupied_cubes = occupied_cubes.setBit(z * getWidth() * getLength() + y * getLength() + x);
+		else occupied_cubes = occupied_cubes.clearBit(z * getWidth() * getLength() + y * getLength() + x);
 	}
 	public boolean isOccupied(int x, int y, int z) {
-		return occupied_cubes.testBit(z * width * length + y * length + x);
+		return occupied_cubes.testBit(z * getWidth() * getLength() + y * getLength() + x);
 	}
 	
 	public void sortParcels() {
@@ -89,7 +104,7 @@ public class Knapsack implements Variables {
 		Point3D o = parcel.getOrigin();
 		if (o.getX() < 0 || o.getY() < 0 || o.getZ() < 0) return false;
 		Size3D s = parcel.getHitBox();
-		if (s.length + o.getX() > length || s.width + o.getY() > width || s.height + o.getZ() > height) return false;
+		if (s.length + o.getX() > getLength() || s.width + o.getY() > getWidth() || s.height + o.getZ() > getHeight()) return false;
 		Point3D[] points = parcel.getOccupiedGrids();
 		for (Point3D point : points) if (this.isOccupied((int)point.getX(), (int)point.getY(), (int)point.getZ())) return false;
 		return true;
