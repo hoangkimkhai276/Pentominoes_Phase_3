@@ -89,7 +89,10 @@ public class Cube {
 	}
 	
 	private void calculatePoints() {
-		if (points==null) points = new Point3D[8];
+		if (points==null) {
+			points = new Point3D[8];
+			for (int i=0; i < 8; i++) points[i] = Point3D.ZERO.add(0,0,0);
+		}
 		points[0].set(origin.add(0,0,0));
 		points[1].set(origin.add(length,0,0));
 		points[2].set(origin.add(0,width,0));
