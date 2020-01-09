@@ -1,6 +1,7 @@
 package knapsack;
 
 import javafxstuff.Point3D;
+import javafx.scene.Shape.Box;
 
 /**
  * A {@code Cube} can be any 3-dimensional rectangular shape with 8 points, 12 edges and 6 planes.<br>
@@ -86,6 +87,14 @@ public class Cube {
 	 * @see #Cube(int, int, int, Point3D)*/
 	public Cube() {
 		this(1);
+	}
+	
+	public Box toBox(double scale) {
+		Box box = new Box(width, height, length);
+		Point3D origin = getOrigin();
+		box.translateX(origin.getY());
+		box.translateY(origin.getZ());
+		box.translateZ(origin.getX());
 	}
 	
 	private void calculatePoints() {
