@@ -74,6 +74,15 @@ public abstract class ParcelCore implements Parcel {
 	 *  @param delta - the vector which is added to the origin */
 	protected abstract void mutateOrigin(Point3D delta);
 
+	/** Rotate around the length-/x-axis at an angle of 90 degrees (right or left rotation is consistent but no direction is ensured) */
+	public abstract void rotateLength();
+
+	/** Rotate around the width-/y-axis at an angle of 90 degrees (right or left rotation is consistent but no direction is ensured) */
+	public abstract void rotateWidth();
+
+	/** Rotate around the height-/z-axis at an angle of 90 degrees (right or left rotation is consistent but no direction is ensured) */
+	public abstract void rotateHeight();
+	
 	@Override
 	public boolean equals(Object o) {
 		if (o==this) return true;
