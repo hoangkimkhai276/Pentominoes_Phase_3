@@ -89,12 +89,13 @@ public class Cube {
 		this(1);
 	}
 	
-	public Box toBox(double scale) {
+	public Box toBox() {
 		Box box = new Box(width, height, length);
 		Point3D origin = getOrigin();
-		box.translateX(origin.getY());
-		box.translateY(origin.getZ());
-		box.translateZ(origin.getX());
+		box.setTranslateX(origin.getY());
+		box.setTranslateY(origin.getZ());
+		box.setTranslateZ(origin.getX());
+		return box;
 	}
 	
 	private void calculatePoints() {
