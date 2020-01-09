@@ -4,10 +4,10 @@ import java.awt.Color;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import javafx.scene.shape.Box;
+
 import javafxstuff.Point3D;
-import knapsack.Edge3D;
-import knapsack.Plane3D;
-import knapsack.Size3D;
+import knapsack.Cube;
 
 public abstract class ParcelCore implements Parcel {
 
@@ -49,44 +49,30 @@ public abstract class ParcelCore implements Parcel {
 	protected void setColor(Color color) {
 		this.color = color;
 	}
-
+	
 	@Override
-	public abstract <T extends Parcel> T copy();
-
-	@Override
-	public abstract Size3D getHitBox();
-
-	@Override
-	public abstract int getVolume();
-
-	@Override
-	public abstract Point3D[] getPoints();
-
-	@Override
-	public abstract Edge3D[] getEdges();
-
-	@Override
-	public abstract Plane3D[] getPlanes();
-
-	/** @return the origin-points of all the unit-cube-sized grids this parcel occupies*/
-	@Override
-	public abstract Point3D[] getOccupiedGrids();
+	public Box[] toBoxes(double scale) {
+		Cube[] cubes = toCubes();
+		Box[] boxes = new Box[cubes.length];
+		Point3D origin = getOrigin();
+		for (int i=0; i < boxes.length; i++) {
+			boxes[i] = cubes[i].toBox();
+			boxes[i].setWidth(scale);
+			boxes[i].setHeight(scale);
+			boxes[i].setDepth(scale);
+			if (cubes[i].getOrigin().equals(origin)) continue;
+			boxes[i].setTranslateX(scale * (origin.getY() - cubes[i].getOrigin().getY()));
+			boxes[i].setTranslateY(scale * (origin.getZ() - cubes[i].getOrigin().getZ()));
+			boxes[i].setTranslateZ(scale * (origin.getX() - cubes[i].getOrigin().getX()));
+		}
+		return boxes;
+	}
+	
+	protected abstract Cube[] toCubes();
 
 	/** Increases/decreases the location of the origin of this parcel
 	 *  @param delta - the vector which is added to the origin */
 	protected abstract void mutateOrigin(Point3D delta);
-
-	/** Rotate around the length-/x-axis at an angle of 90 degrees (right or left rotation is consistent but no direction is ensured) */
-	@Override
-	public abstract void rotateLength();
-
-	/** Rotate around the width-/y-axis at an angle of 90 degrees (right or left rotation is consistent but no direction is ensured) */
-	@Override
-	public abstract void rotateWidth();
-
-	/** Rotate around the height-/z-axis at an angle of 90 degrees (right or left rotation is consistent but no direction is ensured) */
-	@Override
-	public abstract void rotateHeight();
 
 	@Override
 	public boolean equals(Object o) {

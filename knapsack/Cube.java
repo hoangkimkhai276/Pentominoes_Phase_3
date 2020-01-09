@@ -1,7 +1,7 @@
 package knapsack;
 
 import javafxstuff.Point3D;
-import javafx.scene.Shape.Box;
+import javafx.scene.shape.Box;
 
 /**
  * A {@code Cube} can be any 3-dimensional rectangular shape with 8 points, 12 edges and 6 planes.<br>

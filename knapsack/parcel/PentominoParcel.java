@@ -142,5 +142,10 @@ public class PentominoParcel extends ParcelCore {
 		for (Point3D point : relative_origin_points) point.set(new Point3D(-point.getY()+length-1, point.getX(), point.getZ()));
 		cubes_calculated = false;
 	}
+	@Override
+	protected Cube[] toCubes() {
+		if (!cubes_calculated) calculateCubes();
+		return cubes;
+	}
 
 }

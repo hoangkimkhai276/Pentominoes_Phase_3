@@ -3,6 +3,7 @@ package knapsack.parcel;
 import java.awt.Color;
 import java.util.ArrayList;
 
+import javafx.scene.shape.Box;
 import javafxstuff.Point3D;
 import knapsack.Edge3D;
 import knapsack.Plane3D;
@@ -93,6 +94,10 @@ public class ParcelType implements Parcel {
 	@Override
 	public Plane3D[] getPlanes() {
 		return parcel.getPlanes();
+	}
+	@Override
+	public Box[] toBoxes(double scale) {
+		return parcel.toBoxes(scale);
 	}
 	@Override
 	public Point3D[] getOccupiedGrids() {

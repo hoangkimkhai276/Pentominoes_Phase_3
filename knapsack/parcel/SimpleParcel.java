@@ -1,13 +1,10 @@
 package knapsack.parcel;
 
 import java.awt.Color;
-import java.util.Arrays;
-import java.util.HashSet;
 
 import javafxstuff.Point3D;
 import knapsack.Cube;
 import knapsack.Edge3D;
-import knapsack.Knapsack;
 import knapsack.Plane3D;
 import knapsack.Size3D;
 
@@ -115,6 +112,10 @@ public class SimpleParcel extends ParcelCore {
 	}
 	public int getHeight() {
 		return shape.getHeight();
+	}
+	@Override
+	protected Cube[] toCubes() {
+		return new Cube[]{shape};
 	}
 
 }

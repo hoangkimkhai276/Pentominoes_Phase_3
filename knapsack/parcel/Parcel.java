@@ -2,6 +2,8 @@ package knapsack.parcel;
 
 import java.awt.Color;
 
+import javafx.scene.shape.Box;
+
 import javafxstuff.Point3D;
 import knapsack.Edge3D;
 import knapsack.Plane3D;
@@ -31,7 +33,7 @@ public interface Parcel {
 
 	Plane3D[] getPlanes();
 	
-	Box[] toBoxes();
+	Box[] toBoxes(double scale);
 
 	/** @return the origin-points of all the unit-cube-sized grids this parcel occupies*/
 	Point3D[] getOccupiedGrids();
