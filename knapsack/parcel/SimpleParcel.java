@@ -1,14 +1,17 @@
 package knapsack.parcel;
 
 import java.awt.Color;
+import java.util.Arrays;
+import java.util.HashSet;
 
 import javafxstuff.Point3D;
 import knapsack.Cube;
 import knapsack.Edge3D;
+import knapsack.Knapsack;
 import knapsack.Plane3D;
 import knapsack.Size3D;
 
-public class SimpleParcel extends Parcel {
+public class SimpleParcel extends ParcelCore {
 
 	private Cube shape;
 	
@@ -78,23 +81,17 @@ public class SimpleParcel extends Parcel {
 
 	@Override
 	public Point3D[] getOccupiedGrids() {
-		int length = shape.getLength();
-		int width  = shape.getWidth();
-		int height = shape.getHeight();
-		Point3D[] grids = new Point3D[length * width * height];
-		Point3D current = getOrigin().subtract(1,1,1);
-		int index = 0;
-		for (int x=0; x < length; x++) {
-			current.set(current.add(1, 0, 0));
-			for (int y=0; y < width; y++) {
-				current.set(current.add(0, 1, 0));
-				for (int z=0; z < height; z++) {
-					current.set(current.add(0, 0, 1));
-					grids[index++] = current;
-					current = current.add(0,0,0);
-				} current.set(current.subtract(0, 0, height));
-			} current.set(current.subtract(0, width, 0));
-		}
+		Point3D[] grids = new Point3D[getVolume()];
+		Point3D o = getOrigin();
+		int height = getHeight();
+		int width = getWidth();
+		int start_x = (int) o.getX();
+		int start_y = (int) o.getY();
+		int start_z = (int) o.getZ();
+		for (int x=start_x; x < getLength() + start_x; x++)
+			for (int y=start_y; y < width + start_y; y++)
+				for (int z=start_z; z < height + start_z; z++)
+					grids[x*height*width + y*height + z] = new Point3D(x, y, z);
 		return grids;
 	}
 
@@ -108,6 +105,16 @@ public class SimpleParcel extends Parcel {
 		Size3D  s = getHitBox();
 		Point3D p = getOrigin();
 		return "SimpleParcel of "+s.length+"x"+s.width+"x"+s.height+" at ("+p.getX()+", "+p.getY()+", "+p.getZ()+")";
+	}
+	
+	public int getLength() {
+		return shape.getLength();
+	}
+	public int getWidth() {
+		return shape.getWidth();
+	}
+	public int getHeight() {
+		return shape.getHeight();
 	}
 
 }
