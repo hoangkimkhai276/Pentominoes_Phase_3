@@ -9,7 +9,7 @@ import knapsack.Edge3D;
 import knapsack.Plane3D;
 import knapsack.Size3D;
 
-public class PentominoParcel extends Parcel {
+public class PentominoParcel extends ParcelCore {
 	
 	/**
 	 * These are the origin points of the unit cubes representing the pentomino <br>

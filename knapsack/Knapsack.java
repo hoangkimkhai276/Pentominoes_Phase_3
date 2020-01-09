@@ -66,6 +66,9 @@ public class Knapsack implements Variables {
 	public int getHeight() {
 		return shape.getHeight();
 	}
+	public int getVolume() {
+		return shape.getVolume();
+	}
 	
 	public void add(Parcel to_add) {
 		parcels.add(to_add);
