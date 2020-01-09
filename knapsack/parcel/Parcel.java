@@ -30,6 +30,8 @@ public interface Parcel {
 	Edge3D[] getEdges();
 
 	Plane3D[] getPlanes();
+	
+	Box[] toBoxes();
 
 	/** @return the origin-points of all the unit-cube-sized grids this parcel occupies*/
 	Point3D[] getOccupiedGrids();
