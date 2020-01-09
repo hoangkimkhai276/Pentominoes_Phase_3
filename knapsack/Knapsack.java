@@ -37,9 +37,9 @@ public class Knapsack implements Variables {
 	 */
 	private final Cube shape;
 	
-	private ArrayList<Parcel> parcels;
-	private SortState sorted;
-	private BigInteger occupied_cubes;
+	protected ArrayList<Parcel> parcels;
+	protected SortState sorted;
+	protected BigInteger occupied_cubes;
 	
 	public Knapsack(int length, int width, int height) {
 		this.shape = new Cube(length, width, height, Point3D.ZERO);

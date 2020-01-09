@@ -2,6 +2,7 @@ package depth_first_fill;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 
 import knapsack.Knapsack;
 import knapsack.parcel.ParcelCore;
@@ -27,6 +28,14 @@ public class Phase1Algorithm {
 		result = new ParcelType[filtered.size()];
 		for (int i=0; i < filtered.size(); i++) result[i] = new ParcelType(filtered.get(i));
 		return result;
+	}
+	
+	public Optional<Knapsack> fillKnapsack() {
+		Knapsack result = null;
+		
+		// TODO filling problem
+		
+		return Optional.ofNullable(result);
 	}
 	
 }
