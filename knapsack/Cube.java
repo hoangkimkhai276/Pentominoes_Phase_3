@@ -12,9 +12,6 @@ import javafx.scene.shape.Box;
  */
 public class Cube {
 
-	
-	int testing;
-	
 	/** 
 	 * Contains all the points where outer edges of the {@code Cube} meet, this will always be 8 points.<br>
 	 * The points will only be calculated once one of the following methods is called:<blockquote>
