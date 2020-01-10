@@ -3,6 +3,7 @@ package knapsack;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
+import javafx.scene.shape.Box;
 import javafxstuff.Point3D;
 import knapsack.parcel.Parcel;
 import knapsack.parcel.Parcels;
@@ -119,6 +120,20 @@ public class Knapsack implements Variables {
 		if (fitsParcel(parcel)) add(parcel);
 		else return false;
 		return true;
+	}
+
+	public Box toBox(double scale) {
+		Box result = shape.toBox();
+		result.setScaleX(scale);
+		result.setScaleY(scale);
+		result.setScaleZ(scale);
+		return result;
+	}
+
+	public ArrayList<Box[]> getParcelBoxes(double scale) {
+		ArrayList<Box[]> result = new ArrayList<Box[]>();
+		for (Parcel parcel : parcels) result.add(parcel.toBoxes(scale));
+		return result;
 	}
 	
 }
