@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import knapsack.Knapsack;
+import knapsack.Knapsack2;
+import knapsack.parcel.Parcels;
+
 public final class CompareMethods {
 	
 	public static final Runtime runtime = Runtime.getRuntime();
@@ -24,12 +28,12 @@ public final class CompareMethods {
 		return delta;
 	}
 	
-	public static <T> MemoryResult<T> getDeltaMemoryResult(Supplier<T> method, boolean accurate) {
+	public static <T> MemoryResult<T> getDeltaMemoryResult(Supplier<T> method, boolean accurate_memory) {
 		long start = 0l;
 		long delta = 0l;
 		T result;
 		long start_time = System.currentTimeMillis();
-		if (accurate) runtime.gc();
+		if (accurate_memory) runtime.gc();
 		start = getMemoryUsage();
 		result = method.get();
 		delta = getMemoryUsage() - start;
@@ -104,7 +108,7 @@ public final class CompareMethods {
 			String evaluation = " [results of comparison for "+batches.size()+" inputs] \n";
 			evaluation += "Function-1:\n - time used = "+times.time_1+"ms ("+((100*(float)times.time_1)/(times.time_1+times.time_2))+"% of total)\n";
 			evaluation += " - memory used = "+times.memory_1/1024+"kb ("+((100*(float)times.memory_1)/(times.memory_1+times.memory_2))+"% of total)\n\n";
-			evaluation += "Function-2:\n - time used = "+times.time_2+"ms ("+(((float)times.time_2)/(times.time_1+times.time_2))+"% of total)\n";
+			evaluation += "Function-2:\n - time used = "+times.time_2+"ms ("+((100*(float)times.time_2)/(times.time_1+times.time_2))+"% of total)\n";
 			evaluation += " - memory used = "+times.memory_2/1024+"kb ("+((100*(float)times.memory_2)/(times.memory_1+times.memory_2))+"% of total)\n\n";
 			evaluation += "Of all inputs that were given, "+(100*(float)inputDuplicates())+"% were equal\n";
 			evaluation += "Of all the outputs from Function-1 and Function-2, "+(100*(float)partEqual())+"% were equal\n";
@@ -135,6 +139,29 @@ public final class CompareMethods {
 			comparison.add(in, result_f1, result_f2);
 			delta_time += result_f1.delta_time + result_f2.delta_time;
 		} return comparison;
+	}
+	
+	public static void main(String[] args) {
+		Knapsack k1 = new Knapsack();
+		Knapsack2 k2 = new Knapsack2();
+		System.out.println("comparing f1(fit a parcel with BigInteger) to f2(fit a parcel with boolean[])\n"+
+				compareOutputs(
+				a->{return Boolean.valueOf(k1.fitsParcel(a));},
+				a->{return Boolean.valueOf(k2.fitsParcel(a));},
+				()->{return Parcels.randomSimpleParcels(k1, 1, 1)[0];},
+				5000l, true
+				));
+		System.out.println("comparing f1(create knapsack with BigInteger) to f2(create knapsack with boolean[])\n"+
+				compareOutputs(
+				a->{return new Knapsack(randInt(10,30),randInt(10,30),randInt(10,30));},
+				a->{return new Knapsack2(randInt(10,30),randInt(10,30),randInt(10,30));},
+				()->{return "";},
+				5000l, true
+				));
+	}
+	
+	public static int randInt(int min, int max) {
+		return (int)(Math.random() * (max-min+1) + min);
 	}
 	
 }
