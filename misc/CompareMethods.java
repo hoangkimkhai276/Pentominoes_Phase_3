@@ -24,12 +24,12 @@ public final class CompareMethods {
 		return delta;
 	}
 	
-	public static <T> MemoryResult<T> getDeltaMemoryResult(Supplier<T> method, boolean accurate) {
+	public static <T> MemoryResult<T> getDeltaMemoryResult(Supplier<T> method, boolean accurate_memory) {
 		long start = 0l;
 		long delta = 0l;
 		T result;
 		long start_time = System.currentTimeMillis();
-		if (accurate) runtime.gc();
+		if (accurate_memory) runtime.gc();
 		start = getMemoryUsage();
 		result = method.get();
 		delta = getMemoryUsage() - start;
