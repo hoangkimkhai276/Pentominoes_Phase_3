@@ -3,6 +3,7 @@ package knapsack;
 import java.util.ArrayList;
 
 import graphics.SmartGroup;
+import javafx.scene.shape.Box;
 import javafxstuff.Point3D;
 import knapsack.parcel.ParcelCore;
 import knapsack.parcel.ParcelGroup;
@@ -46,14 +47,20 @@ public class KnapsackGroup extends SmartGroup {
 	private Knapsack knapsack;
 	private double scale;
 	private ArrayList<ParcelGroup> groups;
+	private Box outline;
 	
 	public KnapsackGroup(Knapsack knapsack, double scale, Point3D origin) {
 		super(origin);
 		this.knapsack = knapsack;
 		this.scale = scale;
+		this.outline = knapsack.toBox(scale);
 		groups = knapsack.getParcelGroups(scale);
 		for (ParcelGroup group : groups)
             this.getChildren().add(group);
+	}
+	
+	public Box getOutline() {
+		return outline;
 	}
 	
 	public ArrayList<ParcelGroup> getParcelGroups() {
