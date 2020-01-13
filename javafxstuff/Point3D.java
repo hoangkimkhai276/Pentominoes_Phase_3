@@ -83,6 +83,14 @@ public class Point3D {
     public final double getZ() {
         return z;
     }
+    
+    public javafx.geometry.Point3D getPoint3D() {
+    	return new javafx.geometry.Point3D(x, y, z);
+    }
+    
+    public Point3D scale(double scale) {
+    	return new Point3D(x * scale, y * scale, z * scale);
+    }
 
     /**
      * Cache the hash code to make computing hashes faster.

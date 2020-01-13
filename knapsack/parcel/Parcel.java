@@ -38,13 +38,4 @@ public interface Parcel {
 	/** @return the origin-points of all the unit-cube-sized grids this parcel occupies*/
 	Point3D[] getOccupiedGrids();
 
-	/** Rotate around the length-/x-axis at an angle of 90 degrees (right or left rotation is consistent but no direction is ensured) */
-	void rotateLength();
-
-	/** Rotate around the width-/y-axis at an angle of 90 degrees (right or left rotation is consistent but no direction is ensured) */
-	void rotateWidth();
-
-	/** Rotate around the height-/z-axis at an angle of 90 degrees (right or left rotation is consistent but no direction is ensured) */
-	void rotateHeight();
-
 }
