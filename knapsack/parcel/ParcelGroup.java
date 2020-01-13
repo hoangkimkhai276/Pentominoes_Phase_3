@@ -28,6 +28,26 @@ public class ParcelGroup {
         adjusted_origin_position = parcel.getOrigin().scale(scale).add(origin_of_knapsack);
         for (int i = 0; i < boxes.length; i++)
             group.getChildren().add(boxes[i]);
+        updateTranslation();
+    }
+    
+    public void move(Point3D delta) {
+    	adjusted_origin_position = adjusted_origin_position.add(delta);
+    	updateTranslation();
+    }
+    
+    public void setLocation(Point3D new_point) {
+    	move(new_point.subtract(adjusted_origin_position));
+    }
+    
+    public javafx.scene.paint.Color getColor() {
+    	return new javafx.scene.paint.Color(color.getRed()/255d, color.getGreen()/255d, color.getBlue()/255d, color.getAlpha()/255d);
+    }
+    
+    private void updateTranslation() {
+    	group.setTranslateX(adjusted_origin_position.getX());
+    	group.setTranslateY(adjusted_origin_position.getY());
+    	group.setTranslateZ(adjusted_origin_position.getZ());
     }
 
     void rotateByX(int angle){
