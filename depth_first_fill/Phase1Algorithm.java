@@ -165,7 +165,7 @@ public class Phase1Algorithm {
 	}
 
 	/**
-	 * This recursive method will check whether an area from a certain point is divisible by 5 (can you fill it with pentonimos?)
+	 * This recursive method will check whether a 2D area from a certain point is divisible by 5 (can you fill it with pentonimos?)
 	 * @param test : the temporary situation of the plane (with the current check-pentomino in there)
 	 * @param used : all the elements that are already checked before by the {@link #mightBeSolvable} method.
 	 * @param x position
@@ -178,11 +178,19 @@ public class Phase1Algorithm {
 		return countEmptyPlaneSpaces(test, used, x, y, z, plane, 0) %5 == 0;
 	}
 	
-	private boolean check3DFreedom(BigInteger test, BigInteger used, int x, int y, int z,) {
-		
+	private boolean check3DFreedom(BigInteger test, BigInteger used, int x, int y, int z) {
+		// TODO maybe implement multidimensional counting?
 	}
 	
-	private boolean canBeFilled(Parcel a, Parcel b, Parcel c, int volume) {
+	/**
+	 * checks whether the volume {@code V} can theoretically be achieved by adding the different volumes ({@code a, b, c}) together (no bounds)
+	 * @param a
+	 * @param b
+	 * @param c
+	 * @param v
+	 * @return {@code true} if it can be filled, {@code false} otherwise
+	 */
+	private boolean canBeFilled(int a, int b, int c, int v) {
 		// TODO implement tiny algorithm for tiny knapsack problem
 	}
 	
@@ -199,15 +207,16 @@ public class Phase1Algorithm {
 	 * @return
 	 */
 	@SuppressWarnings("unused")
-	private int countEmptySpaces(BigInteger test, BigInteger used, int x, int y, int z, int count) {
+	private dim3count countEmptySpaces(BigInteger test, BigInteger used, int x, int y, int z, dim3count count) {
 		used.setBit(to1DCoord(x,y,z));
-		count++;
-		if (x < length-1 && !test.testBit(to1DCoord(x+1,y,z)) && !used.testBit(to1DCoord(x+1,y,z))) count += countEmptySpaces(test, used, x+1, y, z, 0);
-		if (x > 0 && !test.testBit(to1DCoord(x-1,y,z)) && !used.testBit(to1DCoord(x-1,y,z))) count += countEmptySpaces(test, used, x-1, y, z, 0);
-		if (y < width-1 && !test.testBit(to1DCoord(x,y+1,z)) && !used.testBit(to1DCoord(x,y+1,z))) count += countEmptySpaces(test, used, x, y+1, z, 0);
-		if (y > 0 && !test.testBit(to1DCoord(x,y-1,z)) && !used.testBit(to1DCoord(x,y-1,z))) count += countEmptySpaces(test, used, x, y-1, z, 0);
-		if (z < height-1 && !test.testBit(to1DCoord(x,y,z+1)) && !used.testBit(to1DCoord(x,y,z+1))) count += countEmptySpaces(test, used, x, y, z+1, 0);
-		if (z > 0 && !test.testBit(to1DCoord(x,y,z-1)) && !used.testBit(to1DCoord(x,y,z-1))) count += countEmptySpaces(test, used, x, y, z-1, 0);
+		count.add(x,y,z);
+		
+		if (x < length-1 && !test.testBit(to1DCoord(x+1,y,z)) && !used.testBit(to1DCoord(x+1,y,z))) count.add(countEmptySpaces(test, used, x+1, y, z, new dim3count()));
+		if (x > 0 && !test.testBit(to1DCoord(x-1,y,z)) && !used.testBit(to1DCoord(x-1,y,z))) count.add(countEmptySpaces(test, used, x-1, y, z, new dim3count()));
+		if (y < width-1 && !test.testBit(to1DCoord(x,y+1,z)) && !used.testBit(to1DCoord(x,y+1,z))) count.add(countEmptySpaces(test, used, x, y+1, z, new dim3count()));
+		if (y > 0 && !test.testBit(to1DCoord(x,y-1,z)) && !used.testBit(to1DCoord(x,y-1,z))) count.add(countEmptySpaces(test, used, x, y-1, z, new dim3count()));
+		if (z < height-1 && !test.testBit(to1DCoord(x,y,z+1)) && !used.testBit(to1DCoord(x,y,z+1))) count.add(countEmptySpaces(test, used, x, y, z+1, new dim3count()));
+		if (z > 0 && !test.testBit(to1DCoord(x,y,z-1)) && !used.testBit(to1DCoord(x,y,z-1))) count.add(countEmptySpaces(test, used, x, y, z-1, new dim3count()));
 		return count;
 	}
 	
@@ -222,6 +231,38 @@ public class Phase1Algorithm {
 		if (plane.z && z < height-1 && !test.testBit(to1DCoord(x,y,z+1)) && !used.testBit(to1DCoord(x,y,z+1))) count += countEmptyPlaneSpaces(test, used, x, y, z+1, plane, 0);
 		if (plane.z && z > 0 && !test.testBit(to1DCoord(x,y,z-1)) && !used.testBit(to1DCoord(x,y,z-1))) count += countEmptyPlaneSpaces(test, used, x, y, z-1, plane, 0);
 		return count;
+	}
+	
+	class dim3count {
+		int x_min, y_min, z_min, x_max, y_max, z_max, count;
+		
+		dim3count() {
+			x_min = Integer.MAX_VALUE;
+			x_max = Integer.MAX_VALUE;
+			y_min = x_min; z_min = x_min;
+			y_max = x_max; z_max = x_max;
+		}
+		
+		dim3count(int x, int y, int z) {
+			x_min = x; x_max = x;
+			y_min = y; y_max = y;
+			z_min = z; z_max = z;
+			count = 1;
+		}
+		
+		void add(int x, int y, int z) {
+			add(new dim3count(x,y,z));
+		}
+		
+		void add(dim3count other) {
+			x_min = (x_min <= other.x_min)? x_min : other.x_min;
+			x_max = (x_max >= other.x_max)? x_max : other.x_max;
+			y_min = (y_min <= other.y_min)? y_min : other.y_min;
+			y_max = (y_max >= other.y_max)? y_max : other.y_max;
+			z_min = (z_min <= other.z_min)? z_min : other.z_min;
+			z_max = (z_max >= other.z_max)? z_max : other.z_max;
+			count += other.count;
+		}
 	}
 	
 	private int to1DCoord(int x, int y, int z) {
