@@ -2,13 +2,11 @@ package knapsack.parcel;
 
 import java.awt.Color;
 
-import javafx.scene.Group;
+import graphics.SmartGroup;
 import javafx.scene.shape.Box;
-import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Transform;
 import javafxstuff.Point3D;
 
-public class ParcelGroup extends Group {
+public class ParcelGroup extends SmartGroup {
 
 	public static final ParcelGroup A = new ParcelGroup(Parcels.A, 50, Point3D.ZERO);
 	public static final ParcelGroup B = new ParcelGroup(Parcels.B, 50, Point3D.ZERO);
@@ -21,9 +19,6 @@ public class ParcelGroup extends Group {
 	private Point3D adjusted_origin_position;
 	private Color color;
 	private double scale;
-	
-	private Rotate rotate;
-    private Transform transform;
     
     public ParcelGroup(Parcel _parcel, double _scale, Point3D origin_adjustment) {
     	super();
@@ -56,24 +51,5 @@ public class ParcelGroup extends Group {
     	this.setTranslateZ(adjusted_origin_position.getZ());
     }
 
-    void rotateByX(int angle){
-        rotate = new Rotate(angle,Rotate.X_AXIS);
-        transform = transform.createConcatenation(rotate);
-        this.getTransforms().clear();
-        this.getTransforms().addAll(transform);
-    }
-
-    void rotateByY(int angle){
-        rotate = new Rotate(angle,Rotate.Z_AXIS);
-        transform = transform.createConcatenation(rotate);
-        this.getTransforms().clear();
-        this.getTransforms().addAll(transform);
-    }
-
-    void rotateByZ(int angle){
-        rotate = new Rotate(angle,Rotate.Y_AXIS);
-        transform = transform.createConcatenation(rotate);
-        this.getTransforms().clear();
-        this.getTransforms().addAll(transform);
-    }
+    
 }
