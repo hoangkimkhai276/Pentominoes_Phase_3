@@ -13,59 +13,41 @@ public class ParcelGroup {
 	private Parcel parcel;
 	private Point3D adjusted_origin_position;
 	private Color color;
+	private Group group;
+	private double scale;
 	
-	public SmartGroup toGroup(Parcel parcel){
-
-        SmartGroup parcelGroup = new SmartGroup();
-
-        Box[] boxes = parcel.toBoxes(50);
-
-        Point3D origin = parcel.getOrigin();
-
-        for (int i = 0; i < boxes.length; i++) {
-
-            System.out.println(boxes[i].getTranslateX());
-
-            parcelGroup.getChildren().add(boxes[i]);
-
-        }
-
-        return parcelGroup;
-
+	private Rotate rotate;
+    private Transform transform;
+    
+    public ParcelGroup(Parcel _parcel, double _scale, Point3D origin_of_knapsack) {
+    	group = new Group();
+    	parcel = _parcel;
+    	color = parcel.getColor();
+    	scale = _scale;
+    	Box[] boxes = parcel.toBoxes(scale);
+        adjusted_origin_position = parcel.getOrigin().scale(scale).add(origin_of_knapsack);
+        for (int i = 0; i < boxes.length; i++)
+            group.getChildren().add(boxes[i]);
     }
-	
-	static class SmartGroup extends Group {
 
-        public SmartGroup(){
+    void rotateByX(int angle){
+        rotate = new Rotate(angle,Rotate.X_AXIS);
+        transform = transform.createConcatenation(rotate);
+        group.getTransforms().clear();
+        group.getTransforms().addAll(transform);
+    }
 
-        }
+    void rotateByY(int angle){
+        rotate = new Rotate(angle,Rotate.Z_AXIS);
+        transform = transform.createConcatenation(rotate);
+        group.getTransforms().clear();
+        group.getTransforms().addAll(transform);
+    }
 
-        public SmartGroup(Parcel p, double scale){
-            Point3D origin = p.getOrigin();
-        }
-        Point3D origin;
-        Rotate r;
-        Transform t = new Rotate();
-
-        void rotateByX(int angle){
-            r = new Rotate(angle,Rotate.X_AXIS);
-            t = t.createConcatenation(r);
-            this.getTransforms().clear();
-            this.getTransforms().addAll(t);
-        }
-
-        void rotateByY(int angle){
-            r = new Rotate(angle,Rotate.Z_AXIS);
-            t = t.createConcatenation(r);
-            this.getTransforms().clear();
-            this.getTransforms().addAll(t);
-        }
-
-        void rotateByZ(int angle){
-            r = new Rotate(angle,Rotate.Y_AXIS);
-            t = t.createConcatenation(r);
-            this.getTransforms().clear();
-            this.getTransforms().addAll(t);
-        }
+    void rotateByZ(int angle){
+        rotate = new Rotate(angle,Rotate.Y_AXIS);
+        transform = transform.createConcatenation(rotate);
+        group.getTransforms().clear();
+        group.getTransforms().addAll(transform);
     }
 }
