@@ -184,14 +184,38 @@ public class Phase1Algorithm {
 	
 	/**
 	 * checks whether the volume {@code V} can theoretically be achieved by adding the different volumes ({@code a, b, c}) together (no bounds)
-	 * @param a
-	 * @param b
-	 * @param c
-	 * @param v
 	 * @return {@code true} if it can be filled, {@code false} otherwise
 	 */
-	private boolean canBeFilled(int a, int b, int c, int v) {
-		// TODO implement tiny algorithm for tiny knapsack problem
+	@SuppressWarnings("unused")
+	private boolean canBeFilledNumerically(int a, int b, int c, int v) {
+		if (v%a==0) return true;
+		if (v%b==0) return true;
+		if (v%c==0) return true;
+		int[] list = {a, b, c};
+		Arrays.sort(list);
+		a = list[0]; // smallest
+		b = list[1];
+		c = list[2]; // highest
+		if (v < a) return false;
+		if (v < b) return v%a==0;
+		if (v < c) return canBeFilledNumerically(a, b, v);
+		// now we have all three to work with:
+		int a_count = 0;
+		for (int x; (x = v - a * a_count) >= b; a_count++) {
+			if (x%b==0) return true;
+			if (x%c==0) return true;
+			if (canBeFilledNumerically(b, c, x)) return true;
+		}
+		return false;
+	}
+	
+	private boolean canBeFilledNumerically(int a, int b, int v) {
+		// c is not in it, v can be a combination of a and b (with both at least 1x)
+		int a_count = 1;
+		for (int x; (x = v - a * a_count) >= b; a_count++)
+			// x is the restant if you remove all the b-volumes from v (x is made up of all a's)
+			if (x%b==0) return true; // true if the restant can actually be made out of b's
+		return false;
 	}
 	
 	/**
