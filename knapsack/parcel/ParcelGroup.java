@@ -10,6 +10,13 @@ import javafxstuff.Point3D;
 
 public class ParcelGroup extends Group {
 
+	public static final ParcelGroup A = new ParcelGroup(Parcels.A, 50, Point3D.ZERO);
+	public static final ParcelGroup B = new ParcelGroup(Parcels.B, 50, Point3D.ZERO);
+	public static final ParcelGroup C = new ParcelGroup(Parcels.C, 50, Point3D.ZERO);
+	public static final ParcelGroup P = new ParcelGroup(Parcels.P, 50, Point3D.ZERO);
+	public static final ParcelGroup L = new ParcelGroup(Parcels.L, 50, Point3D.ZERO);
+	public static final ParcelGroup T = new ParcelGroup(Parcels.T, 50, Point3D.ZERO);
+	
 	private Parcel parcel;
 	private Point3D adjusted_origin_position;
 	private Color color;
@@ -18,13 +25,13 @@ public class ParcelGroup extends Group {
 	private Rotate rotate;
     private Transform transform;
     
-    public ParcelGroup(Parcel _parcel, double _scale, Point3D origin_of_knapsack) {
+    public ParcelGroup(Parcel _parcel, double _scale, Point3D origin_adjustment) {
     	super();
     	parcel = _parcel;
     	color = parcel.getColor();
     	scale = _scale;
     	Box[] boxes = parcel.toBoxes(scale);
-        adjusted_origin_position = parcel.getOrigin().scale(scale).add(origin_of_knapsack);
+        adjusted_origin_position = parcel.getOrigin().scale(scale).add(origin_adjustment);
         for (int i = 0; i < boxes.length; i++)
             this.getChildren().add(boxes[i]);
         updateTranslation();
