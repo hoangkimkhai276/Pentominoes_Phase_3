@@ -1,6 +1,5 @@
 package javafxdraw;
 
-import com.sun.deploy.uitoolkit.DragContext;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Camera;
