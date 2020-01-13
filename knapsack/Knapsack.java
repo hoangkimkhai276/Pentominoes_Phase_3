@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import javafx.scene.shape.Box;
 import javafxstuff.Point3D;
 import knapsack.parcel.Parcel;
+import knapsack.parcel.ParcelGroup;
 import knapsack.parcel.Parcels;
 
 enum SortState {
@@ -130,9 +131,9 @@ public class Knapsack implements Variables {
 		return result;
 	}
 
-	public ArrayList<Box[]> getParcelBoxes(double scale) {
-		ArrayList<Box[]> result = new ArrayList<Box[]>();
-		for (Parcel parcel : parcels) result.add(parcel.toBoxes(scale));
+	public ArrayList<ParcelGroup> getParcelGroups(double scale) {
+		ArrayList<ParcelGroup> result = new ArrayList<ParcelGroup>();
+		for (Parcel parcel : parcels) result.add(new ParcelGroup(parcel, scale, Point3D.ZERO));
 		return result;
 	}
 	

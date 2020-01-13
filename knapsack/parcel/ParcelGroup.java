@@ -27,7 +27,6 @@ public class ParcelGroup extends SmartGroup {
     	Box[] boxes = parcel.toBoxes(scale);
         for (int i = 0; i < boxes.length; i++)
             this.getChildren().add(boxes[i]);
-        updateTranslation();
     }
     
     public javafx.scene.paint.Color getColor() {

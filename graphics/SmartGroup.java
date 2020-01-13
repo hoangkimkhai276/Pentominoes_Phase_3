@@ -16,7 +16,7 @@ public abstract class SmartGroup extends Group {
     	updateTranslation();
     }
     
-    protected void updateTranslation() {
+    private void updateTranslation() {
     	this.setTranslateX(origin.getX());
     	this.setTranslateY(origin.getY());
     	this.setTranslateZ(origin.getZ());
