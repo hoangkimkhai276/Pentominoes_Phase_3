@@ -16,40 +16,22 @@ public class ParcelGroup extends SmartGroup {
 	public static final ParcelGroup T = new ParcelGroup(Parcels.T, 50, Point3D.ZERO);
 	
 	private Parcel parcel;
-	private Point3D adjusted_origin_position;
 	private Color color;
 	private double scale;
     
     public ParcelGroup(Parcel _parcel, double _scale, Point3D origin_adjustment) {
-    	super();
+    	super(_parcel.getOrigin().scale(_scale).add(origin_adjustment));
     	parcel = _parcel;
     	color = parcel.getColor();
     	scale = _scale;
     	Box[] boxes = parcel.toBoxes(scale);
-        adjusted_origin_position = parcel.getOrigin().scale(scale).add(origin_adjustment);
         for (int i = 0; i < boxes.length; i++)
             this.getChildren().add(boxes[i]);
         updateTranslation();
     }
     
-    public void move(Point3D delta) {
-    	adjusted_origin_position = adjusted_origin_position.add(delta);
-    	updateTranslation();
-    }
-    
-    public void setLocation(Point3D new_point) {
-    	move(new_point.subtract(adjusted_origin_position));
-    }
-    
     public javafx.scene.paint.Color getColor() {
     	return new javafx.scene.paint.Color(color.getRed()/255d, color.getGreen()/255d, color.getBlue()/255d, color.getAlpha()/255d);
     }
-    
-    private void updateTranslation() {
-    	this.setTranslateX(adjusted_origin_position.getX());
-    	this.setTranslateY(adjusted_origin_position.getY());
-    	this.setTranslateZ(adjusted_origin_position.getZ());
-    }
 
-    
 }
