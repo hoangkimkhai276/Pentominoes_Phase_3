@@ -123,8 +123,11 @@ public class Knapsack implements Variables {
 		return true;
 	}
 
-	public Box toBox(double scale) {
+	public Box toBox(double scale, Point3D origin) {
 		Box result = shape.toBox();
+		result.setTranslateX(origin.getY());
+		result.setTranslateY(origin.getZ());
+		result.setTranslateZ(origin.getX());
 		result.setScaleX(scale);
 		result.setScaleY(scale);
 		result.setScaleZ(scale);

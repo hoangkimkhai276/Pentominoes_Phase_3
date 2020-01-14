@@ -13,6 +13,8 @@ public interface Parcel {
 
 	void moveParcel(Point3D delta);
 
+	//
+	Point3D getScaledOrigin(double scale);
 	Point3D getOrigin();
 
 	void setOrigin(Point3D origin);

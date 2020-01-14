@@ -33,4 +33,6 @@ public class ParcelGroup extends SmartGroup {
     	return new javafx.scene.paint.Color(color.getRed()/255d, color.getGreen()/255d, color.getBlue()/255d, color.getAlpha()/255d);
     }
 
+
+
 }

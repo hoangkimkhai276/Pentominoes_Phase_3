@@ -51,5 +51,9 @@ public abstract class SmartGroup extends Group {
         this.getTransforms().clear();
         this.getTransforms().addAll(transform);
     }
+
+    public Point3D getOrigin() {
+        return origin;
+    }
 	
 }
