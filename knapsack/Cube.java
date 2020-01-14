@@ -90,7 +90,7 @@ public class Cube {
 	}
 	
 	public Box toBox() {
-		Box box = new Box(width, height, length);
+		Box box = new Box(length, width, height);
 		Point3D origin = getOrigin();
 		box.setTranslateX(origin.getX());
 		box.setTranslateY(origin.getY());

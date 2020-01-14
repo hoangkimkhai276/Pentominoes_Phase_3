@@ -40,4 +40,7 @@ public interface Parcel {
 	/** @return the origin-points of all the unit-cube-sized grids this parcel occupies*/
 	Point3D[] getOccupiedGrids();
 
+	int getLength();
+	int getWidth();
+	int getHeight();
 }

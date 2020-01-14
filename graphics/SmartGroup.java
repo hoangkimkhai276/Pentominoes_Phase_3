@@ -9,30 +9,11 @@ public abstract class SmartGroup extends Group {
 
 	private Rotate rotate;
     private Transform transform = new Rotate();
-	private Point3D origin;
-    
-    protected SmartGroup(Point3D origin) {
-    	this.origin = origin;
-    	updateTranslation();
-    }
-    
-    private void updateTranslation() {
-    	this.setTranslateX(origin.getX());
-    	this.setTranslateY(origin.getY());
-    	this.setTranslateZ(origin.getZ());
-    }
-    
-    public void move(Point3D delta) {
-    	origin = origin.add(delta);
-    	updateTranslation();
-    }
-    
-    public void setLocation(Point3D new_point) {
-    	move(new_point.subtract(origin));
-    }
-    
-	public void rotateByX(int angle){
+    protected javafx.geometry.Point3D center;
+
+    public void rotateByX(int angle){
         rotate = new Rotate(angle,Rotate.X_AXIS);
+        setCenter();
         transform = transform.createConcatenation(rotate);
         this.getTransforms().clear();
         this.getTransforms().addAll(transform);
@@ -40,20 +21,25 @@ public abstract class SmartGroup extends Group {
 
 	public void rotateByY(int angle){
         rotate = new Rotate(angle,Rotate.Z_AXIS);
+        setCenter();
         transform = transform.createConcatenation(rotate);
         this.getTransforms().clear();
         this.getTransforms().addAll(transform);
     }
 
-	public void rotateByZ(int angle){
-        rotate = new Rotate(angle,Rotate.Y_AXIS);
+	public void rotateByZ(int angle) {
+        rotate = new Rotate(angle, Rotate.Y_AXIS);
+        setCenter();
         transform = transform.createConcatenation(rotate);
         this.getTransforms().clear();
         this.getTransforms().addAll(transform);
     }
 
-    public Point3D getOrigin() {
-        return origin;
+    private void setCenter() {
+        System.out.println(center);
+        rotate.setPivotX(center.getX());
+        rotate.setPivotY(center.getY());
+        rotate.setPivotZ(center.getZ());
     }
 	
 }

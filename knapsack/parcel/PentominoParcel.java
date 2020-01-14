@@ -148,4 +148,14 @@ public class PentominoParcel extends ParcelCore {
 		return cubes;
 	}
 
+	public int getLength() {
+		return length;
+	}
+	public int getWidth() {
+		return width;
+	}
+	public int getHeight() {
+		return height;
+	}
+
 }

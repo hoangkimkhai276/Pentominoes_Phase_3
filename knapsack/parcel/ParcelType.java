@@ -110,4 +110,19 @@ public class ParcelType implements Parcel {
 		return parcel.getOccupiedGrids();
 	}
 
+	@Override
+	public int getLength() {
+		return parcel.getLength();
+	}
+
+	@Override
+	public int getWidth() {
+		return parcel.getWidth();
+	}
+
+	@Override
+	public int getHeight() {
+		return parcel.getHeight();
+	}
+
 }

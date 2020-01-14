@@ -64,9 +64,9 @@ public abstract class ParcelCore implements Parcel {
 			boxes[i].setDepth(scale * cubes[i].getLength());
 			boxes[i].setDrawMode(DrawMode.FILL);
 			boxes[i].setMaterial(new PhongMaterial(getFXColor()));
-			boxes[i].setTranslateX(scale * (origin.getX()*2 - cubes[i].getOrigin().getX()));
-			boxes[i].setTranslateY(scale * (origin.getY()*2 - cubes[i].getOrigin().getY()));
-			boxes[i].setTranslateZ(scale * (origin.getZ()*2 - cubes[i].getOrigin().getZ()));
+			boxes[i].setTranslateX(scale * (cubes[i].getOrigin().getY()));
+			boxes[i].setTranslateY(-scale * (cubes[i].getOrigin().getZ()));
+			boxes[i].setTranslateZ(scale * (cubes[i].getOrigin().getX()));
 		}
 		return boxes;
 	}

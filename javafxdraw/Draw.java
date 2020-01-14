@@ -7,14 +7,14 @@ import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Box;
-import javafx.scene.shape.CullFace;
-import javafx.scene.shape.DrawMode;
-import javafx.scene.shape.Line;
+import javafx.scene.shape.*;
 import javafx.stage.Stage;
 import javafxstuff.Point3D;
 import knapsack.KnapsackGroup;
+import knapsack.parcel.Parcel;
+import knapsack.parcel.ParcelCore;
 import knapsack.parcel.ParcelGroup;
 import knapsack.parcel.Parcels;
 
@@ -39,20 +39,14 @@ public class Draw extends Application {
 //
         Group root  = new Group();
         KnapsackGroup knapsackGroup = KnapsackGroup.example;
+        Sphere sphere = new Sphere(25);
+        sphere.setTranslateX(0);
+        sphere.setTranslateY(0);
         PerspectiveCamera camera = new PerspectiveCamera();
-        knapsackGroup.setTranslateZ(-500);
-        Box b = knapsackGroup.getOutline();
-        b.setDrawMode(DrawMode.LINE);
-        Bounds layoutBounds = b.getLayoutBounds();
-        Bounds parentBounds = b.getBoundsInParent();
-        Bounds localBounds = b.getBoundsInParent();
-        System.out.println("LAYOUT BOUNDS: " + layoutBounds.getDepth() + " " + layoutBounds.getHeight() + " " + layoutBounds.getWidth());
-        System.out.println("LAYOUT BOUNDS: " + layoutBounds.getMaxZ() + " " + layoutBounds.getMaxY() + " " + layoutBounds.getMaxX());
-        System.out.println("PARENT BOUNDS: " + parentBounds.getDepth() + " " + parentBounds.getHeight() + " " + parentBounds.getWidth());
-        System.out.println("PARENT BOUNDS: " + parentBounds.getMaxZ() + " " + parentBounds.getMaxY() + " " + parentBounds.getMaxX());
-        System.out.println("LOCAL BOUNDS: " + localBounds.getDepth() + " " + localBounds.getHeight() + " " + localBounds.getWidth());
-        System.out.println("LOCAL BOUNDS: " + localBounds.getMaxZ() + " " + localBounds.getMaxY() + " " + localBounds.getMaxX());
-        root.getChildren().addAll(b,knapsackGroup);
+        camera.setTranslateZ(-500);
+        camera.setTranslateY(-200);
+
+        root.getChildren().addAll(knapsackGroup,sphere);
         Scene scene = new Scene(root, 1000,800,true);
         scene.setCamera(camera);
         addEventHandler(primaryStage, knapsackGroup);
@@ -66,7 +60,8 @@ public class Draw extends Application {
     }
 
     private void run(Stage primaryStage){
-        ParcelGroup parcelGroup = new ParcelGroup(Parcels.P,50,new Point3D(200,200,0));
+        ParcelGroup parcelGroup = new ParcelGroup(Parcels.P,50);
+
         PerspectiveCamera camera = new PerspectiveCamera();
 //        addEventHandler(primaryStage,parcelGroup);
         Group mainGroup = new Group();
@@ -118,6 +113,12 @@ public class Draw extends Application {
                     }
                 }
         );
+        primaryStage.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                System.out.println(event.getX() + ", " + event.getY() + ", " + event.getZ());
+            }
+        });
     }
 
 

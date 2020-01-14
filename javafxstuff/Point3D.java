@@ -444,4 +444,8 @@ public class Point3D {
     @Override public String toString() {
         return "Point3D [x = " + getX() + ", y = " + getY() + ", z = " + getZ() + "]";
     }
+
+    public javafx.geometry.Point3D convert() {
+        return new javafx.geometry.Point3D(x, y, z);
+    }
 }
