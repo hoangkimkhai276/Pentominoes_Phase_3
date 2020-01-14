@@ -37,50 +37,50 @@ public class Point3D {
     /**
      * Point or vector with all three coordinates set to 0.
      */
-    public static final Point3D ZERO = new Point3D(0.0, 0.0, 0.0);
+    public static final Point3D ZERO = new Point3D(0, 0, 0);
 
     /**
      * The x coordinate.
      *
-     * @defaultValue 0.0
+     * @defaultValue 0
      */
-    private double x;
+    private int x;
 
     /**
      * The x coordinate.
      * @return the x coordinate
      */
-    public final double getX() {
+    public final int getX() {
         return x;
     }
 
     /**
      * The y coordinate.
      *
-     * @defaultValue 0.0
+     * @defaultValue 0
      */
-    private double y;
+    private int y;
 
     /**
      * The y coordinate.
      * @return the y coordinate
      */
-    public final double getY() {
+    public final int getY() {
         return y;
     }
 
     /**
      * The z coordinate.
      *
-     * @defaultValue 0.0
+     * @defaultValue 0
      */
-    private double z;
+    private int z;
 
     /**
      * The z coordinate.
      * @return the z coordinate
      */
-    public final double getZ() {
+    public final int getZ() {
         return z;
     }
     
@@ -103,7 +103,7 @@ public class Point3D {
      * @param y The Y coordinate of the {@code Point3D}
      * @param z The Z coordinate of the {@code Point3D}
      */
-    public Point3D(double x, double y, double z) {
+    public Point3D(int x, int y, int z) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -118,6 +118,12 @@ public class Point3D {
     	this.y = other_point.y;
     	this.z = other_point.z;
     }
+    
+    public void set(int x, int y, int z) {
+    	this.x = x;
+    	this.y = y;
+    	this.z = z;
+    }
 
     /**
      * Computes the distance between this point and point {@code (x1, y1, z1)}.
@@ -127,10 +133,10 @@ public class Point3D {
      * @param z1 the z coordinate of other point
      * @return the distance between this point and point {@code (x1, y1, z1)}.
      */
-    public double distance(@NamedArg("x") double x1, @NamedArg("y") double y1, @NamedArg("z") double z1) {
-        double a = getX() - x1;
-        double b = getY() - y1;
-        double c = getZ() - z1;
+    public double distance(@NamedArg("x") int x1, @NamedArg("y") int y1, @NamedArg("z") int z1) {
+        int a = getX() - x1;
+        int b = getY() - y1;
+        int c = getZ() - z1;
         return Math.sqrt(a * a + b * b + c * c);
     }
 
@@ -154,7 +160,7 @@ public class Point3D {
      * @return the point with added coordinates
      * @since JavaFX 8.0
      */
-    public Point3D add(double x, double y, double z) {
+    public Point3D add(int x, int y, int z) {
         return new Point3D(
                 getX() + x,
                 getY() + y,
@@ -182,7 +188,7 @@ public class Point3D {
      * @return the point with subtracted coordinates
      * @since JavaFX 8.0
      */
-    public Point3D subtract(double x, double y, double z) {
+    public Point3D subtract(int x, int y, int z) {
         return new Point3D(
                 getX() - x,
                 getY() - y,
@@ -209,7 +215,7 @@ public class Point3D {
      * @since JavaFX 8.0
      */
     public Point3D multiply(double factor) {
-        return new Point3D(getX() * factor, getY() * factor, getZ() * factor);
+        return new Point3D((int)(getX() * factor), (int)(getY() * factor), (int)(getZ() * factor));
     }
 
     /**
@@ -223,13 +229,13 @@ public class Point3D {
         final double mag = magnitude();
 
         if (mag == 0.0) {
-            return new Point3D(0.0, 0.0, 0.0);
+            return new Point3D(0, 0, 0);
         }
 
         return new Point3D(
-                getX() / mag,
-                getY() / mag,
-                getZ() / mag);
+                (int)(getX() / mag),
+                (int)(getY() / mag),
+                (int)(getZ() / mag));
     }
 
     /**
@@ -241,11 +247,11 @@ public class Point3D {
      * @return the point in the middle
      * @since JavaFX 8.0
      */
-    public Point3D midpoint(double x, double y, double z) {
+    public Point3D midpoint(int x, int y, int z) {
         return new Point3D(
-                x + (getX() - x) / 2.0,
-                y + (getY() - y) / 2.0,
-                z + (getZ() - z) / 2.0);
+                x + (getX() - x) / 2,
+                y + (getY() - y) / 2,
+                z + (getZ() - z) / 2);
     }
 
     /**
@@ -269,7 +275,7 @@ public class Point3D {
      * @return the angle between the two vectors measured in degrees
      * @since JavaFX 8.0
      */
-    public double angle(double x, double y, double z) {
+    public double angle(int x, int y, int z) {
         final double ax = getX();
         final double ay = getY();
         final double az = getZ();
@@ -343,9 +349,9 @@ public class Point3D {
      * @since JavaFX 8.0
      */
     public double magnitude() {
-        final double x = getX();
-        final double y = getY();
-        final double z = getZ();
+        final int x = getX();
+        final int y = getY();
+        final int z = getZ();
 
         return Math.sqrt(x * x + y * y + z * z);
     }
@@ -359,7 +365,7 @@ public class Point3D {
      * @return the dot product of the two vectors
      * @since JavaFX 8.0
      */
-    public double dotProduct(double x, double y, double z) {
+    public int dotProduct(int x, int y, int z) {
         return getX() * x + getY() * y + getZ() * z;
     }
 
@@ -371,7 +377,7 @@ public class Point3D {
      * @throws NullPointerException if the specified {@code vector} is null
      * @since JavaFX 8.0
      */
-    public double dotProduct(Point3D vector) {
+    public int dotProduct(Point3D vector) {
         return dotProduct(vector.getX(), vector.getY(), vector.getZ());
     }
 
@@ -384,10 +390,10 @@ public class Point3D {
      * @return the cross product of the two vectors
      * @since JavaFX 8.0
      */
-    public Point3D crossProduct(double x, double y, double z) {
-        final double ax = getX();
-        final double ay = getY();
-        final double az = getZ();
+    public Point3D crossProduct(int x, int y, int z) {
+        final int ax = getX();
+        final int ay = getY();
+        final int az = getZ();
 
         return new Point3D(
                 ay * z - az * y,

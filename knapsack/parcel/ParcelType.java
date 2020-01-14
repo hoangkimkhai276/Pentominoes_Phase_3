@@ -1,7 +1,13 @@
 package knapsack.parcel;
 
 import java.awt.Color;
+import java.lang.constant.ClassDesc;
+import java.lang.constant.Constable;
+import java.lang.constant.ConstantDesc;
+import java.lang.constant.DirectMethodHandleDesc;
+import java.lang.constant.DynamicConstantDesc;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import javafx.scene.shape.Box;
 import javafxstuff.Point3D;
@@ -45,7 +51,7 @@ public class ParcelType implements Parcel {
 		this.ID = ID;
 	}
 	
-	public ParcelCore getParcel(int ID) {
+	public static ParcelCore getParcel(int ID) {
 		return stored_parcels.get(ID);
 	}
 	
@@ -117,5 +123,16 @@ public class ParcelType implements Parcel {
 	public Point3D[] getOccupiedGrids() {
 		return stored_parcels.get(ID).getOccupiedGrids();
 	}
-	
+	@Override
+	public int getLength() {
+		return stored_parcels.get(ID).getLength();
+	}
+	@Override
+	public int getWidth() {
+		return stored_parcels.get(ID).getWidth();
+	}
+	@Override
+	public int getHeight() {
+		return stored_parcels.get(ID).getHeight();
+	}
 }

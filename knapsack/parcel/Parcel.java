@@ -16,6 +16,10 @@ public interface Parcel {
 	Point3D getOrigin();
 
 	void setOrigin(Point3D origin);
+	
+	default void setOrigin(int x, int y, int z) {
+		setOrigin(new Point3D(x, y, z));
+	}
 
 	int getValue();
 
@@ -32,6 +36,12 @@ public interface Parcel {
 	Edge3D[] getEdges();
 
 	Plane3D[] getPlanes();
+	
+	int getLength();
+	
+	int getWidth();
+	
+	int getHeight();
 	
 	Box[] toBoxes(double scale);
 
