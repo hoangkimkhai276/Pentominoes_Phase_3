@@ -4,8 +4,10 @@ import java.awt.Color;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 
+import javafx.scene.shape.DrawMode;
 import javafxstuff.Point3D;
 import knapsack.Cube;
 
@@ -57,17 +59,23 @@ public abstract class ParcelCore implements Parcel {
 		Point3D origin = getOrigin();
 		for (int i=0; i < boxes.length; i++) {
 			boxes[i] = cubes[i].toBox();
-			boxes[i].setWidth(scale);
-			boxes[i].setHeight(scale);
-			boxes[i].setDepth(scale);
-			if (cubes[i].getOrigin().equals(origin)) continue;
-			boxes[i].setTranslateX(scale * (origin.getY() - cubes[i].getOrigin().getY()));
-			boxes[i].setTranslateY(scale * (origin.getZ() - cubes[i].getOrigin().getZ()));
-			boxes[i].setTranslateZ(scale * (origin.getX() - cubes[i].getOrigin().getX()));
+			boxes[i].setWidth(scale * cubes[i].getWidth());
+			boxes[i].setHeight(scale * cubes[i].getHeight());
+			boxes[i].setDepth(scale * cubes[i].getLength());
+			boxes[i].setDrawMode(DrawMode.FILL);
+			boxes[i].setMaterial(new PhongMaterial(getFXColor()));
+			boxes[i].setTranslateX(scale * (cubes[i].getOrigin().getY()));
+			boxes[i].setTranslateY(-scale * (cubes[i].getOrigin().getZ()));
+			boxes[i].setTranslateZ(scale * (cubes[i].getOrigin().getX()));
 		}
 		return boxes;
 	}
-	
+
+	@Override
+	public Point3D getScaledOrigin(double scale) {
+		return null;
+	}
+
 	protected abstract Cube[] toCubes();
 
 	/** Increases/decreases the location of the origin of this parcel
@@ -82,6 +90,10 @@ public abstract class ParcelCore implements Parcel {
 
 	/** Rotate around the height-/z-axis at an angle of 90 degrees (right or left rotation is consistent but no direction is ensured) */
 	public abstract void rotateHeight();
+
+	public javafx.scene.paint.Color getFXColor() {
+		return new javafx.scene.paint.Color(color.getRed()/255d, color.getGreen()/255d, color.getBlue()/255d, color.getAlpha()/255d);
+	}
 	
 	@Override
 	public boolean equals(Object o) {

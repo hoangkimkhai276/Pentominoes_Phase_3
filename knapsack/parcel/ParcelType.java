@@ -73,7 +73,13 @@ public class ParcelType implements Parcel {
 	public void moveParcel(Point3D delta) {
 		getOrigin().add(delta);
 	}
-	@Override
+
+    @Override
+    public Point3D getScaledOrigin(double scale) {
+        return null;
+    }
+
+    @Override
 	public Point3D getOrigin() {
 		if (origin==null) origin = new Point3D(0,0,0);
 		return origin;
@@ -123,14 +129,17 @@ public class ParcelType implements Parcel {
 	public Point3D[] getOccupiedGrids() {
 		return stored_parcels.get(ID).getOccupiedGrids();
 	}
+
 	@Override
 	public int getLength() {
 		return stored_parcels.get(ID).getLength();
 	}
+
 	@Override
 	public int getWidth() {
 		return stored_parcels.get(ID).getWidth();
 	}
+
 	@Override
 	public int getHeight() {
 		return stored_parcels.get(ID).getHeight();
