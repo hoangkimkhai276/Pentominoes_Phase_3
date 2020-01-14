@@ -55,20 +55,16 @@ public class KnapsackGroup extends SmartGroup {
         super(origin);
         this.knapsack = knapsack;
         this.scale = scale;
+        outline = knapsack.toBox(scale, origin);
         groups = knapsack.getParcelGroups(scale);
         for (ParcelGroup group : groups)
             this.getChildren().add(group);
+        this.getChildren().add(outline);
     }
 
     public Box getOutline() {
-		System.out.println("Origin: " +  getOrigin().getX() + ", " + getOrigin().getY() + ", " + getOrigin().getZ());
-        calculateOutline();
     	return outline;
     }
-
-    public void calculateOutline() {
-    	this.outline = this.knapsack.toBox(scale, getOrigin());
-	}
 
     public ArrayList<ParcelGroup> getParcelGroups() {
         return groups;
