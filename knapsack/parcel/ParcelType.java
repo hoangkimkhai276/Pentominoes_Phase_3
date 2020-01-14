@@ -21,7 +21,7 @@ import knapsack.Size3D;
  * When the {@code ParcelType} is created, it uses the {@link #equals} method of {@link ParcelCore} to check the unique parcels. 
  *  Then during calculations, only the checking of the {@code ID} is required to compare two parcels, giving more efficient computations
  */
-public class ParcelType implements Parcel, Constable {
+public class ParcelType implements Parcel {
 
 	private static ArrayList<ParcelCore> stored_parcels = new ArrayList<ParcelCore>();
 	
@@ -135,20 +135,4 @@ public class ParcelType implements Parcel, Constable {
 	public int getHeight() {
 		return stored_parcels.get(ID).getHeight();
 	}
-	@Override
-	public Optional<? extends ConstantDesc> describeConstable() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	class ParcelTypeDesc extends DynamicConstantDesc<ParcelType> {
-
-		protected ParcelTypeDesc(DirectMethodHandleDesc bootstrapMethod, String constantName, ClassDesc constantType,
-				ConstantDesc[] bootstrapArgs) {
-			super(bootstrapMethod, constantName, constantType, bootstrapArgs);
-			// TODO Auto-generated constructor stub
-		}
-		
-	}
-	
 }
