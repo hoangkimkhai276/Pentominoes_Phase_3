@@ -56,7 +56,6 @@ public abstract class ParcelCore implements Parcel {
 	public Box[] toBoxes(double scale) {
 		Cube[] cubes = toCubes();
 		Box[] boxes = new Box[cubes.length];
-		Point3D origin = getOrigin();
 		for (int i=0; i < boxes.length; i++) {
 			boxes[i] = cubes[i].toBox();
 			boxes[i].setWidth(scale * cubes[i].getWidth());

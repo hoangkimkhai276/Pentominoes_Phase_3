@@ -3,7 +3,6 @@ package graphics;
 import javafx.scene.Group;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
-import javafxstuff.Point3D;
 
 public abstract class SmartGroup extends Group {
 

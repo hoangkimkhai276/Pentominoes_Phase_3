@@ -2,7 +2,6 @@ package javafxdraw;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
@@ -11,10 +10,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.stage.Stage;
-import javafxstuff.Point3D;
 import knapsack.KnapsackGroup;
-import knapsack.parcel.Parcel;
-import knapsack.parcel.ParcelCore;
 import knapsack.parcel.ParcelGroup;
 import knapsack.parcel.Parcels;
 
@@ -59,7 +55,8 @@ public class Draw extends Application {
         launch(args);
     }
 
-    private void run(Stage primaryStage){
+    @SuppressWarnings("unused")
+	private void run(Stage primaryStage){
         ParcelGroup parcelGroup = new ParcelGroup(Parcels.P,50);
 
         PerspectiveCamera camera = new PerspectiveCamera();
@@ -108,7 +105,7 @@ public class Draw extends Application {
                                 group.translateXProperty().set((group.getTranslateX())+10);
                                 System.out.println("Moving right" + group.translateXProperty().get());
                                 break;
-
+						default: break;
                         }
                     }
                 }

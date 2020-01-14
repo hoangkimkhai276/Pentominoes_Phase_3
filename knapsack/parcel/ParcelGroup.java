@@ -2,10 +2,8 @@ package knapsack.parcel;
 
 import java.awt.Color;
 
-
 import graphics.SmartGroup;
 import javafx.scene.shape.Box;
-import javafxstuff.Point3D;
 
 public class ParcelGroup extends SmartGroup {
 

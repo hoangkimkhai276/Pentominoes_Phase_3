@@ -49,8 +49,8 @@ public class KnapsackGroup extends SmartGroup {
 
     public static final KnapsackGroup example = new KnapsackGroup(test, 20);
 
-    private Knapsack knapsack;
-    private double scale;
+    Knapsack knapsack;
+    double scale;
     private ArrayList<ParcelGroup> groups;
     private Box outline;
 

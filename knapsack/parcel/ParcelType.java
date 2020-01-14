@@ -1,13 +1,7 @@
 package knapsack.parcel;
 
 import java.awt.Color;
-import java.lang.constant.ClassDesc;
-import java.lang.constant.Constable;
-import java.lang.constant.ConstantDesc;
-import java.lang.constant.DirectMethodHandleDesc;
-import java.lang.constant.DynamicConstantDesc;
 import java.util.ArrayList;
-import java.util.Optional;
 
 import javafx.scene.shape.Box;
 import javafxstuff.Point3D;
