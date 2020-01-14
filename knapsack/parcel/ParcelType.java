@@ -1,7 +1,13 @@
 package knapsack.parcel;
 
 import java.awt.Color;
+import java.lang.constant.ClassDesc;
+import java.lang.constant.Constable;
+import java.lang.constant.ConstantDesc;
+import java.lang.constant.DirectMethodHandleDesc;
+import java.lang.constant.DynamicConstantDesc;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import javafx.scene.shape.Box;
 import javafxstuff.Point3D;
@@ -15,7 +21,7 @@ import knapsack.Size3D;
  * When the {@code ParcelType} is created, it uses the {@link #equals} method of {@link ParcelCore} to check the unique parcels. 
  *  Then during calculations, only the checking of the {@code ID} is required to compare two parcels, giving more efficient computations
  */
-public class ParcelType implements Parcel {
+public class ParcelType implements Parcel, Constable {
 
 	private static ArrayList<ParcelCore> stored_parcels = new ArrayList<ParcelCore>();
 	
@@ -128,6 +134,21 @@ public class ParcelType implements Parcel {
 	@Override
 	public int getHeight() {
 		return stored_parcels.get(ID).getHeight();
+	}
+	@Override
+	public Optional<? extends ConstantDesc> describeConstable() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	class ParcelTypeDesc extends DynamicConstantDesc<ParcelType> {
+
+		protected ParcelTypeDesc(DirectMethodHandleDesc bootstrapMethod, String constantName, ClassDesc constantType,
+				ConstantDesc[] bootstrapArgs) {
+			super(bootstrapMethod, constantName, constantType, bootstrapArgs);
+			// TODO Auto-generated constructor stub
+		}
+		
 	}
 	
 }
