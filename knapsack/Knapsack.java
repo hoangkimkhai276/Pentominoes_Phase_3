@@ -113,6 +113,24 @@ public class Knapsack implements Variables {
 		return true;
 	}
 	
+	public int getValue() {
+		int value = 0;
+		for (Parcel parcel : parcels) value += parcel.getValue();
+		return value;
+	}
+	public int getFilledVolume() {
+		return occupied_cubes.bitCount();
+	}
+	public int getEmptyVolume() {
+		return getVolume() - getFilledVolume();
+	}
+	public boolean isFilled() {
+		return occupied_cubes.bitCount()==(getLength() * getWidth() * getHeight());
+	}
+	public BigInteger getOccupiedCubes() {
+		return occupied_cubes;
+	}
+	
 	/** @return {@code true} if the parcel fits, then immediately adds it to the knapsack<br>
 	 *  otherwise returns {@code false}*/
 	public boolean putParcel(Parcel parcel) {

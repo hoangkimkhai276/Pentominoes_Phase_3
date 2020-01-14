@@ -45,7 +45,7 @@ public class ParcelType implements Parcel {
 		this.ID = ID;
 	}
 	
-	public ParcelCore getParcel(int ID) {
+	public static ParcelCore getParcel(int ID) {
 		return stored_parcels.get(ID);
 	}
 	
@@ -116,6 +116,18 @@ public class ParcelType implements Parcel {
 	@Override
 	public Point3D[] getOccupiedGrids() {
 		return stored_parcels.get(ID).getOccupiedGrids();
+	}
+	@Override
+	public int getLength() {
+		return stored_parcels.get(ID).getLength();
+	}
+	@Override
+	public int getWidth() {
+		return stored_parcels.get(ID).getWidth();
+	}
+	@Override
+	public int getHeight() {
+		return stored_parcels.get(ID).getHeight();
 	}
 	
 }

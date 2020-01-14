@@ -110,6 +110,12 @@ public class Point3D {
     	this.y = other_point.y;
     	this.z = other_point.z;
     }
+    
+    public void set(int x, int y, int z) {
+    	this.x = x;
+    	this.y = y;
+    	this.z = z;
+    }
 
     /**
      * Computes the distance between this point and point {@code (x1, y1, z1)}.

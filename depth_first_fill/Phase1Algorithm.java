@@ -3,14 +3,16 @@ package depth_first_fill;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Optional;
 
+import javafxstuff.Point3D;
 import knapsack.Knapsack;
+import knapsack.Size3D;
 import knapsack.parcel.Parcel;
 import knapsack.parcel.ParcelCore;
 import knapsack.parcel.ParcelType;
 import knapsack.parcel.Parcels;
+import knapsack.parcel.PentominoParcel;
 
 enum Plane {
 	XY(true,true,false), XZ(true,false,true), YZ(false,true,true);
@@ -22,16 +24,24 @@ enum Plane {
 	}
 }
 
+/**
+ * Make a new Phase1Algorithm for the seperate problems (simple vs pentomino)
+ */
 public class Phase1Algorithm {
-
+	
+	public static boolean DEBUG = true;
+	
 	private final int length;
 	private final int width;
 	private final int height;
+	private final boolean pento_mode;
 	public Knapsack knapsack;
 	public ParcelType[] parcel_types;
 	
 	public Phase1Algorithm(Knapsack knapsack, ParcelCore... parcels) {
 		this.knapsack = knapsack;
+		if (parcels.length > 0 && parcels[0] instanceof PentominoParcel) pento_mode = true;
+		else pento_mode = false;
 		parcel_types = makePermutationTypes(parcels);
 		length = knapsack.getLength();
 		width = knapsack.getWidth();
@@ -49,118 +59,100 @@ public class Phase1Algorithm {
 		return result;
 	}
 	
+	public static void main(String[] args) {
+		Phase1Algorithm phase = new Phase1Algorithm(new Knapsack(), Parcels.P, Parcels.T, Parcels.L);
+		System.out.println(phase.fillKnapsack());
+	}
+	
+	public static void debug(String message) {
+		if (DEBUG) System.out.println(message);
+	}
+	
 	public Optional<Knapsack> fillKnapsack() {
-		Knapsack result = null;
-		
-		// TODO filling problem
-		
-		return Optional.ofNullable(result);
+		if (pento_mode && knapsack.getVolume()%5!=0) return Optional.empty();
+		return solveFilling(knapsack, 1, knapsack.getVolume()/5, pento_mode);
 	}
 	
 	/**
-	 * This is the main algorithm behind all this. It is a depth-first branching algorithm that prioritizes on fitting the pentominoes in
-	 *  all the possible spaces to find a solution. The reason it does this instead of trying to fill each square in the grid seperately is
-	 *  so we can use the simple pruning algorithm we'd like to call "recursive open-space cut-off" ({@link Solver.mightBeSolvable})
-	 *  How this works: <br>
-	 *  1. start at depth == 1; the temporary_solution ({@code tempsol}) is {@code EMPTY}; [pentomino-index pi = 0] <br>
-	 * 	->	2. if we are not yet on a leaf node: <br>
-	 * 	-------- for each pentomino-permutation: <br>
-	 * 	------------ for each x in {@code tempsol} <br>
-	 * 	---------------- for each y in {@code tempsol} <br>
-	 * 	--------------------- if pentomino-permutation fits --> <br>
-	 * 	------------------------> if !needToPrune --> <br>
-	 * 	---------------------------> if {@code found_solution} return true; <br>
-	 * 	---------------------------> else do everything of step (2) for the next pentomino [pi++] and store the position of old_pi <br>
-	 *  3. if not_yet_found_solution --> <br>
-	 * 	-----> return false; <br>
-	 *
-	* @param database : all your pentomino-permutations
-	* @param tempsol starts as {@code EMPTY}, 'temporary solution'
-	* @param depth starts at 1
-	* @param size : (width*height/5), basically describes how many pentominoes fit inside the grid in total
-	* @return
+	 * Implementation of phase1 algorithm for 3D (only for pentomino parcels)
 	*/
-	@SuppressWarnings("unused")
-	private boolean solveRecursive(PentoPermutation[][] database, int[][] tempsol, int depth, int size) {
-
-		if (SHOW) display(tempsol, SLEEPTIME);
-
-		int pento = depth-1;
-		debug("depth= "+depth+", size= "+size);
-		if (depth <= size) {
-			debug("not at leaf node yet");
-			trypento: for (int p=0; p < database[pento].length; p++) {
-				debug("trying pentomino nr. "+database[pento][p].ID+", permutation "+p);
-
-				rows: for (int x=0; x < tempsol.length - database[pento][p].width +1; x++) {
-					cols: for (int y=0; y < tempsol[0].length - database[pento][p].height +1; y++) {
-
-						pos: {
-							debug("now trying "+x+", "+y+" for "+database[pento][p].ID+", permutation "+p);
-
-							if (!database[pento][p].fitsAt(tempsol, x, y)) break pos;
-							int[][] tempsol2 = Functions.arrayCopy(tempsol);
-							database[pento][p].placeIn(tempsol2, x, y);
-							if (pento!=size && !mightBeSolvable(tempsol2)) break pos;
-							else if (isSolved(tempsol2)) {
-								Functions.cloneArrayToArray(tempsol2, tempsol);
-								return true;
+	private Optional<Knapsack> solveFilling(Knapsack tempsol, int depth, int size, boolean pento_mode) {
+		if (depth <= size || !pento_mode) {
+			int max_x = (depth==1)?tempsol.getLength()/2+1:tempsol.getLength();
+			int max_y = (depth==1)?tempsol.getWidth ()/2+1:tempsol.getWidth ();
+			int max_z = (depth==1)?tempsol.getHeight()/2+1:tempsol.getHeight();
+			debug("depth = "+depth+", size = "+size);
+			for (int x=0; x < max_x; x++)
+				for (int y=0; y < max_y; y++)
+					pos: for (int z=0; z < max_z; z++) {
+						if (tempsol.isOccupied(x, y, z)) continue pos;
+						for (ParcelType parcel : parcel_types) {
+							parcel.setOrigin(x, y, z);
+							if (!tempsol.putParcel(parcel)) continue;
+							placed: {
+								if ((!pento_mode || depth == size) && tempsol.isFilled()) return Optional.of(tempsol);
+								if (!scanFillable(tempsol, parcel, pento_mode)) break placed;
+								if (solveFilling(tempsol, depth+1, size, pento_mode).isPresent()) return Optional.of(tempsol);
 							}
-							if (solveRecursive(database, tempsol2, depth+1, size)) {
-								Functions.cloneArrayToArray(tempsol2, tempsol);
-								return true;
-							}
+							tempsol.remove(parcel);
 						}
 					}
-				}
-			}
 		}
-		return false;
+		return Optional.empty();
 	}
-
+	
+	private boolean scanFillable(Knapsack tempsol, ParcelType just_placed, boolean pento_mode) {
+		if (!pento_mode) return scanFillableSimple(tempsol.getOccupiedCubes(), just_placed);
+		return scanFillablePento(tempsol.getOccupiedCubes(), just_placed);
+	}
+	
 	/**
-	 * @param m : grid
-	 * @return {@code true} if the grid is filled with non-EMPTY tiles.
+	 * Properly scans the testing knapsack for unfillable spaces right after placing a parcel
 	 */
-	private boolean isSolved(int[][] m) {
-		for (int i=0; i < m.length; i++)
-			for (int j=0; j < m[i].length; j++)
-				if (m[i][j]==-1) return false;
+	private boolean scanFillableSimple(BigInteger test, Parcel just_placed) {
+		Point3D o = just_placed.getOrigin();
+		dim3count range = new dim3count((int)o.getX(), (int)o.getY(), (int)o.getZ(), just_placed.getLength(), just_placed.getWidth(), just_placed.getHeight());
+		return mightBeSolvable(test, range);
+	}
+	
+	/**
+	 * Properly scans the testing knapsack for unfillable spaces right after placing a parcel
+	 */
+	private boolean scanFillablePento(BigInteger test, Parcel just_placed) {
+		Point3D o = just_placed.getOrigin();
+		dim3count range = new dim3count((int)o.getX(), (int)o.getY(), (int)o.getZ(), just_placed.getLength(), just_placed.getWidth(), just_placed.getHeight());
+		return mightBeSolvable(test, range, Plane.XY) && mightBeSolvable(test, range, Plane.XZ) && mightBeSolvable(test, range, Plane.YZ);
+	}
+	
+	/**
+	 * Scans the area of the given range for unfillable holes by any Parcels (doesn't correct for shape, only hitbox and volume)
+	 */
+	@SuppressWarnings("unused")
+	private boolean mightBeSolvable(BigInteger test, dim3count range) {
+		changableBI used = new changableBI(0);
+		for (int x=range.x_min; x < length && x < range.x_max; x++)
+			for (int y=range.y_min; y < width && y < range.y_max; y++)
+				for (int z=range.z_min; z < height && z < range.z_max; z++) {
+					if (test(used,x,y,z) || test(test,x,y,z)) continue;
+					boolean valid = check3DFreedom(test, used, x, y, z);
+					if (!valid) return false;
+				}
 		return true;
 	}
-
-	void display(int[][] temp, int sleep) {
-		try {
-			Thread.sleep(sleep);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		ui.setState(temp);
-	}
-
+	
 	/**
-	 * A fillable part is an 'area' in the array that is all connected zeros where the total number of connected zeros in that
-	 * 	area is divisible by 5. The reason for this is that if a given placement of a pentomino would cut-off a section that has
-	 *  a connected area of 1, 2, 3, 4, 6, 7, etc., you could <b>never</b> fill it with pentominoes... So we prune that entire
-	 *  branch right off the search tree using this!
-	 * @param test is the temporary situation of the rectangle (with the current check-pentomino in there)
-	 * @return true if it divides the array up into fillable parts, false otherwise
+	 * Scans the area of the given range for unfillable holes by pentomino Parcels (corrects for a volume of 5, and a flat shape on the given plane)
 	 */
-	private boolean mightBeSolvable(BigInteger test) {
-		boolean[][] used = new boolean[width][height];
-		for (int i=0; i < width; i++) {
-			for (int j=0; j < height; j++) {
-				test: {
-					if (used[i][j] || test[i][j]!=EMPTY) break test;
-					boolean valid = true;
-					valid = checkFreedom(test, used, i, j);
-					if (!valid) {
-						debug("It is NOT solvable");
-						return false;
-					}
+	@SuppressWarnings("unused")
+	private boolean mightBeSolvable(BigInteger test, dim3count range, Plane plane) {
+		changableBI used = new changableBI(0);
+		for (int x=range.x_min; x < length && x < range.x_max; x++)
+			for (int y=range.y_min; y < width && y < range.y_max; y++)
+				for (int z=range.z_min; z < height && z < range.z_max; z++) {
+					if (test(used,x,y,z) || test(test,x,y,z)) continue;
+					boolean valid = checkPentoFreedom(test, used, x, y, z, plane);
+					if (!valid) return false;
 				}
-			}
-		} debug("It IS solvable");
 		return true;
 	}
 
@@ -174,12 +166,28 @@ public class Phase1Algorithm {
 	 * @param plane the plane at which the freedom will be checked
 	 * @return {@code true} if it can theoretically be filled with pentominoes
 	 */
-	private boolean checkPentoFreedom(BigInteger test, BigInteger used, int x, int y, int z, Plane plane) {
+	private boolean checkPentoFreedom(BigInteger test, changableBI used, int x, int y, int z, Plane plane) {
+		if (test.testBit(to1DCoord(x,y,z))) return false;
 		return countEmptyPlaneSpaces(test, used, x, y, z, plane, 0) %5 == 0;
 	}
 	
-	private boolean check3DFreedom(BigInteger test, BigInteger used, int x, int y, int z) {
-		// TODO maybe implement multidimensional counting?
+	/**
+	 * Do mind: this method uses the sizes of Parcels.A, Parcels.B and Parcels.C to approximate hitboxes,
+	 * do change these if other (simple) parcels are being used
+	 */
+	private boolean check3DFreedom(BigInteger test, changableBI used, int x, int y, int z) {
+		if (test.testBit(to1DCoord(x,y,z))) return false;
+		dim3count result = countEmptySpaces(test, used, x, y, z, new dim3count());
+		int x_r = result.getRangeX();
+		int y_r = result.getRangeX();
+		int z_r = result.getRangeX();
+		Parcel p1 = Parcels.A; Size3D s1 = p1.getHitBox();
+		Parcel p2 = Parcels.B; Size3D s2 = p1.getHitBox();
+		Parcel p3 = Parcels.C; Size3D s3 = p1.getHitBox();
+		if (x_r < s1.length && x_r < s2.length && x_r < s3.length) return false;
+		if (y_r < s1.width  && y_r < s2.width  && y_r < s3.width ) return false;
+		if (z_r < s1.height && z_r < s2.height && z_r < s3.height) return false;
+		return canBeFilledNumerically(p1.getVolume(), p2.getVolume(), p3.getVolume(), result.getVolume());
 	}
 	
 	/**
@@ -231,7 +239,7 @@ public class Phase1Algorithm {
 	 * @return
 	 */
 	@SuppressWarnings("unused")
-	private dim3count countEmptySpaces(BigInteger test, BigInteger used, int x, int y, int z, dim3count count) {
+	private dim3count countEmptySpaces(BigInteger test, changableBI used, int x, int y, int z, dim3count count) {
 		used.setBit(to1DCoord(x,y,z));
 		count.add(x,y,z);
 		
@@ -245,7 +253,7 @@ public class Phase1Algorithm {
 	}
 	
 	@SuppressWarnings("unused")
-	private int countEmptyPlaneSpaces(BigInteger test, BigInteger used, int x, int y, int z, Plane plane, int count) {
+	private int countEmptyPlaneSpaces(BigInteger test, changableBI used, int x, int y, int z, Plane plane, int count) {
 		used.setBit(to1DCoord(x,y,z));
 		count++;
 		if (plane.x && x < length-1 && !test.testBit(to1DCoord(x+1,y,z)) && !used.testBit(to1DCoord(x+1,y,z))) count += countEmptyPlaneSpaces(test, used, x+1, y, z, plane, 0);
@@ -257,12 +265,28 @@ public class Phase1Algorithm {
 		return count;
 	}
 	
+	class changableBI {
+		BigInteger value;
+		public changableBI(int value) {
+			this.value = BigInteger.valueOf(value);
+		}
+		public void setBit(int n) {
+			value = value.setBit(n);	
+		}
+		public boolean testBit(int n) {
+			return value.testBit(n);
+		}
+		public BigInteger getvalue() {
+			return value;
+		}
+	}
+	
 	class dim3count {
 		int x_min, y_min, z_min, x_max, y_max, z_max, count;
 		
 		dim3count() {
 			x_min = Integer.MAX_VALUE;
-			x_max = Integer.MAX_VALUE;
+			x_max = Integer.MIN_VALUE;
 			y_min = x_min; z_min = x_min;
 			y_max = x_max; z_max = x_max;
 		}
@@ -272,6 +296,11 @@ public class Phase1Algorithm {
 			y_min = y; y_max = y;
 			z_min = z; z_max = z;
 			count = 1;
+		}
+		
+		dim3count(int x, int y, int z, int l, int w, int h) {
+			this(x, y, z);
+			add(new dim3count(l, w, h));
 		}
 		
 		void add(int x, int y, int z) {
@@ -287,10 +316,22 @@ public class Phase1Algorithm {
 			z_max = (z_max >= other.z_max)? z_max : other.z_max;
 			count += other.count;
 		}
+		
+		int getRangeX() { return x_max - x_min; }
+		int getRangeY() { return y_max - y_min; }
+		int getRangeZ() { return z_max - z_min; }
+		int getVolume() { return count; }
 	}
 	
 	private int to1DCoord(int x, int y, int z) {
 		return z * width * length + y * length + x;
+	}
+	
+	private boolean test(BigInteger integer, int x, int y, int z) {
+		return integer.testBit(to1DCoord(x, y, z));
+	}
+	private boolean test(changableBI integer, int x, int y, int z) {
+		return integer.testBit(to1DCoord(x, y, z));
 	}
 	
 }
