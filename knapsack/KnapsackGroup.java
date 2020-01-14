@@ -57,9 +57,9 @@ public class KnapsackGroup extends SmartGroup {
         this.scale = scale;
         outline = knapsack.toBox(scale, origin);
         groups = knapsack.getParcelGroups(scale);
+        this.getChildren().add(outline);
         for (ParcelGroup group : groups)
             this.getChildren().add(group);
-        this.getChildren().add(outline);
     }
 
     public Box getOutline() {
