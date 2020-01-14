@@ -85,10 +85,10 @@ public class SimpleParcel extends ParcelCore {
 		int start_x = (int) o.getX();
 		int start_y = (int) o.getY();
 		int start_z = (int) o.getZ();
-		for (int x=0; x < getLength(); x++)
-			for (int y=0; y < width; y++)
-				for (int z=0; z < height; z++)
-					grids[x*height*width + y*height + z] = new Point3D(x + start_x, y + start_y, z + start_z);
+		for (int x=start_x; x < getLength() + start_x; x++)
+			for (int y=start_y; y < width + start_y; y++)
+				for (int z=start_z; z < height + start_z; z++)
+					grids[x*height*width + y*height + z] = new Point3D(x, y, z);
 		return grids;
 	}
 
