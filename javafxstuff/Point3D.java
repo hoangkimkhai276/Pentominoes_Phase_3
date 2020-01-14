@@ -89,7 +89,7 @@ public class Point3D {
     }
     
     public Point3D scale(double scale) {
-    	return new Point3D(x * scale, y * scale, z * scale);
+    	return new Point3D((int)(x * scale), (int)(y * scale), (int)(z * scale));
     }
 
     /**
