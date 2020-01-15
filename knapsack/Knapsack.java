@@ -2,7 +2,9 @@ package knapsack;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-
+import static knapsack.Variables.*;
+import javafx.scene.shape.Box;
+import javafx.scene.shape.DrawMode;
 import javafxstuff.Point3D;
 import knapsack.parcel.Parcel;
 import knapsack.parcel.Parcels;
@@ -27,7 +29,7 @@ enum SortState {
  *  with a {@link BigInteger}.<br><br>
  * The {@code Knapsack} class provides methods for fitting parcels into itself.
  */
-public class Knapsack implements Variables {
+public class Knapsack {
 	
 	/**
 	 * The shape of this {@code Knapsack} which specifies the {@code length}, {@code width} and {@code height} of this {@code Knapsack}
@@ -137,6 +139,10 @@ public class Knapsack implements Variables {
 		if (fitsParcel(parcel)) add(parcel);
 		else return false;
 		return true;
+	}
+	
+	public int to1DCoord(int x, int y, int z) {
+		return z * shape.getWidth() * shape.getLength() + y * shape.getLength() + x;
 	}
 	
 }
