@@ -127,7 +127,6 @@ public class Phase1Algorithm {
 	/**
 	 * Scans the area of the given range for unfillable holes by any Parcels (doesn't correct for shape, only hitbox and volume)
 	 */
-	@SuppressWarnings("unused")
 	private boolean mightBeSolvable(BigInteger test, dim3count range) {
 		changableBI used = new changableBI(0);
 		for (int x=range.x_min; x < length && x < range.x_max; x++)
@@ -143,7 +142,6 @@ public class Phase1Algorithm {
 	/**
 	 * Scans the area of the given range for unfillable holes by pentomino Parcels (corrects for a volume of 5, and a flat shape on the given plane)
 	 */
-	@SuppressWarnings("unused")
 	private boolean mightBeSolvable(BigInteger test, dim3count range, Plane plane) {
 		changableBI used = new changableBI(0);
 		for (int x=range.x_min; x < length && x < range.x_max; x++)
@@ -194,7 +192,6 @@ public class Phase1Algorithm {
 	 * checks whether the volume {@code V} can theoretically be achieved by adding the different volumes ({@code a, b, c}) together (no bounds)
 	 * @return {@code true} if it can be filled, {@code false} otherwise
 	 */
-	@SuppressWarnings("unused")
 	private boolean canBeFilledNumerically(int a, int b, int c, int v) {
 		if (v%a==0) return true;
 		if (v%b==0) return true;
@@ -238,7 +235,6 @@ public class Phase1Algorithm {
 	 * @param count used in the recursive call to keep track of the counted amount of empty spaces, initiate as 0
 	 * @return
 	 */
-	@SuppressWarnings("unused")
 	private dim3count countEmptySpaces(BigInteger test, changableBI used, int x, int y, int z, dim3count count) {
 		used.setBit(to1DCoord(x,y,z));
 		count.add(x,y,z);
@@ -251,8 +247,7 @@ public class Phase1Algorithm {
 		if (z > 0 && !test.testBit(to1DCoord(x,y,z-1)) && !used.testBit(to1DCoord(x,y,z-1))) count.add(countEmptySpaces(test, used, x, y, z-1, new dim3count()));
 		return count;
 	}
-	
-	@SuppressWarnings("unused")
+
 	private int countEmptyPlaneSpaces(BigInteger test, changableBI used, int x, int y, int z, Plane plane, int count) {
 		used.setBit(to1DCoord(x,y,z));
 		count++;
