@@ -96,9 +96,12 @@ public class SimpleParcel extends ParcelCore {
 	
 	@Override
 	public String toString() {
-		Size3D  s = getHitBox();
 		Point3D p = getOrigin();
-		return "SimpleParcel of "+s.length+"x"+s.width+"x"+s.height+" at ("+p.getX()+", "+p.getY()+", "+p.getZ()+")";
+		return toString_nocoord()+" at ("+p.getX()+", "+p.getY()+", "+p.getZ()+") with value of "+getValue()+"\n";
+	}
+	public String toString_nocoord() {
+		Size3D  s = getHitBox();
+		return "SimpleParcel of "+s.length+"x"+s.width+"x"+s.height;
 	}
 	
 	public int getLength() {
