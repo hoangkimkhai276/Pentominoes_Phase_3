@@ -3,9 +3,12 @@ package knapsack;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import static knapsack.Variables.*;
+import javafx.scene.shape.Box;
+import javafx.scene.shape.DrawMode;
 import javafxstuff.Point3D;
 import knapsack.parcel.FastParcel;
 import knapsack.parcel.Parcel;
+import knapsack.parcel.ParcelGroup;
 import knapsack.parcel.Parcels;
 
 enum SortState {
@@ -144,6 +147,28 @@ public class Knapsack {
 		if (fitsParcel(parcel)) add(parcel);
 		else return false;
 		return true;
+	}
+
+	public Box toBox(double scale) {
+		Box result = new Box();
+		result.setWidth(getWidth() * scale);
+		result.setHeight(getHeight() * scale);
+		result.setDepth(getLength() * scale);
+		result.setTranslateX(result.getWidth()/2d); // moves in width (right)
+		result.setTranslateY(-result.getHeight()/2d); // moves in height (down)
+		result.setTranslateZ(result.getDepth()/2d); // moves in depth (backwards)
+		result.setDrawMode(DrawMode.LINE);
+		return result;
+	}
+
+	public ArrayList<ParcelGroup> getParcelGroups(double scale) {
+		ArrayList<ParcelGroup> result = new ArrayList<ParcelGroup>();
+		for (Parcel parcel : parcels) result.add(new ParcelGroup(parcel, scale));
+		return result;
+	}
+
+	public String toString() {
+		return "KS["+getLength()+"x"+getWidth()+"x"+getHeight()+"] with:\n"+parcels.toString();
 	}
 	
 	public int to1DCoord(int x, int y, int z) {
