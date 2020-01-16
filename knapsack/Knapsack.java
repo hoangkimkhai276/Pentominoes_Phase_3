@@ -211,5 +211,16 @@ public class Knapsack {
 		result.shape.add(shape.getOrigin());
 		return result;
 	}
-
+	public void copyTo(Knapsack other) {
+		other.occupied_cubes = occupied_cubes.add(BigInteger.ZERO);
+		other.parcels.clear();
+		for (Parcel p : parcels) other.parcels.add(p);
+		other.sorted = sorted;
+	}
+	public Knapsack copy() {
+		Knapsack knapsack = getEmpty();
+		copyTo(knapsack);
+		return knapsack;
+	}
+	
 }

@@ -1,6 +1,7 @@
 package depth_first_fill;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -12,6 +13,7 @@ import knapsack.parcel.Parcel;
 import knapsack.parcel.ParcelCore;
 import knapsack.parcel.Parcels;
 import knapsack.parcel.PentominoParcel;
+import knapsack.parcel.SimpleParcel;
 
 enum Plane {
 	XY(true,true,false), XZ(true,false,true), YZ(false,true,true);
@@ -26,74 +28,125 @@ enum Plane {
 /**
  * Make a new Phase1Algorithm for the seperate problems (simple vs pentomino)
  */
-public class Phase1Algorithm {
+public class ParcelminoesAlgorithm {
 	
 	public static boolean DEBUG = true;
 	
 	private final int length;
 	private final int width;
 	private final int height;
-	private final boolean pento_mode;
+	private SimpleParcel[] simple_parcels;
+	private PentominoParcel[] pento_parcels;
 	public Knapsack knapsack;
 	
-	public Phase1Algorithm(Knapsack knapsack, ParcelCore... parcels) {
-		this.knapsack = knapsack;
-		if (parcels.length > 0 && parcels[0] instanceof PentominoParcel) pento_mode = true;
-		else pento_mode = false;
+	public ParcelminoesAlgorithm(Knapsack knapsack, ParcelCore... parcels) {
+		this.knapsack = knapsack.copy();
 		length = knapsack.getLength();
 		width = knapsack.getWidth();
 		height = knapsack.getHeight();
+		ArrayList<SimpleParcel> tempsimp = new ArrayList<SimpleParcel>();
+		ArrayList<PentominoParcel> temppent = new ArrayList<PentominoParcel>();
+		for (ParcelCore parcel : parcels)
+			if (parcel instanceof SimpleParcel) tempsimp.add((SimpleParcel)parcel);
+			else temppent.add((PentominoParcel)parcel);
+		Parcels.sortByDensity(tempsimp);
+		Parcels.sortByDensity(temppent);
+		simple_parcels = tempsimp.toArray(new SimpleParcel[tempsimp.size()]);
+		pento_parcels = temppent.toArray(new PentominoParcel[temppent.size()]);
 	}
 	
 	public static void main(String[] args) {
-		Phase1Algorithm phase = new Phase1Algorithm(new Knapsack(), Parcels.A, Parcels.B, Parcels.C);
-		System.out.println(phase.fillKnapsack());
+		ParcelminoesAlgorithm phase = new ParcelminoesAlgorithm(new Knapsack(), Parcels.DEFAULT);
+		boolean use_pentominoes = false;
+		System.out.println(phase.solveKnapsackFillingPentoFirst(use_pentominoes));
 	}
 	
 	public static void debug(String message) {
 		if (DEBUG) System.out.println(message);
 	}
 	
-	public Optional<Knapsack> fillKnapsack() {
-		if (!pento_mode) FastParcel.simple_initiation();
-		else FastParcel.parcel_initiation();
-		if (pento_mode && knapsack.getVolume()%5!=0) return Optional.empty();
-		return solveFilling(knapsack, 1, knapsack.getVolume()/5, pento_mode, 0, 0, 0);
+	public Optional<Knapsack> solveUnboundedKnapsackPentoFirst(boolean pentominoes) {
+		ParcelCore[] chosen = pento_parcels;
+		if (!pentominoes) { FastParcel.initiate(knapsack, simple_parcels); chosen = simple_parcels; }
+		else FastParcel.initiate(knapsack, pento_parcels);
+		int max_value = (int)((((double)knapsack.getVolume()) / chosen[0].getVolume()) * chosen[0].getValue());
+		return solveUnboundedKnapsackPentoFirstSearch(knapsack, knapsack.getEmpty(), 1, max_value, pentominoes, 0, 0, 0);
 	}
 	
-	private Optional<Knapsack> solveFilling(Knapsack tempsol, int depth, int size, boolean pento_mode, int start_x, int start_y, int start_z) {
-		if (depth <= size || !pento_mode) {
-			int max_x = (depth==1)?tempsol.getLength()/2+1:tempsol.getLength();
-			int max_y = (depth==1)?tempsol.getWidth ()/2+1:tempsol.getWidth ();
-			int max_z = (depth==1)?tempsol.getHeight()/2+1:tempsol.getHeight();
-			int temp_start_x = start_x;
-			int temp_start_y = start_y;
-			int temp_start_z = start_z;
-			for (int id = 0; id < FastParcel.max_parcel_ID(); id++) {
-				posloop: {
-				for (int x=temp_start_x; x < max_x; x++) {
-					for (int y=temp_start_y; y < max_y; y++) {
-						pos: for (int z=temp_start_z; z < max_z; z++) {
-							if (x>=max_x-1 && y>=max_y-1 && z>=max_z-1) {
-								System.out.println("reached end with "+tempsol);
-								break posloop;
-							}
-							if (tempsol.isOccupied(x, y, z)) continue pos;
-							FastParcel parcel = new FastParcel(id, x, y, z);
-							if (!parcel.isValid() || !knapsack.putParcel(parcel)) continue;
-							placed: {
-								//System.out.println("depth = "+depth+"/"+size);
-								//System.out.println("knapsack = "+tempsol.getOccupiedCubes());
-								if ((!pento_mode || depth == size) && tempsol.isFilled()) return Optional.of(tempsol);
-								if (!scanFillable(tempsol, parcel, pento_mode)) break placed;
-								if (solveFilling(tempsol, depth+1, size, pento_mode, x, y, z+1).isPresent()) return Optional.of(tempsol);
-							} knapsack.remove(parcel);
-							temp_start_z = 0;
-						} temp_start_y = 0;
-					} temp_start_x = 0;
-				}}
-			}
-		} return Optional.empty();
+	public Optional<Knapsack> solveKnapsackFillingPentoFirst(boolean pentominoes) {
+		if (!pentominoes) FastParcel.initiate(knapsack, simple_parcels);
+		else FastParcel.initiate(knapsack, pento_parcels);
+		return solvePentoFirstFillSearch(knapsack, knapsack.getEmpty(), 1, knapsack.getVolume(), pentominoes, 0, 0, 0);
+	}
+	
+	private Optional<Knapsack> solvePentoFirstFillSearch(Knapsack tempsol, Knapsack bestsol, int depth, int max_volume, boolean pento_mode, int start_x, int start_y, int start_z) {
+		int max_x = (depth==1)?tempsol.getLength()/2+1:tempsol.getLength();
+		int max_y = (depth==1)?tempsol.getWidth ()/2+1:tempsol.getWidth ();
+		int max_z = (depth==1)?tempsol.getHeight()/2+1:tempsol.getHeight();
+		int temp_start_x = start_x;
+		int temp_start_y = start_y;
+		int temp_start_z = start_z;
+		for (int id = 0; id < FastParcel.max_parcel_ID(); id++) {
+			posloop: {
+			for (int x=temp_start_x; x < max_x; x++) {
+				for (int y=temp_start_y; y < max_y; y++) {
+					pos: for (int z=temp_start_z; z < max_z; z++) {
+						if (x>=max_x-1 && y>=max_y-1 && z>=max_z-1) {
+							int volume = tempsol.getFilledVolume();
+							if (volume > bestsol.getFilledVolume()) {
+								if (volume >= max_volume) return Optional.of(tempsol.copy());
+								tempsol.copyTo(bestsol);
+								System.out.println("best solution yet: "+bestsol.getFilledVolume()+"/"+bestsol.getVolume());
+							} break posloop;
+						}
+						if (tempsol.isOccupied(x, y, z)) continue pos;
+						FastParcel parcel = new FastParcel(id, x, y, z);
+						if (!parcel.isValid() || !knapsack.putParcel(parcel)) continue;
+						placed: {
+							if (!scanFillable(tempsol, parcel, pento_mode)) break placed;
+							if (solvePentoFirstFillSearch(tempsol, bestsol, depth+1, max_volume, pento_mode, x, y, z+1).isPresent()) return Optional.of(tempsol);
+						} knapsack.remove(parcel);
+						temp_start_z = 0;
+					} temp_start_y = 0;
+				} temp_start_x = 0;
+			}}
+		}
+		return Optional.empty();
+	}
+	
+	private Optional<Knapsack> solveUnboundedKnapsackPentoFirstSearch(Knapsack tempsol, Knapsack bestsol, int depth, int max_value, boolean pento_mode, int start_x, int start_y, int start_z) {
+		int max_x = (depth==1)?tempsol.getLength()/2+1:tempsol.getLength();
+		int max_y = (depth==1)?tempsol.getWidth ()/2+1:tempsol.getWidth ();
+		int max_z = (depth==1)?tempsol.getHeight()/2+1:tempsol.getHeight();
+		int temp_start_x = start_x;
+		int temp_start_y = start_y;
+		int temp_start_z = start_z;
+		for (int id = 0; id < FastParcel.max_parcel_ID(); id++) {
+			posloop: {
+			for (int x=temp_start_x; x < max_x; x++) {
+				for (int y=temp_start_y; y < max_y; y++) {
+					pos: for (int z=temp_start_z; z < max_z; z++) {
+						if (x>=max_x-1 && y>=max_y-1 && z>=max_z-1) {
+							int value = tempsol.getValue();
+							if (value > bestsol.getValue()) {
+								if (value >= max_value) return Optional.of(tempsol.copy());
+								tempsol.copyTo(bestsol);
+								System.out.println("best solution yet: "+bestsol.getValue()+"/"+max_value);
+							} break posloop;
+						}
+						if (tempsol.isOccupied(x, y, z)) continue pos;
+						FastParcel parcel = new FastParcel(id, x, y, z);
+						if (!parcel.isValid() || !knapsack.putParcel(parcel)) continue;
+						placed: {
+							if (!scanFillable(tempsol, parcel, pento_mode)) break placed;
+							if (solveUnboundedKnapsackPentoFirstSearch(tempsol, bestsol, depth+1, max_value, pento_mode, x, y, z+1).isPresent()) return Optional.of(tempsol);
+						} knapsack.remove(parcel);
+						temp_start_z = 0;
+					} temp_start_y = 0;
+				} temp_start_x = 0;
+			}}
+		}
+		return Optional.empty();
 	}
 	
 	/**
