@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
@@ -22,20 +23,30 @@ public final class Parcels {
 	public static final ParcelCore T = new PentominoParcel(new boolean[][]{{true, true, true}, {false, true, false}, {false, true, false}}, 5, SELECTED_COLORS[5]);
 	
 	public static final Function<Parcel, Double> DISTANCE_SORT = a-> {return Double.valueOf(a.getOrigin().magnitude());};
-	public static final Function<Parcel, Double> VALUE_SORT = a-> {return Double.valueOf(a.getValue());};
-	public static final Function<Parcel, Double> VOLUME_SORT = a-> {return Double.valueOf(a.getVolume());};
+	public static final Function<Parcel, Double> VALUE_SORT = a-> {return -Double.valueOf(a.getValue());};
+	public static final Function<Parcel, Double> VOLUME_SORT = a-> {return -Double.valueOf(a.getVolume());};
+	public static final Function<Parcel, Double> DENSITY_SORT = a-> {return -Double.valueOf(a.getDensity());};
 	
-	public static void sortByFunction(ArrayList<Parcel> parcels, Function<Parcel, Double> function) {
-		parcels.sort(getComparatorOfFunction(function));
+	public static <T> void sortByFunction(List<T> items, Function<? super T, Double> function) {
+		items.sort(getComparatorOfFunction(function));
 	}
-	public static void sortByDistance(ArrayList<Parcel> parcels) {
+	public static void sortByDistance(List<? extends Parcel> parcels) {
 		sortByFunction(parcels, DISTANCE_SORT);
 	}
-	public static void sortByValue(ArrayList<Parcel> parcels) {
-		sortByFunction(parcels, VALUE_SORT);
+	public static void sortByValue(List<? extends Parcel> arrayList) {
+		sortByFunction(arrayList, VALUE_SORT);
 	}
-	public static void sortByVolume(ArrayList<Parcel> parcels) {
+	public static void sortByVolume(List<? extends Parcel> parcels) {
 		sortByFunction(parcels, VOLUME_SORT);
+	}
+	public static void sortByDensity(List<? extends Parcel> parcels) {
+		sortByFunction(parcels, DENSITY_SORT);
+	}
+	
+	public static void main(String[] args) {
+		List<SimpleParcel> parcels = Arrays.asList(randomSimpleParcels(new Knapsack(), 0.05, 100));
+		Parcels.sortByDensity(parcels);
+		System.out.println(parcels);
 	}
 	
 	public static <T> Comparator<T> getComparatorOfFunction(Function<T, Double> function) {

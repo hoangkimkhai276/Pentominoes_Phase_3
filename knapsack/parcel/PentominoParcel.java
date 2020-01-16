@@ -47,6 +47,10 @@ public class PentominoParcel extends ParcelCore {
 	}
 	
 	public String toString() {
+		Point3D p = getOrigin();
+		return toString_nocoord()+" at ("+p.getX()+", "+p.getY()+", "+p.getZ()+")";
+	}
+	public String toString_nocoord() {
 		String points = "";
 		for (Point3D p : relative_origin_points)
 			points += "("+p.getX()+", "+p.getY()+", "+p.getZ()+") ";
