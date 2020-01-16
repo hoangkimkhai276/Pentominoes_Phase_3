@@ -2,6 +2,7 @@ package knapsack.parcel;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.function.Function;
 
 import javafx.scene.shape.Box;
 
@@ -12,17 +13,6 @@ import knapsack.Plane3D;
 import knapsack.Size3D;
 
 public class FastParcel implements Parcel {	
-	
-	/*public static void main(String[] args) {
-		FastParcel.initiate(new Knapsack(), new ParcelCore[]{Parcels.A, Parcels.B, Parcels.C, Parcels.P, Parcels.L, Parcels.T});
-		ParcelCore parcel = Parcels.P.copy();
-		parcel.moveParcel(new Point3D(23,2,0));
-		FastParcel test = new FastParcel(parcel);
-		System.out.println(test.getParcelCore());
-		System.out.println(reference.toPoint(test.getPosition()));
-		System.out.println(test.getOrigin());
-		System.out.println(Arrays.toString(test.getParcelShape()));
-	} */
 	
 	/** contains all parcel rotations on all different possible locations */
 	private static ArrayList<int[][]> stored_parcel_positions;
@@ -38,8 +28,28 @@ public class FastParcel implements Parcel {
 	private static final String EXISTENCE_ERROR = "The requested parcel does not exist in the FastParcel database";
 	private static final String POSITION_ERROR = "The requested position is out of bounds or its corresponding parcel has not properly been recorded";
 	
+	public static boolean isInitiated() {
+		return initiated;
+	}
+	
 	public static void default_initiation() {
 		initiate(new Knapsack(), new ParcelCore[] {Parcels.A, Parcels.B, Parcels.C, Parcels.P, Parcels.L, Parcels.T});
+	}
+	public static void parcel_initiation() {
+		initiate(new Knapsack(), new ParcelCore[] {Parcels.P, Parcels.L, Parcels.T});
+	}
+	public static void simple_initiation() {
+		initiate(new Knapsack(), new ParcelCore[] {Parcels.A, Parcels.B, Parcels.C});
+	}
+	
+	public static int max_parcel_ID() {
+		return stored_parcel_rotations.size();
+	}
+	
+	public static void sortByParcelFunction(Function<? super ParcelCore, Double> function) {
+		Function<ID_Labeled_ParcelCore, ParcelCore> convert = a->{return a.parcel.copy();};
+		Parcels.sortByFunction(stored_parcel_rotations, convert.andThen(function));
+		// TODO complete sort of big list
 	}
 	
 	public static void initiate(Knapsack reference_knapsack, ParcelCore[] basic_form_parcels) {
@@ -144,9 +154,12 @@ public class FastParcel implements Parcel {
 		this.parcel_ID = getParcelID(ID);
 	}
 	public FastParcel(int parcel_ID, Point3D origin) {
+		this(parcel_ID, origin.getX(), origin.getY(), origin.getZ());
+	}
+	public FastParcel(int parcel_ID, int x, int y, int z) {
 		this.parcel_ID = parcel_ID;
 		ReferenceSize size = getParcel(parcel_ID).getRef();
-		this.ID = size.getOriginID() +size.to1DCoord(origin);
+		this.ID = size.getOriginID() +size.to1DCoord(x, y, z);
 	}
 	public FastParcel(ParcelCore parcel) {
 		if (!initiated) giveError(INITIATE_ERROR);
@@ -161,6 +174,10 @@ public class FastParcel implements Parcel {
 	private FastParcel(int ID, int parcel_ID) {
 		this.ID = ID;
 		this.parcel_ID = parcel_ID;
+	}
+	
+	public boolean isValid() {
+		return ID < stored_parcel_positions.size() && parcel_ID < stored_parcel_rotations.size();
 	}
 
 	@Override
@@ -259,6 +276,14 @@ public class FastParcel implements Parcel {
 		return result;
 	}
 	
+	public String toString() {
+		Point3D p = getOrigin();
+		return toString_nocoord()+" at "+"("+p.getX()+", "+p.getY()+", "+p.getZ()+")";
+	}
+	public String toString_nocoord() {
+		return "<FastParcel of "+getParcel(parcel_ID).parcel.toString_nocoord()+">";
+	}
+	
 	private static class ID_Labeled_ParcelCore {
 		private final ParcelCore parcel;
 		private final int ID;
@@ -328,5 +353,5 @@ public class FastParcel implements Parcel {
 			return new Point3D(x,y,z);
 		}
 	}
-	
+
 }
