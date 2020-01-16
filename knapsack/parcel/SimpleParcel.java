@@ -80,15 +80,12 @@ public class SimpleParcel extends ParcelCore {
 	public Point3D[] getOccupiedGrids() {
 		Point3D[] grids = new Point3D[getVolume()];
 		Point3D o = getOrigin();
-		int height = getHeight();
+		int length = getLength();
 		int width = getWidth();
-		int start_x = (int) o.getX();
-		int start_y = (int) o.getY();
-		int start_z = (int) o.getZ();
-		for (int x=0; x < getLength(); x++)
+		for (int x=0; x < length; x++)
 			for (int y=0; y < width; y++)
-				for (int z=0; z < height; z++)
-					grids[x*height*width + y*height + z] = new Point3D(x + start_x, y + start_y, z + start_z);
+				for (int z=0; z < getHeight(); z++)
+					grids[z*length*width + y*length + x] = new Point3D(x + (int) o.getX(), y + (int) o.getY(), z + (int) o.getZ());
 		return grids;
 	}
 

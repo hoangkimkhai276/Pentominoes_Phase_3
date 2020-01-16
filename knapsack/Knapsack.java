@@ -2,10 +2,11 @@ package knapsack;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-
+import static knapsack.Variables.*;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.DrawMode;
 import javafxstuff.Point3D;
+import knapsack.parcel.FastParcel;
 import knapsack.parcel.Parcel;
 import knapsack.parcel.ParcelGroup;
 import knapsack.parcel.Parcels;
@@ -30,7 +31,7 @@ enum SortState {
  *  with a {@link BigInteger}.<br><br>
  * The {@code Knapsack} class provides methods for fitting parcels into itself.
  */
-public class Knapsack implements Variables {
+public class Knapsack {
 	
 	/**
 	 * The shape of this {@code Knapsack} which specifies the {@code length}, {@code width} and {@code height} of this {@code Knapsack}
@@ -116,6 +117,12 @@ public class Knapsack implements Variables {
 		return true;
 	}
 	
+	public boolean fitsParcel(FastParcel parcel) {
+		int[] shape = parcel.getParcelShape();
+		for (int i=0; i < shape.length; i++) if (!occupied_cubes.testBit(shape[i])) return false;
+		return true;
+	}
+	
 	public int getValue() {
 		int value = 0;
 		for (Parcel parcel : parcels) value += parcel.getValue();
@@ -162,6 +169,28 @@ public class Knapsack implements Variables {
 
 	public String toString() {
 		return "KS["+getLength()+"x"+getWidth()+"x"+getHeight()+"] with:\n"+parcels.toString();
+	}
+	
+	public int to1DCoord(int x, int y, int z) {
+		return z * shape.getWidth() * shape.getLength() + y * shape.getLength() + x;
+	}
+	public int to1DCoord(Point3D point) {
+		return to1DCoord(point.getX(), point.getY(), point.getZ());
+	}
+	
+	public Point3D toPoint(int coord) {
+		int width = shape.getWidth();
+		int length = shape.getLength();
+		int z = coord / width / length;
+		int y = coord / length - z * width;
+		int x = coord - z * length * width - y * length;
+		return new Point3D(x,y,z);
+	}
+	
+	public Knapsack getEmpty() {
+		Knapsack result = new Knapsack(getLength(), getWidth(), getHeight());
+		result.shape.add(shape.getOrigin());
+		return result;
 	}
 	
 }

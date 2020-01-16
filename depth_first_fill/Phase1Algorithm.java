@@ -1,7 +1,6 @@
 package depth_first_fill;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -49,13 +48,9 @@ public class Phase1Algorithm {
 	}
 	
 	private ParcelType[] makePermutationTypes(ParcelCore...parcels) {
-		ParcelType[] result;
-		ArrayList<ParcelCore> permutations = new ArrayList<ParcelCore>(parcels.length * 24);
-		for (ParcelCore parcel : parcels) permutations.addAll(Arrays.asList(Parcels.createParcelPermutations(parcel)));
-		ArrayList<ParcelCore> filtered = new ArrayList<ParcelCore>(permutations.size());
-		for (ParcelCore parcel : permutations) if (!filtered.contains(parcel)) filtered.add(parcel);
-		result = new ParcelType[filtered.size()];
-		for (int i=0; i < filtered.size(); i++) result[i] = new ParcelType(filtered.get(i));
+		ParcelCore[] sub_result = Parcels.createParcelPermutations(parcels);
+		ParcelType[] result = new ParcelType[sub_result.length];
+		for (int i=0; i < sub_result.length; i++) result[i] = new ParcelType(sub_result[i]);
 		return result;
 	}
 	
