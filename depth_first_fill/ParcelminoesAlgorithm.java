@@ -149,41 +149,6 @@ public class ParcelminoesAlgorithm {
 		return Optional.empty();
 	}
 	
-	/**
-	 * Implementation of phase1 algorithm for 3D (only for pentomino parcels)
-	*/
-	/*private Optional<Knapsack> solveFilling(Knapsack tempsol, int depth, int size, boolean pento_mode) {
-		if (depth <= size || !pento_mode) {
-			int max_x = (depth==1)?tempsol.getLength()/2+1:tempsol.getLength();
-			int max_y = (depth==1)?tempsol.getWidth ()/2+1:tempsol.getWidth ();
-			int max_z = (depth==1)?tempsol.getHeight()/2+1:tempsol.getHeight();
-			//debug("depth = "+depth+", size = "+size);
-			for (ParcelType parcel : parcel_types) {
-				for (int x=0; x < max_x; x++)
-					for (int y=0; y < max_y; y++)
-						pos: for (int z=0; z < max_z; z++) {
-							//debug("placing at "+x+", "+y+", "+z);
-							if (tempsol.isOccupied(x, y, z)) continue pos;
-								parcel = parcel.copy();
-								parcel.setOrigin(x, y, z);
-								if (!tempsol.putParcel(parcel)) continue;
-								placed: {
-									debug("knapsack = "+tempsol);
-									if ((!pento_mode || depth == size) && tempsol.isFilled()) return Optional.of(tempsol);
-									if (!scanFillable(tempsol, parcel, pento_mode)) {
-										System.out.println("it is not fillable");
-										break placed;
-									}
-									System.out.println("next recursion step: "+(depth+1));
-									if (solveFilling(tempsol, depth+1, size, pento_mode).isPresent()) return Optional.of(tempsol);
-								}
-								tempsol.remove(parcel);
-							}
-						}
-		}
-		return Optional.empty();
-	}*/
-	
 	private boolean scanFillable(Knapsack tempsol, Parcel just_placed, boolean pento_mode) {
 		if (!pento_mode) return scanFillableSimple(tempsol.getOccupiedCubes(), just_placed);
 		return scanFillablePento(tempsol.getOccupiedCubes(), just_placed);
