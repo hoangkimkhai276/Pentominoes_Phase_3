@@ -2,7 +2,6 @@ package knapsack;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-
 import static knapsack.Variables.*;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.DrawMode;
@@ -80,24 +79,10 @@ public class Knapsack {
 		setBits(to_add, true);
 		sorted = SortState.NONE;
 	}
-	public void add(FastParcel to_add) {
-		parcels.add(to_add);
-		int[] shape = to_add.getParcelShape();
-		for (int i=0; i < shape.length; i++) occupied_cubes = occupied_cubes.setBit(shape[i]);
-		sorted = SortState.NONE;
-	}
 	
 	public boolean remove(Parcel parcel) {
-		if (parcels.remove(parcel)) setBits(parcel, false);
-		else return false;
-		return true;
-	}
-	public boolean remove(FastParcel parcel) {
-		if (parcels.remove(parcel)) {
-			int[] shape = parcel.getParcelShape();
-			for (int i=0; i < shape.length; i++) occupied_cubes = occupied_cubes.clearBit(shape[i]);
-		} else return false;
-		return true;
+		setBits(parcel, false);
+		return parcels.remove(parcel);
 	}
 	
 	private void setBits(Parcel p, boolean set) {
@@ -134,7 +119,7 @@ public class Knapsack {
 	
 	public boolean fitsParcel(FastParcel parcel) {
 		int[] shape = parcel.getParcelShape();
-		for (int i=0; i < shape.length; i++) if (occupied_cubes.testBit(shape[i])) return false;
+		for (int i=0; i < shape.length; i++) if (!occupied_cubes.testBit(shape[i])) return false;
 		return true;
 	}
 	
@@ -159,11 +144,6 @@ public class Knapsack {
 	/** @return {@code true} if the parcel fits, then immediately adds it to the knapsack<br>
 	 *  otherwise returns {@code false}*/
 	public boolean putParcel(Parcel parcel) {
-		if (fitsParcel(parcel)) add(parcel);
-		else return false;
-		return true;
-	}
-	public boolean putParcel(FastParcel parcel) {
 		if (fitsParcel(parcel)) add(parcel);
 		else return false;
 		return true;

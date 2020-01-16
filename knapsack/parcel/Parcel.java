@@ -13,6 +13,8 @@ public interface Parcel {
 
 	void moveParcel(Point3D delta);
 
+	//
+	Point3D getScaledOrigin(double scale);
 	Point3D getOrigin();
 
 	void setOrigin(Point3D origin);
@@ -30,10 +32,6 @@ public interface Parcel {
 	Size3D getHitBox();
 
 	int getVolume();
-	
-	default double getDensity() {
-		return getValue() / getVolume();
-	}
 
 	Point3D[] getPoints();
 
@@ -51,7 +49,5 @@ public interface Parcel {
 
 	/** @return the origin-points of all the unit-cube-sized grids this parcel occupies*/
 	Point3D[] getOccupiedGrids();
-	
-	public String toString_nocoord();
 
 }

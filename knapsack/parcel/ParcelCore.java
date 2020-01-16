@@ -70,6 +70,11 @@ public abstract class ParcelCore implements Parcel {
 		return boxes;
 	}
 
+	@Override
+	public Point3D getScaledOrigin(double scale) {
+		return null;
+	}
+
 	protected abstract Cube[] toCubes();
 
 	/** Increases/decreases the location of the origin of this parcel

@@ -7,9 +7,9 @@ import java.util.Optional;
 import javafxstuff.Point3D;
 import knapsack.Knapsack;
 import knapsack.Size3D;
-import knapsack.parcel.FastParcel;
 import knapsack.parcel.Parcel;
 import knapsack.parcel.ParcelCore;
+import knapsack.parcel.ParcelType;
 import knapsack.parcel.Parcels;
 import knapsack.parcel.PentominoParcel;
 
@@ -35,18 +35,27 @@ public class Phase1Algorithm {
 	private final int height;
 	private final boolean pento_mode;
 	public Knapsack knapsack;
+	public ParcelType[] parcel_types;
 	
 	public Phase1Algorithm(Knapsack knapsack, ParcelCore... parcels) {
 		this.knapsack = knapsack;
 		if (parcels.length > 0 && parcels[0] instanceof PentominoParcel) pento_mode = true;
 		else pento_mode = false;
+		parcel_types = makePermutationTypes(parcels);
 		length = knapsack.getLength();
 		width = knapsack.getWidth();
 		height = knapsack.getHeight();
 	}
 	
+	private ParcelType[] makePermutationTypes(ParcelCore...parcels) {
+		ParcelCore[] sub_result = Parcels.createParcelPermutations(parcels);
+		ParcelType[] result = new ParcelType[sub_result.length];
+		for (int i=0; i < sub_result.length; i++) result[i] = new ParcelType(sub_result[i]);
+		return result;
+	}
+	
 	public static void main(String[] args) {
-		Phase1Algorithm phase = new Phase1Algorithm(new Knapsack(), Parcels.A, Parcels.B, Parcels.C);
+		Phase1Algorithm phase = new Phase1Algorithm(new Knapsack(), Parcels.P, Parcels.T, Parcels.L);
 		System.out.println(phase.fillKnapsack());
 	}
 	
@@ -55,83 +64,39 @@ public class Phase1Algorithm {
 	}
 	
 	public Optional<Knapsack> fillKnapsack() {
-		if (!pento_mode) FastParcel.simple_initiation();
-		else FastParcel.parcel_initiation();
 		if (pento_mode && knapsack.getVolume()%5!=0) return Optional.empty();
-		return solveFilling(knapsack, 1, knapsack.getVolume()/5, pento_mode, 0, 0, 0);
-	}
-	
-	private Optional<Knapsack> solveFilling(Knapsack tempsol, int depth, int size, boolean pento_mode, int start_x, int start_y, int start_z) {
-		if (depth <= size || !pento_mode) {
-			int max_x = (depth==1)?tempsol.getLength()/2+1:tempsol.getLength();
-			int max_y = (depth==1)?tempsol.getWidth ()/2+1:tempsol.getWidth ();
-			int max_z = (depth==1)?tempsol.getHeight()/2+1:tempsol.getHeight();
-			int temp_start_x = start_x;
-			int temp_start_y = start_y;
-			int temp_start_z = start_z;
-			for (int id = 0; id < FastParcel.max_parcel_ID(); id++) {
-				posloop: {
-				for (int x=temp_start_x; x < max_x; x++) {
-					for (int y=temp_start_y; y < max_y; y++) {
-						pos: for (int z=temp_start_z; z < max_z; z++) {
-							if (x>=max_x-1 && y>=max_y-1 && z>=max_z-1) {
-								System.out.println("reached end with "+tempsol);
-								break posloop;
-							}
-							if (tempsol.isOccupied(x, y, z)) continue pos;
-							FastParcel parcel = new FastParcel(id, x, y, z);
-							if (!parcel.isValid() || !knapsack.putParcel(parcel)) continue;
-							placed: {
-								//System.out.println("depth = "+depth+"/"+size);
-								//System.out.println("knapsack = "+tempsol.getOccupiedCubes());
-								if ((!pento_mode || depth == size) && tempsol.isFilled()) return Optional.of(tempsol);
-								if (!scanFillable(tempsol, parcel, pento_mode)) break placed;
-								if (solveFilling(tempsol, depth+1, size, pento_mode, x, y, z+1).isPresent()) return Optional.of(tempsol);
-							} knapsack.remove(parcel);
-							temp_start_z = 0;
-						} temp_start_y = 0;
-					} temp_start_x = 0;
-				}}
-			}
-		} return Optional.empty();
+		return solveFilling(knapsack, 1, knapsack.getVolume()/5, pento_mode);
 	}
 	
 	/**
 	 * Implementation of phase1 algorithm for 3D (only for pentomino parcels)
 	*/
-	/*private Optional<Knapsack> solveFilling(Knapsack tempsol, int depth, int size, boolean pento_mode) {
+	private Optional<Knapsack> solveFilling(Knapsack tempsol, int depth, int size, boolean pento_mode) {
 		if (depth <= size || !pento_mode) {
 			int max_x = (depth==1)?tempsol.getLength()/2+1:tempsol.getLength();
 			int max_y = (depth==1)?tempsol.getWidth ()/2+1:tempsol.getWidth ();
 			int max_z = (depth==1)?tempsol.getHeight()/2+1:tempsol.getHeight();
-			//debug("depth = "+depth+", size = "+size);
-			for (ParcelType parcel : parcel_types) {
-				for (int x=0; x < max_x; x++)
-					for (int y=0; y < max_y; y++)
-						pos: for (int z=0; z < max_z; z++) {
-							//debug("placing at "+x+", "+y+", "+z);
-							if (tempsol.isOccupied(x, y, z)) continue pos;
-								parcel = parcel.copy();
-								parcel.setOrigin(x, y, z);
-								if (!tempsol.putParcel(parcel)) continue;
-								placed: {
-									debug("knapsack = "+tempsol);
-									if ((!pento_mode || depth == size) && tempsol.isFilled()) return Optional.of(tempsol);
-									if (!scanFillable(tempsol, parcel, pento_mode)) {
-										System.out.println("it is not fillable");
-										break placed;
-									}
-									System.out.println("next recursion step: "+(depth+1));
-									if (solveFilling(tempsol, depth+1, size, pento_mode).isPresent()) return Optional.of(tempsol);
-								}
-								tempsol.remove(parcel);
+			debug("depth = "+depth+", size = "+size);
+			for (int x=0; x < max_x; x++)
+				for (int y=0; y < max_y; y++)
+					pos: for (int z=0; z < max_z; z++) {
+						if (tempsol.isOccupied(x, y, z)) continue pos;
+						for (ParcelType parcel : parcel_types) {
+							parcel.setOrigin(x, y, z);
+							if (!tempsol.putParcel(parcel)) continue;
+							placed: {
+								if ((!pento_mode || depth == size) && tempsol.isFilled()) return Optional.of(tempsol);
+								if (!scanFillable(tempsol, parcel, pento_mode)) break placed;
+								if (solveFilling(tempsol, depth+1, size, pento_mode).isPresent()) return Optional.of(tempsol);
 							}
+							tempsol.remove(parcel);
 						}
+					}
 		}
 		return Optional.empty();
-	}*/
+	}
 	
-	private boolean scanFillable(Knapsack tempsol, Parcel just_placed, boolean pento_mode) {
+	private boolean scanFillable(Knapsack tempsol, ParcelType just_placed, boolean pento_mode) {
 		if (!pento_mode) return scanFillableSimple(tempsol.getOccupiedCubes(), just_placed);
 		return scanFillablePento(tempsol.getOccupiedCubes(), just_placed);
 	}
