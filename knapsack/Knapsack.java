@@ -2,7 +2,6 @@ package knapsack;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-
 import static knapsack.Variables.*;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.DrawMode;
@@ -21,7 +20,7 @@ enum SortState {
 	VALUE,
 	/** Sorted by volume
 	 * @see {@linkplain Parcels#VOLUME_SORT}*/
-	VOLUME, 
+	VOLUME,
 	/** not sorted in any particular way */
 	NONE;
 }
@@ -33,7 +32,7 @@ enum SortState {
  * The {@code Knapsack} class provides methods for fitting parcels into itself.
  */
 public class Knapsack {
-	
+
 	/**
 	 * The shape of this {@code Knapsack} which specifies the {@code length}, {@code width} and {@code height} of this {@code Knapsack}
 	 * @see Cube#length
@@ -41,11 +40,11 @@ public class Knapsack {
 	 * @see Cube#height
 	 */
 	private final Cube shape;
-	
+
 	protected ArrayList<Parcel> parcels;
 	protected SortState sorted;
 	protected BigInteger occupied_cubes;
-	
+
 	public Knapsack(int length, int width, int height) {
 		this.shape = new Cube(length, width, height, Point3D.ZERO);
 		parcels = new ArrayList<Parcel>();
@@ -74,7 +73,7 @@ public class Knapsack {
 	public int getVolume() {
 		return shape.getVolume();
 	}
-	
+
 	public void add(Parcel to_add) {
 		parcels.add(to_add);
 		setBits(to_add, true);
@@ -86,7 +85,7 @@ public class Knapsack {
 		for (int i=0; i < shape.length; i++) occupied_cubes = occupied_cubes.setBit(shape[i]);
 		sorted = SortState.NONE;
 	}
-	
+
 	public boolean remove(Parcel parcel) {
 		if (parcels.remove(parcel)) setBits(parcel, false);
 		else return false;
@@ -99,7 +98,7 @@ public class Knapsack {
 		} else return false;
 		return true;
 	}
-	
+
 	private void setBits(Parcel p, boolean set) {
 		Point3D[] points = p.getOccupiedGrids();
 		for (Point3D point : points)
@@ -112,16 +111,16 @@ public class Knapsack {
 	public boolean isOccupied(int x, int y, int z) {
 		return occupied_cubes.testBit(z * getWidth() * getLength() + y * getLength() + x);
 	}
-	
+
 	public void sortParcels() {
 		Parcels.sortByDistance(parcels);
 		sorted = SortState.DISTANCE;
 	}
-	
+
 	public SortState getSortState() {
 		return sorted;
 	}
-	
+
 	public boolean fitsParcel(Parcel parcel) {
 		Point3D o = parcel.getOrigin();
 		if (o.getX() < 0 || o.getY() < 0 || o.getZ() < 0) return false;
@@ -131,13 +130,13 @@ public class Knapsack {
 		for (Point3D point : points) if (this.isOccupied((int)point.getX(), (int)point.getY(), (int)point.getZ())) return false;
 		return true;
 	}
-	
+
 	public boolean fitsParcel(FastParcel parcel) {
 		int[] shape = parcel.getParcelShape();
 		for (int i=0; i < shape.length; i++) if (occupied_cubes.testBit(shape[i])) return false;
 		return true;
 	}
-	
+
 	public int getValue() {
 		int value = 0;
 		for (Parcel parcel : parcels) value += parcel.getValue();
@@ -155,7 +154,7 @@ public class Knapsack {
 	public BigInteger getOccupiedCubes() {
 		return occupied_cubes;
 	}
-	
+
 	/** @return {@code true} if the parcel fits, then immediately adds it to the knapsack<br>
 	 *  otherwise returns {@code false}*/
 	public boolean putParcel(Parcel parcel) {
@@ -190,14 +189,14 @@ public class Knapsack {
 	public String toString() {
 		return "KS["+getLength()+"x"+getWidth()+"x"+getHeight()+"] with:\n"+parcels.toString();
 	}
-	
+
 	public int to1DCoord(int x, int y, int z) {
 		return z * shape.getWidth() * shape.getLength() + y * shape.getLength() + x;
 	}
 	public int to1DCoord(Point3D point) {
 		return to1DCoord(point.getX(), point.getY(), point.getZ());
 	}
-	
+
 	public Point3D toPoint(int coord) {
 		int width = shape.getWidth();
 		int length = shape.getLength();
@@ -206,13 +205,12 @@ public class Knapsack {
 		int x = coord - z * length * width - y * length;
 		return new Point3D(x,y,z);
 	}
-	
+
 	public Knapsack getEmpty() {
 		Knapsack result = new Knapsack(getLength(), getWidth(), getHeight());
 		result.shape.add(shape.getOrigin());
 		return result;
 	}
-	
 	public void copyTo(Knapsack other) {
 		other.occupied_cubes = occupied_cubes.add(BigInteger.ZERO);
 		other.parcels.clear();
