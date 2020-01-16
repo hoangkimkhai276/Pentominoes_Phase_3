@@ -13,7 +13,7 @@ public class Main {
 	public static Knapsack knapsack = new Knapsack();
 	
 	public static void main(String[] args) {
-		Phase1Algorithm alg = new Phase1Algorithm(knapsack);
+		//Phase1Algorithm alg = new Phase1Algorithm(knapsack);
 	}
 	
 }

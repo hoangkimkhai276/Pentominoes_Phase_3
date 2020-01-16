@@ -2,6 +2,7 @@ package knapsack.parcel;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Random;
 import java.util.function.Function;
@@ -85,6 +86,16 @@ public final class Parcels {
 			if (!list.contains(p)) list.add(p);
 		ParcelCore[] result = new ParcelCore[list.size()];
 		for (int i=0; i < result.length; i++) result[i] = list.get(i);
+		return result;
+	}
+	
+	public static ParcelCore[] createParcelPermutations(ParcelCore[] parcels) {
+		ArrayList<ParcelCore> permutations = new ArrayList<ParcelCore>(parcels.length * 24);
+		for (ParcelCore parcel : parcels) permutations.addAll(Arrays.asList(Parcels.createParcelPermutations(parcel)));
+		ArrayList<ParcelCore> filtered = new ArrayList<ParcelCore>(permutations.size());
+		for (ParcelCore parcel : permutations) if (!filtered.contains(parcel)) filtered.add(parcel);
+		ParcelCore[] result = new ParcelCore[filtered.size()];
+		for (int i=0; i < filtered.size(); i++) result[i] = filtered.get(i);
 		return result;
 	}
 	
