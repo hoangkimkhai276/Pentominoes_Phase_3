@@ -15,12 +15,12 @@ public final class Parcels {
 	
 	public static final Color[] SELECTED_COLORS = Colors.getRandomColors(6, 0.8f, 0f);
 	
-	public static final ParcelCore A = new SimpleParcel(2, 2, 4, 3, SELECTED_COLORS[0]);
-	public static final ParcelCore B = new SimpleParcel(2, 3, 4, 4, SELECTED_COLORS[1]);
-	public static final ParcelCore C = new SimpleParcel(3, 3, 3, 5, SELECTED_COLORS[2]);
-	public static final ParcelCore P = new PentominoParcel(new boolean[][]{{true, false},{true, true}, {true, true}}, 4, SELECTED_COLORS[3]);
-	public static final ParcelCore L = new PentominoParcel(new boolean[][]{{true, true},{true, false},{true, false},{true, false}}, 3, SELECTED_COLORS[4]);
-	public static final ParcelCore T = new PentominoParcel(new boolean[][]{{true, true, true}, {false, true, false}, {false, true, false}}, 5, SELECTED_COLORS[5]);
+	public static final ParcelCore A = new SimpleParcel(2, 2, 4, 3, SELECTED_COLORS[0], "A");
+	public static final ParcelCore B = new SimpleParcel(2, 3, 4, 4, SELECTED_COLORS[1], "B");
+	public static final ParcelCore C = new SimpleParcel(3, 3, 3, 5, SELECTED_COLORS[2], "C");
+	public static final ParcelCore P = new PentominoParcel(new boolean[][]{{true, false},{true, true}, {true, true}}, 4, SELECTED_COLORS[3], "P");
+	public static final ParcelCore L = new PentominoParcel(new boolean[][]{{true, true},{true, false},{true, false},{true, false}}, 3, SELECTED_COLORS[4], "L");
+	public static final ParcelCore T = new PentominoParcel(new boolean[][]{{true, true, true}, {false, true, false}, {false, true, false}}, 5, SELECTED_COLORS[5], "T");
 	public static final ParcelCore[] DEFAULT = {A,B,C,P,L,T};
 	
 	public static final Function<Parcel, Double> DISTANCE_SORT = a-> {return Double.valueOf(a.getOrigin().magnitude());};
@@ -70,7 +70,7 @@ public final class Parcels {
 		int width = (int)(((rand.nextGaussian() * stdv + mean_width) + (rand.nextGaussian() * mean_width + mean_width + stdv))/2d); if (width < 1) width = 1;
 		int height = (int)(((rand.nextGaussian() * stdv + mean_height) + (rand.nextGaussian() * mean_height + mean_height + stdv))/2d); if (height < 1) height = 1;
 		int value = (int)(((rand.nextGaussian() * stdv + mean_value) + (rand.nextGaussian() * mean_value + mean_value + stdv))/2d - 0.5); if (value < 1) value = 1;
-		return new SimpleParcel(length, width, height, value);
+		return new SimpleParcel(length, width, height, value,"random parcel");
 	}
 	
 	public static SimpleParcel[] randomSimpleParcels(Knapsack knapsack, double desired_fill_rate, int desired_amount) {

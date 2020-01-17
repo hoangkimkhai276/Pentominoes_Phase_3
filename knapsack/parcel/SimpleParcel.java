@@ -12,25 +12,25 @@ public class SimpleParcel extends ParcelCore {
 
 	private Cube shape;
 	
-	public SimpleParcel(int length, int width, int height, int value, Point3D origin, Color color) {
-		super(origin, value, new Color(0,0,0,0));
+	public SimpleParcel(int length, int width, int height, int value, Point3D origin, Color color, String name) {
+		super(origin, value, new Color(0,0,0,0), name);
 		shape = new Cube(length, width, height, origin);
 		setColor(color);
 	}
-	public SimpleParcel(int length, int width, int height, int value, Point3D origin) {
-		this(length, width, height, value, origin, new Color(0,0,0,0));
+	public SimpleParcel(int length, int width, int height, int value, Point3D origin, String name) {
+		this(length, width, height, value, origin, new Color(0,0,0,0), name);
 	}
-	public SimpleParcel(int length, int width, int height, int value) {
-		this(length, width, height, value, Point3D.ZERO);
+	public SimpleParcel(int length, int width, int height, int value, String name) {
+		this(length, width, height, value, Point3D.ZERO, name);
 	}
-	public SimpleParcel(int length, int width, int height, int value, Color color) {
-		this(length, width, height, value, Point3D.ZERO, color);
+	public SimpleParcel(int length, int width, int height, int value, Color color, String name) {
+		this(length, width, height, value, Point3D.ZERO, color, name);
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends Parcel> T copy() {
-		SimpleParcel copy =  new SimpleParcel(shape.getLength(), shape.getWidth(), shape.getHeight(), getValue(), this.getOrigin(), getColor());
+		SimpleParcel copy =  new SimpleParcel(shape.getLength(), shape.getWidth(), shape.getHeight(), getValue(), this.getOrigin(), getColor(), getName());
 		return (T) copy;
 	}
 	
