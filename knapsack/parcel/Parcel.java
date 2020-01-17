@@ -20,10 +20,16 @@ public interface Parcel {
 	default void setOrigin(int x, int y, int z) {
 		setOrigin(new Point3D(x, y, z));
 	}
+	
+	default boolean isSameType(Parcel other) {
+		return getName().equals(other.getName());
+	}
 
 	int getValue();
 
 	Color getColor();
+	
+	String getName();
 
 	<T extends Parcel> T copy();
 

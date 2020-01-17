@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
-import java.util.function.Function;
 
 import knapsack.Size3D;
 import knapsack.parcel.Parcels;

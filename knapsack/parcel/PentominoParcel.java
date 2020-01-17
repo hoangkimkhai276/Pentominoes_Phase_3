@@ -24,8 +24,8 @@ public class PentominoParcel extends ParcelCore {
 	private Cube[] cubes;
 	private boolean cubes_calculated = false;
 	
-	public PentominoParcel(boolean[][] shape, int value, Point3D origin, Color color) {
-		super(origin, value, color);
+	public PentominoParcel(boolean[][] shape, int value, Point3D origin, Color color, String name) {
+		super(origin, value, color, name);
 		relative_origin_points = new ArrayList<Point3D>(5);
 		length = shape.length;
 		width = shape[0].length;
@@ -34,11 +34,11 @@ public class PentominoParcel extends ParcelCore {
 			for (int y=0; y < width; y++)
 				if (shape[x][y]) relative_origin_points.add(new Point3D(x,y,0));
 	}
-	public PentominoParcel(boolean[][] shape, int value, Color color) {
-		this(shape, value, Point3D.ZERO, color);
+	public PentominoParcel(boolean[][] shape, int value, Color color, String name) {
+		this(shape, value, Point3D.ZERO, color, name);
 	}
-	protected PentominoParcel(int length, int width, int height, ArrayList<Point3D> points_to_copy, int value, Point3D origin, Color color) {
-		super(origin, value, color);
+	protected PentominoParcel(int length, int width, int height, ArrayList<Point3D> points_to_copy, int value, Point3D origin, Color color, String name) {
+		super(origin, value, color, name);
 		this.length = length;
 		this.width = width;
 		this.height = height;
@@ -67,7 +67,7 @@ public class PentominoParcel extends ParcelCore {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends Parcel> T copy() {
-		return (T) new PentominoParcel(length, width, height, relative_origin_points, getValue(), getOrigin(), getColor());
+		return (T) new PentominoParcel(length, width, height, relative_origin_points, getValue(), getOrigin(), getColor(), getName());
 	}
 
 	@Override

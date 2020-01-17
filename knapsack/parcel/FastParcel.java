@@ -14,14 +14,11 @@ import knapsack.Size3D;
 
 public class FastParcel implements Parcel {	
 	
-	public static void main(String[] args) {
-		
-	}
-	
 	/** contains all parcel rotations on all different possible locations */
 	private static ArrayList<int[][]> stored_parcel_positions;
 	/** contains all parcel rotations at (0,0,0) */
 	private static ArrayList<ID_Labeled_ParcelCore> stored_parcel_rotations;
+	
 	private static boolean initiated = false;
 	private static Knapsack reference;
 	private static final int DATA_INDEX = 0;
@@ -133,7 +130,10 @@ public class FastParcel implements Parcel {
 		return stored_parcel_rotations.get(parcel_ID);
 	}
 	
-	private ParcelCore getParcelCore() {
+	/**
+	 * parcel NOT to be edited, only for accessing, no mutating please
+	 */
+	public ParcelCore getParcelCore() {
 		ParcelCore result = getParcel(parcel_ID).getParcel();
 		result.setOrigin(reference.toPoint(getPosition()));
 		return result;
@@ -360,6 +360,11 @@ public class FastParcel implements Parcel {
 			int x = coord - z * length * width - y * length;
 			return new Point3D(x,y,z);
 		}
+	}
+
+	@Override
+	public String getName() {
+		return getParcelCore().getName();
 	}
 
 }

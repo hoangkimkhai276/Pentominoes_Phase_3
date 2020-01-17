@@ -16,13 +16,19 @@ public abstract class ParcelCore implements Parcel {
 	private Point3D origin;
 	private final int value;
 	private Color color;
+	private String name;
 
-	protected ParcelCore(Point3D origin, int value, Color color) {
+	protected ParcelCore(Point3D origin, int value, Color color, String name) {
 		this.value = value;
 		this.color = color;
 		this.origin = origin;
+		this.name = name;
 	}
 
+	public String getName() {
+		return name;
+	}
+	
 	@Override
 	public void moveParcel(Point3D delta) {
 		this.mutateOrigin(delta);
