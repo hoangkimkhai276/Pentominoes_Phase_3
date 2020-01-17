@@ -24,24 +24,27 @@ public final class Parcels {
 	public static final ParcelCore[] DEFAULT = {A,B,C,P,L,T};
 	
 	public static final Function<Parcel, Double> DISTANCE_SORT = a-> {return Double.valueOf(a.getOrigin().magnitude());};
-	public static final Function<Parcel, Double> VALUE_SORT = a-> {return -Double.valueOf(a.getValue());};
-	public static final Function<Parcel, Double> VOLUME_SORT = a-> {return -Double.valueOf(a.getVolume());};
-	public static final Function<Parcel, Double> DENSITY_SORT = a-> {return -Double.valueOf(a.getDensity());};
+	public static final Function<Parcel, Double> VALUE_SORT = a-> {return Double.valueOf(a.getValue());};
+	public static final Function<Parcel, Double> VOLUME_SORT = a-> {return Double.valueOf(a.getVolume());};
+	public static final Function<Parcel, Double> DENSITY_SORT = a-> {return Double.valueOf(a.getDensity());};
 	
-	public static <T> void sortByFunction(List<T> items, Function<? super T, Double> function) {
-		items.sort(getComparatorOfFunction(function));
+	public static <T> void sortUpByFunction(List<T> items, Function<? super T, Double> function) {
+		items.sort(getComparatorOfFunction(function, true));
+	}
+	public static <T> void sortDownByFunction(List<T> items, Function<? super T, Double> function) {
+		items.sort(getComparatorOfFunction(function, false));
 	}
 	public static void sortByDistance(List<? extends Parcel> parcels) {
-		sortByFunction(parcels, DISTANCE_SORT);
+		sortUpByFunction(parcels, DISTANCE_SORT);
 	}
 	public static void sortByValue(List<? extends Parcel> arrayList) {
-		sortByFunction(arrayList, VALUE_SORT);
+		sortDownByFunction(arrayList, VALUE_SORT);
 	}
 	public static void sortByVolume(List<? extends Parcel> parcels) {
-		sortByFunction(parcels, VOLUME_SORT);
+		sortDownByFunction(parcels, VOLUME_SORT);
 	}
 	public static void sortByDensity(List<? extends Parcel> parcels) {
-		sortByFunction(parcels, DENSITY_SORT);
+		sortDownByFunction(parcels, DENSITY_SORT);
 	}
 	
 	public static void main(String[] args) {
@@ -50,11 +53,12 @@ public final class Parcels {
 		System.out.println(parcels);
 	}
 	
-	public static <T> Comparator<T> getComparatorOfFunction(Function<T, Double> function) {
+	public static <T> Comparator<T> getComparatorOfFunction(Function<T, Double> function, boolean sort_up) {
 		return (a,b)->{
 			double ad = function.apply(a);
 			double bd = function.apply(b);
-			if (ad  > bd) return 1;
+			if (ad > bd && sort_up) return 1;
+			if (ad < bd && !sort_up) return 1;
 			if (ad == bd) return 0;
 			return -1;
 		};

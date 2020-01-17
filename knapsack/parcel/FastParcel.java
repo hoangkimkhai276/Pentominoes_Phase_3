@@ -46,9 +46,10 @@ public class FastParcel implements Parcel {
 		return stored_parcel_rotations.size();
 	}
 	
+	@Deprecated
 	public static void sortByParcelFunction(Function<? super ParcelCore, Double> function) {
 		Function<ID_Labeled_ParcelCore, ParcelCore> convert = a->{return a.parcel.copy();};
-		Parcels.sortByFunction(stored_parcel_rotations, convert.andThen(function));
+		Parcels.sortDownByFunction(stored_parcel_rotations, convert.andThen(function));
 		// TODO complete sort of big list
 	}
 	

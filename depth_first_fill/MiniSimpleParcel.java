@@ -2,10 +2,13 @@ package depth_first_fill;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.function.Function;
 
 import knapsack.Size3D;
+import knapsack.parcel.Parcels;
 
 public class MiniSimpleParcel {
 
@@ -19,6 +22,10 @@ public class MiniSimpleParcel {
 	public static final MiniSimpleParcel B = new MiniSimpleParcel(2,3,4,4);
 	public static final MiniSimpleParcel C = new MiniSimpleParcel(3,3,3,5);
 	public static final MiniSimpleParcel[] PARCELS = {A, B, C};
+	public static final MiniSimpleParcel LL = new MiniSimpleParcel(1,5,2,0);
+	public static final MiniSimpleParcel PTP = new MiniSimpleParcel(1,5,3,0);
+	
+	public static final Comparator<MiniSimpleParcel> SORT_DENSITY = Parcels.getComparatorOfFunction(p->Double.valueOf(p.getDensity()), true);
 	
 	private int length, width, height, value, count;
 	private ArrayList<MiniSimpleParcel> components;
@@ -151,6 +158,9 @@ public class MiniSimpleParcel {
 	public int getValue() {
 		return value;
 	}
+	public double getDensity() {
+		return getValue()/((double)getVolume());
+	}
 	
 	public MiniSimpleParcel[] getRotations() {
 		if (length==width && width==height) return new MiniSimpleParcel[]{this};
@@ -165,12 +175,17 @@ public class MiniSimpleParcel {
 		return rotations;
 	}
 	
-	public static Optional<StoredMini> canBeFilled(MiniSimpleParcel knapsack, MiniSimpleParcel[] parcels) {
+	public static Optional<StoredMini> canBeFilled(MiniSimpleParcel knapsack, MiniSimpleParcel... parcels) {
 		ArrayList<MiniSimpleParcel> rotations = getAllRotations(parcels);
 		StoredMini awnser = new StoredMini(NONE);
 		boolean result = recursion(awnser, null, knapsack, rotations, new HashSet<MiniSimpleParcel>(), knapsack.getVolume());
 		if (result) return Optional.of(awnser);
 		return Optional.empty();
+	}
+	
+	public static void maximizeKnapsackValue(StoredMini dynamic_awnser, MiniSimpleParcel knapsack, MiniSimpleParcel... parcels) {
+		ArrayList<MiniSimpleParcel> rotations = getAllRotations(parcels);
+		knapsack_recursion(dynamic_awnser, null, knapsack, rotations, new HashSet<MiniSimpleParcel>(), 0);
 	}
 	
 	private static boolean recursion(StoredMini result, MiniSimpleParcel current, MiniSimpleParcel knapsack, ArrayList<MiniSimpleParcel> rotations, HashSet<MiniSimpleParcel> found, int desired_volume) {
@@ -193,10 +208,53 @@ public class MiniSimpleParcel {
 		return false;
 	}
 	
+	private static void knapsack_recursion(StoredMini result, MiniSimpleParcel current, MiniSimpleParcel knapsack, ArrayList<MiniSimpleParcel> rotations,
+			HashSet<MiniSimpleParcel> found, int depth) {
+		if (depth<=0 || current==null) {
+			knapsack_recursion(result, NONE, knapsack, rotations, found, depth+1);
+			//TODO fix :(
+			return;
+		}
+		int size = rotations.size();
+		for (int i=0; i < size; i++) {
+			if (rotations.get(i).equals(C) && current==NONE) System.out.println("trying C at "+depth);
+			MiniSimpleParcel next = current.add(rotations.get(i));
+			if (next==null) continue;
+			if (!next.fitsInside(knapsack)) continue;
+			if (found.contains(next)) continue;
+			found.add(next);
+			if (!rotations.contains(next) || current==NONE) {
+				rotations.add(next);
+				double value = next.getValue();
+				if (value > result.parcel.getValue())
+					result.parcel = next;
+			}
+			//if (next.equals(C)) System.out.println("found C at "+depth);
+			rotations.sort(SORT_DENSITY);
+			knapsack_recursion(result, next, knapsack, rotations, found, depth+1);
+		}
+	}
+	
 	public static void main(String[] args) {
-		Optional<StoredMini> result;
+		StoredMini result = new StoredMini(NONE);
+		MiniSimpleParcel knapsack = new MiniSimpleParcel(9,9,9,0);
+		MiniSimpleParcel[] parcels = PARCELS;
+		System.out.println("Maximizing "+knapsack+" with "+Arrays.toString(parcels)+" for total value");
 		long start_time = System.nanoTime();
-		result = canBeFilled(new MiniSimpleParcel(33,5,8,0), PARCELS);
+		maximizeKnapsackValue(result, knapsack, parcels);
+		long delta_time = System.nanoTime() - start_time;
+		System.out.println("calculation took "+(float)(delta_time/1000000d)+"ms");
+		System.out.println("result value = "+result.parcel.getValue()+"\nresult = "+result.parcel.unravelComponents());
+		System.out.println("filled volume = "+result.parcel.getVolume()+"/"+knapsack.getVolume());
+	}
+	
+	public static void test1() {
+		Optional<StoredMini> result;
+		MiniSimpleParcel knapsack = new MiniSimpleParcel(12,5,8,0);
+		MiniSimpleParcel[] parcels = new MiniSimpleParcel[] {PTP,LL};
+		System.out.println("Filling "+knapsack+" with "+Arrays.toString(parcels));
+		long start_time = System.nanoTime();
+		result = canBeFilled(knapsack, parcels);
 		long delta_time = System.nanoTime() - start_time;
 		System.out.println("calculation took "+(float)(delta_time/1000000d)+"ms");
 		if (result.isPresent()) {
@@ -207,7 +265,11 @@ public class MiniSimpleParcel {
 	}
 	
 	public String toString() {
-		return count+"x ("+length+"x"+width+"x"+height+")";
+		String string = "";
+		if (count > 1) string = count+"x ";
+		string += "("+length+"x"+width+"x"+height+")";
+		if (value > 0) string += "$"+value;
+		return string;
 	}
 	public boolean equals(Object o) {
 		if (this==o) return true;
