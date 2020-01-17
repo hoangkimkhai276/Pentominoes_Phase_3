@@ -14,6 +14,10 @@ import knapsack.Size3D;
 
 public class FastParcel implements Parcel {	
 	
+	public static void main(String[] args) {
+		
+	}
+	
 	/** contains all parcel rotations on all different possible locations */
 	private static ArrayList<int[][]> stored_parcel_positions;
 	/** contains all parcel rotations at (0,0,0) */
@@ -35,7 +39,7 @@ public class FastParcel implements Parcel {
 	public static void default_initiation() {
 		initiate(new Knapsack(), new ParcelCore[] {Parcels.A, Parcels.B, Parcels.C, Parcels.P, Parcels.L, Parcels.T});
 	}
-	public static void parcel_initiation() {
+	public static void pento_initiation() {
 		initiate(new Knapsack(), new ParcelCore[] {Parcels.P, Parcels.L, Parcels.T});
 	}
 	public static void simple_initiation() {
