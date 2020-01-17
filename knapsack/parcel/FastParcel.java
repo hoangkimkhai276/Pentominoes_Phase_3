@@ -107,6 +107,7 @@ public class FastParcel implements Parcel {
 	}
 	
 	public int[] getParcelShape() {
+		if (!isValid()) return new int[] {};
 		return stored_parcel_positions.get(ID)[SHAPE_INDEX];
 	}
 	public int getPosition() {
@@ -177,7 +178,9 @@ public class FastParcel implements Parcel {
 	}
 	
 	public boolean isValid() {
-		return ID < stored_parcel_positions.size() && parcel_ID < stored_parcel_rotations.size();
+		boolean below = ID < stored_parcel_positions.size() && parcel_ID < stored_parcel_rotations.size();
+		boolean above = ID >= 0 && parcel_ID >= 0;
+		return below && above;
 	}
 
 	@Override

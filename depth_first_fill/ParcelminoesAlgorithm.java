@@ -3,6 +3,7 @@ package depth_first_fill;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Optional;
 
 import javafxstuff.Point3D;
@@ -56,7 +57,7 @@ public class ParcelminoesAlgorithm {
 	}
 	
 	public static void main(String[] args) {
-		ParcelminoesAlgorithm phase = new ParcelminoesAlgorithm(new Knapsack(), Parcels.DEFAULT);
+		ParcelminoesAlgorithm phase = new ParcelminoesAlgorithm(new Knapsack(5,5,8), Parcels.DEFAULT);
 		boolean use_pentominoes = false;
 		System.out.println(phase.solveKnapsackFillingPentoFirst(use_pentominoes));
 	}
@@ -70,16 +71,15 @@ public class ParcelminoesAlgorithm {
 		if (!pentominoes) { FastParcel.initiate(knapsack, simple_parcels); chosen = simple_parcels; }
 		else FastParcel.initiate(knapsack, pento_parcels);
 		int max_value = (int)((((double)knapsack.getVolume()) / chosen[0].getVolume()) * chosen[0].getValue());
-		return solveUnboundedKnapsackPentoFirstSearch(knapsack, knapsack.getEmpty(), 1, max_value, pentominoes, 0, 0, 0);
+		return solveUnboundedKnapsackPentoFirstSearch(new HashSet<HashSet<Integer>>(), knapsack, knapsack.getEmpty(), 1, max_value, pentominoes, 0, 0, 0);
 	}
 	
 	public Optional<Knapsack> solveKnapsackFillingPentoFirst(boolean pentominoes) {
 		if (!pentominoes) FastParcel.initiate(knapsack, simple_parcels);
 		else FastParcel.initiate(knapsack, pento_parcels);
-		return solvePentoFirstFillSearch(knapsack, knapsack.getEmpty(), 1, knapsack.getVolume(), pentominoes, 0, 0, 0);
+		return solvePentoFirstFillSearch(new HashSet<HashSet<Integer>>(), knapsack, knapsack.getEmpty(), 1, knapsack.getVolume(), pentominoes, 0, 0, 0);
 	}
-	
-	private Optional<Knapsack> solvePentoFirstFillSearch(Knapsack tempsol, Knapsack bestsol, int depth, int max_volume, boolean pento_mode, int start_x, int start_y, int start_z) {
+	private Optional<Knapsack> solvePentoFirstFillSearch(HashSet<HashSet<Integer>> prev_knaps, Knapsack tempsol, Knapsack bestsol, int depth, int max_volume, boolean pento_mode, int start_x, int start_y, int start_z) {
 		int max_x = (depth==1)?tempsol.getLength()/2+1:tempsol.getLength();
 		int max_y = (depth==1)?tempsol.getWidth ()/2+1:tempsol.getWidth ();
 		int max_z = (depth==1)?tempsol.getHeight()/2+1:tempsol.getHeight();
@@ -96,15 +96,17 @@ public class ParcelminoesAlgorithm {
 							if (volume > bestsol.getFilledVolume()) {
 								if (volume >= max_volume) return Optional.of(tempsol.copy());
 								tempsol.copyTo(bestsol);
-								System.out.println("best solution yet: "+bestsol.getFilledVolume()+"/"+bestsol.getVolume());
+								System.out.println("best solution yet: "+bestsol.getFilledVolume()+"/"+bestsol.getVolume()+" m3");
 							} break posloop;
 						}
 						if (tempsol.isOccupied(x, y, z)) continue pos;
 						FastParcel parcel = new FastParcel(id, x, y, z);
-						if (!parcel.isValid() || !knapsack.putParcel(parcel)) continue;
+						if (!parcel.isValid() || !knapsack.putParcel(parcel)) continue pos;
 						placed: {
+							if (prev_knaps.contains(tempsol.getContents())) break placed;
 							if (!scanFillable(tempsol, parcel, pento_mode)) break placed;
-							if (solvePentoFirstFillSearch(tempsol, bestsol, depth+1, max_volume, pento_mode, x, y, z+1).isPresent()) return Optional.of(tempsol);
+							prev_knaps.add(tempsol.getContents());
+							if (solvePentoFirstFillSearch(prev_knaps, tempsol, bestsol, depth+1, max_volume, pento_mode, x, y, z+1).isPresent()) return Optional.of(tempsol);
 						} knapsack.remove(parcel);
 						temp_start_z = 0;
 					} temp_start_y = 0;
@@ -114,7 +116,7 @@ public class ParcelminoesAlgorithm {
 		return Optional.empty();
 	}
 	
-	private Optional<Knapsack> solveUnboundedKnapsackPentoFirstSearch(Knapsack tempsol, Knapsack bestsol, int depth, int max_value, boolean pento_mode, int start_x, int start_y, int start_z) {
+	private Optional<Knapsack> solveUnboundedKnapsackPentoFirstSearch(HashSet<HashSet<Integer>> prev_knaps, Knapsack tempsol, Knapsack bestsol, int depth, int max_value, boolean pento_mode, int start_x, int start_y, int start_z) {
 		int max_x = (depth==1)?tempsol.getLength()/2+1:tempsol.getLength();
 		int max_y = (depth==1)?tempsol.getWidth ()/2+1:tempsol.getWidth ();
 		int max_z = (depth==1)?tempsol.getHeight()/2+1:tempsol.getHeight();
@@ -131,15 +133,17 @@ public class ParcelminoesAlgorithm {
 							if (value > bestsol.getValue()) {
 								if (value >= max_value) return Optional.of(tempsol.copy());
 								tempsol.copyTo(bestsol);
-								System.out.println("best solution yet: "+bestsol.getValue()+"/"+max_value);
+								System.out.println("best solution yet: "+bestsol.getValue()+"/"+max_value+" $");
 							} break posloop;
 						}
 						if (tempsol.isOccupied(x, y, z)) continue pos;
 						FastParcel parcel = new FastParcel(id, x, y, z);
-						if (!parcel.isValid() || !knapsack.putParcel(parcel)) continue;
+						if (!parcel.isValid() || !knapsack.putParcel(parcel)) continue pos;
 						placed: {
+							if (prev_knaps.contains(tempsol.getContents())) break placed;
 							if (!scanFillable(tempsol, parcel, pento_mode)) break placed;
-							if (solveUnboundedKnapsackPentoFirstSearch(tempsol, bestsol, depth+1, max_value, pento_mode, x, y, z+1).isPresent()) return Optional.of(tempsol);
+							prev_knaps.add(tempsol.getContents());
+							if (solveUnboundedKnapsackPentoFirstSearch(prev_knaps, tempsol, bestsol, depth+1, max_value, pento_mode, x, y, z+1).isPresent()) return Optional.of(tempsol);
 						} knapsack.remove(parcel);
 						temp_start_z = 0;
 					} temp_start_y = 0;

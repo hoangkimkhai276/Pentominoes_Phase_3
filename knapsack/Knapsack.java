@@ -2,6 +2,8 @@ package knapsack;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashSet;
+
 import static knapsack.Variables.*;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.DrawMode;
@@ -42,6 +44,7 @@ public class Knapsack {
 	private final Cube shape;
 
 	protected ArrayList<Parcel> parcels;
+	protected HashSet<Integer> stored_IDs;
 	protected SortState sorted;
 	protected BigInteger occupied_cubes;
 
@@ -50,6 +53,7 @@ public class Knapsack {
 		parcels = new ArrayList<Parcel>();
 		sorted = SortState.NONE;
 		occupied_cubes = BigInteger.ZERO; // empty array
+		stored_IDs = new HashSet<Integer>();
 	}
 	public Knapsack(double length, double width, double height) {
 		this((int)(2d * length), (int)(2d * width), (int)(2d * height));
@@ -84,6 +88,7 @@ public class Knapsack {
 		int[] shape = to_add.getParcelShape();
 		for (int i=0; i < shape.length; i++) occupied_cubes = occupied_cubes.setBit(shape[i]);
 		sorted = SortState.NONE;
+		stored_IDs.add(to_add.getID());
 	}
 
 	public boolean remove(Parcel parcel) {
@@ -95,6 +100,7 @@ public class Knapsack {
 		if (parcels.remove(parcel)) {
 			int[] shape = parcel.getParcelShape();
 			for (int i=0; i < shape.length; i++) occupied_cubes = occupied_cubes.clearBit(shape[i]);
+			stored_IDs.remove(parcel.getID());
 		} else return false;
 		return true;
 	}
@@ -214,13 +220,23 @@ public class Knapsack {
 	public void copyTo(Knapsack other) {
 		other.occupied_cubes = occupied_cubes.add(BigInteger.ZERO);
 		other.parcels.clear();
+		other.stored_IDs.clear();
 		for (Parcel p : parcels) other.parcels.add(p);
+		for (Integer ID : stored_IDs) other.stored_IDs.add(ID);
 		other.sorted = sorted;
 	}
 	public Knapsack copy() {
 		Knapsack knapsack = getEmpty();
 		copyTo(knapsack);
 		return knapsack;
+	}
+	
+	public boolean compareContents(HashSet<Integer> contents) {
+		return stored_IDs.equals(contents);
+	}
+	@SuppressWarnings("unchecked")
+	public HashSet<Integer> getContents() {
+		return (HashSet<Integer>) stored_IDs.clone();
 	}
 	
 }
