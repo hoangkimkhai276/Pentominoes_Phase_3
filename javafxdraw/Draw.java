@@ -11,10 +11,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
+import knapsack.Knapsack;
 import knapsack.KnapsackGroup;
 import knapsack.parcel.ParcelGroup;
 import knapsack.parcel.Parcels;
@@ -25,6 +27,7 @@ public class Draw extends Application {
     private static final int angle = 5;
     private double anchorX, anchorY;
     private double anchorAngleX = 0;
+    private Scene scene;
     private double anchorAngleY = 0;
     private final DoubleProperty angleX = new SimpleDoubleProperty(0);
     private final DoubleProperty angleY = new SimpleDoubleProperty(0);
@@ -52,19 +55,20 @@ public class Draw extends Application {
     }
 
     private void draw(Stage primaryStage) {
+
         Group root = new Group();
         KnapsackGroup knapsackGroup = KnapsackGroup.example;
         PerspectiveCamera camera = new PerspectiveCamera();
+        scene = new Scene(root, WIDTH, HEIGHT, true);
 
         camera.setTranslateZ(-500);
         root.getChildren().addAll(knapsackGroup);
 
-        knapsackGroup.setTranslateX(WIDTH/2-100);
-        knapsackGroup.setTranslateY(HEIGHT/2);
-        Scene scene = new Scene(root, WIDTH, HEIGHT, true);
+        knapsackGroup.setTranslateX(WIDTH / 2 - 100);
+        knapsackGroup.setTranslateY(HEIGHT / 2);
         scene.setCamera(camera);
 
-        initMouseControl(knapsackGroup, scene);
+        initMouseControl(knapsackGroup, scene, primaryStage);
         addEventHandler(primaryStage, knapsackGroup);
 
         primaryStage.setTitle("Parcelminoes");
@@ -72,7 +76,7 @@ public class Draw extends Application {
         primaryStage.show();
     }
 
-    private void initMouseControl(KnapsackGroup knapsackGroup, Scene scene) {
+    private void initMouseControl(KnapsackGroup knapsackGroup, Scene scene, Stage stage) {
         Rotate xRotate;
         Rotate yRotate;
         knapsackGroup.getTransforms().addAll(
@@ -92,19 +96,24 @@ public class Draw extends Application {
             angleX.set(anchorAngleX - (anchorY - event.getSceneY()));
             angleY.set(anchorAngleY + (anchorX - event.getSceneX()));
         });
+        stage.addEventHandler(ScrollEvent.SCROLL,event ->{
+            double delta = event.getDeltaY();
+            knapsackGroup.setTranslateZ(knapsackGroup.getTranslateZ() + delta);
+        });
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+
 
 
     private void addEventHandler(Stage primaryStage, KnapsackGroup group) {
-
         primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
                     @Override
                     public void handle(KeyEvent t) {
                         switch (t.getCode()) {
+                            case Z:
+                                KnapsackGroup g = new KnapsackGroup(KnapsackGroup.test2, 20);
+                                group.setParcelGroups(g.getParcelGroups());
+                                break;
                             case Q:
                                 group.rotateByX(-angle);
                                 break;
@@ -148,6 +157,21 @@ public class Draw extends Application {
 
     }
 
+    public Scene getScene() {
+        return this.scene;
+    }
 
+
+    private void rotateByX(KnapsackGroup knapsackGroup, int angle){
+        knapsackGroup.rotateByX(angle);
+    }
+
+    private void rotateByY(KnapsackGroup knapsackGroup, int angle){
+        knapsackGroup.rotateByY(angle);
+    }
+
+    private void rotateByZ(KnapsackGroup knapsackGroup, int angle){
+        knapsackGroup.rotateByZ(angle);
+    }
 
 }
