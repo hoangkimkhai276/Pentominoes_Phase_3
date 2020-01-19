@@ -15,7 +15,6 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafxdraw.Draw;
-import javafxdraw.TestIntergration;
 import knapsack.KnapsackGroup;
 
 import javax.imageio.ImageIO;
