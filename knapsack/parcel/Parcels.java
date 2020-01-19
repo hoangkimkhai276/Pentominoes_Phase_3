@@ -115,4 +115,9 @@ public final class Parcels {
 		return result;
 	}
 	
+	public static ArrayList<ParcelCore> createGreedyList(ParcelCore...parcels) {
+		ArrayList<ParcelCore> result = new ArrayList<ParcelCore>(Arrays.asList(createParcelPermutations(parcels)));
+		sortByDensity(result);
+		return result;
+	}
 }
