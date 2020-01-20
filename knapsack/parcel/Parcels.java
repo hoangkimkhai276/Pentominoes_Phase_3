@@ -120,9 +120,4 @@ public final class Parcels {
 		sortByDensity(result);
 		return result;
 	}
-	
-	public static <T> void addUniqueElementsToSortedList(ArrayList<T> sorted_list, ArrayList<? extends T> elements, Comparator<? super T> sorter) {
-		for (T element : elements) if (!sorted_list.contains(element)) sorted_list.add(element);
-		sorted_list.sort(sorter);
-	}
 }
