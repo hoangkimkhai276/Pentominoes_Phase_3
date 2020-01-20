@@ -257,6 +257,30 @@ public class MiniSimpleParcel {
 		return result;
 	}
 	
+	public MiniSimpleParcel rotateToFitInside(MiniSimpleParcel other) {
+		int[] lwh_t = {length, width, height};
+		int[] lwh_o = {other.length, other.width, other.height};
+		Arrays.sort(lwh_t);
+		Arrays.sort(lwh_o);
+		boolean fits = lwh_t[0] <= lwh_o[0] && lwh_t[1] <= lwh_o[1] && lwh_t[2] <= lwh_o[2];
+		if (!fits) return null;
+		for (int j=0; j < 3; j++)
+			for (int i=0; i < 3; i++)
+				if (lwh_t[i] == lwh_o[j] && i != 0) {
+					int temp = lwh_t[j];
+					lwh_t[j] = lwh_t[i];
+					lwh_t[i] = temp;
+				}
+		int[] simo = other.getSimilarCountAndOrder(new MiniSimpleParcel(lwh_o[0], lwh_o[1], lwh_o[2], other.value));
+		int[] res = new int[3];
+		for (int i=0; i < 3; i++) {
+			if (simo[i+1] == 1) res[0] = lwh_t[i];
+			if (simo[i+1] == 2) res[1] = lwh_t[i];
+			if (simo[i+1] == 4) res[2] = lwh_t[i];
+		}
+		return new MiniSimpleParcel(res[0], res[1], res[2], value, components);
+	}
+	
 	public Size3D getHitBox() {
 		return new Size3D(length, width, height);
 	}
@@ -321,10 +345,30 @@ public class MiniSimpleParcel {
 	public static MiniSimpleParcel[][] getSubDivisions(MiniSimpleParcel knapsack, MiniSimpleParcel placedBlock) {
 		MiniSimpleParcel[][] result; int subcount = getSubCount(knapsack, placedBlock);
 		if (subcount<=0) return new MiniSimpleParcel[0][0];
+		//int[] csim = placedBlock.getSimilarCountAndOrder(knapsack);
 		if (subcount==1) return new MiniSimpleParcel[][]{{knapsack.subtract(placedBlock.rotateUntilSimilar(knapsack))}};
 		if (subcount==2) {
 			result = new MiniSimpleParcel[2][2];
-			//TODO seperate the subdivisions
+			MiniSimpleParcel main = placedBlock.rotateToFitInside(knapsack);
+			MiniSimpleParcel A_part = null, B_part = null, C_part = null;
+			int sim = main.getSimilar(knapsack);
+			if (sim==LENGTH) {
+				A_part = new MiniSimpleParcel(main.length, main.width, knapsack.height, 0).subtract(main);
+				B_part = new MiniSimpleParcel(main.length, knapsack.width, main.height, 0).subtract(main);
+				C_part = new MiniSimpleParcel(main.length, knapsack.width - main.width, knapsack.height - main.height, 0);
+			} else if (sim==WIDTH) {
+				A_part = new MiniSimpleParcel(main.length, main.width, knapsack.height, 0).subtract(main);
+				B_part = new MiniSimpleParcel(knapsack.length, knapsack.width, main.height, 0).subtract(main);
+				C_part = new MiniSimpleParcel(knapsack.length - main.length, main.width, knapsack.height - main.height, 0);
+			} else if (sim==HEIGHT) {
+				A_part = new MiniSimpleParcel(main.length, knapsack.width, main.height, 0).subtract(main);
+				B_part = new MiniSimpleParcel(knapsack.length, main.width, main.height, 0).subtract(main);
+				C_part = new MiniSimpleParcel(knapsack.length - main.length, knapsack.width - main.width, main.height, 0);
+			} else System.exit(0);
+			result[0][0] = A_part.add(C_part);
+			result[0][1] = B_part;
+			result[1][0] = A_part;
+			result[1][1] = B_part.add(C_part);
 		}
 		else {
 			result = new MiniSimpleParcel[5][3];
@@ -374,9 +418,10 @@ public class MiniSimpleParcel {
 		for (MiniSimpleParcel parcel : parcels) putParcel(patchwork_pool, to_add, knapsack, parcel);
 	}
 	
-	/*public static void main(String[] args) {
-		test2();
-	}*/
+	public static void main(String[] args) {
+		//test2();
+		System.out.println(Arrays.deepToString(getSubDivisions(K, new MiniSimpleParcel(5,3,25,0))));
+	}
 	
 	public static void test2() {
 		StoredMini result = new StoredMini(NONE);
