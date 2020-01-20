@@ -549,119 +549,6 @@ public class UserInterface implements Files {
 			
 		}	
 	}
-
-	private static final double WIDTH = 800;
-	private static final double HEIGHT = 800;
-	private static final int angle = 5;
-	private static double anchorX;
-	private static double anchorY;
-	private static double anchorAngleX = 0;
-	private static double anchorAngleY = 0;
-	private static final DoubleProperty angleX = new SimpleDoubleProperty(0);
-	private static final DoubleProperty angleY = new SimpleDoubleProperty(0);
-	public static Group root ;
-	public static Scene scene;
-	public static void draw(JFXPanel jfxPanel) {
-		System.out.println("Draw gets called");
-		root = new Group();
-		scene = new Scene(root, leftSide.getWidth(),leftSide.getHeight(),true);
-		KnapsackGroup knapsackGroup = KnapsackGroup.example;
-		PerspectiveCamera camera = new PerspectiveCamera();
-		camera.setTranslateZ(-500);
-		root.getChildren().addAll(knapsackGroup);
-
-		knapsackGroup.setTranslateX(WIDTH / 2 - 100);
-		knapsackGroup.setTranslateY(HEIGHT / 2);
-		scene.setCamera(camera);
-
-		initMouseControl(knapsackGroup, scene);
-		addEventHandler(scene, knapsackGroup);
-
-
-		jfxPanel.setScene(scene);
-
-	}
-
-	private static void initMouseControl(KnapsackGroup knapsackGroup, Scene scene) {
-		Rotate xRotate;
-		Rotate yRotate;
-		knapsackGroup.getTransforms().addAll(
-				xRotate = new Rotate(0, Rotate.X_AXIS),
-				yRotate = new Rotate(0, Rotate.Y_AXIS)
-
-		);
-		xRotate.angleProperty().bind(angleX);
-		yRotate.angleProperty().bind(angleY);
-		scene.setOnMousePressed(event -> {
-			anchorX = event.getSceneX();
-			anchorY = event.getSceneY();
-			anchorAngleX = angleX.get();
-			anchorAngleY = angleY.get();
-		});
-		scene.setOnMouseDragged(event -> {
-			angleX.set(anchorAngleX - (anchorY - event.getSceneY()));
-			angleY.set(anchorAngleY + (anchorX - event.getSceneX()));
-		});
-		scene.addEventHandler(ScrollEvent.SCROLL, event ->{
-			double delta = event.getDeltaY();
-			knapsackGroup.setTranslateZ(knapsackGroup.getTranslateZ() + delta);
-		});
-	}
-
-
-
-
-	private static void addEventHandler(Scene primaryStage, KnapsackGroup group) {
-		primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
-					@Override
-					public void handle(KeyEvent t) {
-						switch (t.getCode()) {
-							case Z:
-								KnapsackGroup g = new KnapsackGroup(KnapsackGroup.test2, 20);
-								group.setParcelGroups(g.getParcelGroups());
-								break;
-							case Q:
-								group.rotateByX(-angle);
-								break;
-							case E:
-								group.rotateByX(angle);
-								break;
-							case W:
-								group.rotateByZ(angle);
-								break;
-							case S:
-								group.rotateByZ(-angle);
-								break;
-							case A:
-								group.rotateByY(angle);
-								break;
-							case D:
-								group.rotateByY(-angle);
-								break;
-							case NUMPAD4:
-								group.translateXProperty().set((group.getTranslateX() - 10));
-								System.out.println("Moving left" + group.translateXProperty().get());
-								break;
-							case NUMPAD6:
-								group.translateXProperty().set((group.getTranslateX()) + 10);
-								System.out.println("Moving right" + group.translateXProperty().get());
-								break;
-							case NUMPAD8:
-								group.translateZProperty().set((group.getTranslateZ()) + 10);
-								System.out.println("Moving forward" + group.translateXProperty().get());
-								break;
-							case NUMPAD2:
-								group.translateZProperty().set((group.getTranslateZ()) - 10);
-								System.out.println("Moving backward" + group.translateXProperty().get());
-								break;
-							default:
-								break;
-						}
-					}
-				}
-		);
-
-	}
 	public void displayKnapsack(){
 		leftPanel.setLayout(null);
 		leftPanel.remove(calculate);
@@ -682,7 +569,7 @@ public class UserInterface implements Files {
 				new Runnable(){
 					@Override
 					public void run() {
-						draw(fxPanel);
+						KnapsackDraw.draw(fxPanel,leftSide);
 					}
 				}
 		);
