@@ -38,7 +38,7 @@ public interface Parcel {
 	int getVolume();
 	
 	default double getDensity() {
-		return getValue() / ((double)getVolume());
+		return getValue() / getVolume();
 	}
 
 	Point3D[] getPoints();
