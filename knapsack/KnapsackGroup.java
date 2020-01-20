@@ -2,8 +2,8 @@ package knapsack;
 
 import java.util.ArrayList;
 
-import graphics.SmartGroup;
 import javafx.scene.shape.Box;
+import javafxdraw.SmartGroup;
 import javafxstuff.Point3D;
 import knapsack.parcel.ParcelCore;
 import knapsack.parcel.ParcelGroup;

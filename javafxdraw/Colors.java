@@ -1,4 +1,4 @@
-package graphics;
+package javafxdraw;
 
 import java.awt.Color;
 import java.awt.Component;

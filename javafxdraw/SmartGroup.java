@@ -1,4 +1,4 @@
-package graphics;
+package javafxdraw;
 
 import javafx.scene.Group;
 import javafx.scene.transform.Rotate;
