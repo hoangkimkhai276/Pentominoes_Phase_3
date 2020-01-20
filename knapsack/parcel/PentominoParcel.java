@@ -77,7 +77,7 @@ public class PentominoParcel extends ParcelCore {
 
 	@Override
 	public int getVolume() {
-		return relative_origin_points.size();
+		return 5;
 	}
 
 	@Override
