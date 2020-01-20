@@ -117,6 +117,12 @@ public final class Parcels {
 		return result;
 	}
 	
+	public static ParcelCore[][] createLayeredParcelPermutations(ParcelCore[] parcels) {
+		ParcelCore[][] result = new ParcelCore[parcels.length][];
+		for (int i=0; i < result.length; i++) result[i] = createParcelPermutations(parcels[i]);
+		return result;
+	}
+	
 	public static ArrayList<ParcelCore> createGreedyList(ParcelCore...parcels) {
 		ArrayList<ParcelCore> result = new ArrayList<ParcelCore>(Arrays.asList(createParcelPermutations(parcels)));
 		sortByDensity(result);
