@@ -22,6 +22,8 @@ public final class Parcels {
 	public static final ParcelCore L = new PentominoParcel(new boolean[][]{{true, true},{true, false},{true, false},{true, false}}, 3, SELECTED_COLORS[4], "L");
 	public static final ParcelCore T = new PentominoParcel(new boolean[][]{{true, true, true}, {false, true, false}, {false, true, false}}, 5, SELECTED_COLORS[5], "T");
 	public static final ParcelCore[] DEFAULT = {A,B,C,P,L,T};
+	public static final ParcelCore[] PARCELS = {A,B,C};
+	public static final ParcelCore[] PENTOS = {P,L,T};
 	
 	public static final Function<Parcel, Double> DISTANCE_SORT = a-> {return Double.valueOf(a.getOrigin().magnitude());};
 	public static final Function<Parcel, Double> VALUE_SORT = a-> {return Double.valueOf(a.getValue());};
