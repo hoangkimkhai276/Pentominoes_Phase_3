@@ -541,9 +541,11 @@ public class UserInterface implements Files {
 	public static void updateLabels(Knapsack k, ParcelInterface a, boolean pento){
 		double x = k.getVolume();int y = k.getFilledVolume();
 		double filledP = (y/x)*100;
+		String st= String.valueOf(filledP);
+		if(st.length()<5){}
+		else{st = String.valueOf(filledP).substring(0,5);}
 
-
-		percentageFilled.setText(String.valueOf(filledP).substring(0,5)+" %");//Percentage Filled
+		percentageFilled.setText(st+" %");//Percentage Filled
 		timeTaken.setText(String.valueOf((totalTakenTIME/1000000d)).substring(0,5)+" ms");//Time Taken to find answer
 		totalValue.setText(k.getValue()+"");//Total value of our solution
 		//theoryBest.setText("");//Theoritcal best value
