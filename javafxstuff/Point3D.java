@@ -84,6 +84,13 @@ public class Point3D {
         return z;
     }
     
+    public Point3D rotateXAround(Point3D origin) {
+    	return new Point3D(x - origin.x, z - origin.z, y - origin.y); }
+    public Point3D rotateYAround(Point3D origin) {
+    	return new Point3D(z - origin.z, y - origin.y, x - origin.x); }
+    public Point3D rotateZAround(Point3D origin) {
+    	return new Point3D(y - origin.y, x - origin.x, z - origin.z); }
+    
     public javafx.geometry.Point3D getPoint3D() {
     	return new javafx.geometry.Point3D(x, y, z);
     }
@@ -448,7 +455,7 @@ public class Point3D {
      * The returned string might be empty but cannot be {@code null}.
      */
     @Override public String toString() {
-        return "Point3D [x = " + getX() + ", y = " + getY() + ", z = " + getZ() + "]";
+        return "(" + getX() + ", " + getY() + ", " + getZ() + ")";
     }
 
     public javafx.geometry.Point3D convert() {
