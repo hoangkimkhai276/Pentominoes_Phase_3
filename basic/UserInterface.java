@@ -1,5 +1,6 @@
 package basic;
 
+import greedy_algorithm.SimpleStartingCode;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
@@ -17,6 +18,7 @@ import javafx.scene.transform.Rotate;
 import javafxdraw.Draw;
 import knapsack.Knapsack;
 import knapsack.KnapsackGroup;
+import knapsack.parcel.Parcels;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -504,8 +506,8 @@ public class UserInterface implements Files {
 		rightSide.add(percentage);percentage.setBounds(10,500,300,100);
 		rightSide.add(time);time.setBounds(10, 550, 200, 100);
 		rightSide.add(valueL);valueL.setBounds(10, 600, 200, 100);
-		rightSide.add(theoryV);theoryV.setBounds(10, 650, 300, 100);
-		rightSide.add(theoryV2);theoryV2.setBounds(15, 675, 300, 100);
+//		rightSide.add(theoryV);theoryV.setBounds(10, 650, 300, 100);
+//		rightSide.add(theoryV2);theoryV2.setBounds(15, 675, 300, 100);
 
 		rightSide.add(usedValues);usedValues.setBounds(10+rightSide.getWidth()/4,350,rightSide.getWidth()*2/3,100);
 		rightSide.add(ALabel);ALabel.setBounds(40, 385, rightSide.getWidth(), 100);
@@ -534,22 +536,53 @@ public class UserInterface implements Files {
 		leftSide.add(leftPanel);
 	}
 
-	public static void updateLabels(KnapsackGroup x){
+	public static long totalTakenTIME;
 
-		percentageFilled.setText("");//Percentage Filled
-		timeTaken.setText("");//Time Taken to find answer
-		totalValue.setText("");//Total value of our solution
-		theoryBest.setText("");//Theoritcal best value
-		/*
-		When the alogrithm is added to the code, make sure to upadte these labels using this method.
-		Just add the text that has to be displayed.
-		 */
-		usedA.setText("");//Amount of parcel of size A or pentominoes of shape L
-		usedB.setText("");//Amount of parcel of size B or pentominoes of shape P
-		usedC.setText("");//Amount of parcel of size C or pentominoes of shape T
+	public static void updateLabels(Knapsack k, ParcelInterface a, boolean pento){
+		double x = k.getVolume();int y = k.getFilledVolume();
+		double filledP = (y/x)*100;
+
+
+		percentageFilled.setText(String.valueOf(filledP).substring(0,5)+" %");//Percentage Filled
+		timeTaken.setText(String.valueOf((totalTakenTIME/1000000d)).substring(0,5)+" ms");//Time Taken to find answer
+		totalValue.setText(k.getValue()+"");//Total value of our solution
+		//theoryBest.setText("");//Theoritcal best value
+		if(pento) {
+			usedA.setText(a.L_quantity_used+"");//Amount of parcel of size A or pentominoes of shape L
+			usedB.setText(a.P_quantity_used+"");//Amount of parcel of size B or pentominoes of shape P
+			usedC.setText(a.T_quantity_used+"");//Amount of parcel of size C or pentominoes of shape T
+		}
+		else {
+			usedA.setText(a.A_quantity_used+"");//Amount of parcel of size A or pentominoes of shape L
+			usedB.setText(a.B_quantity_used+"");//Amount of parcel of size B or pentominoes of shape P
+			usedC.setText(a.C_quantity_used+"");//Amount of parcel of size C or pentominoes of shape T
+		}
 	}
 
-	public void feedToAlgorithm(Object obj){}
+
+	public void feedToAlgorithm(Object obj){
+		Knapsack before = new Knapsack();
+		ParcelInterface Algorithm = new ParcelInterface();
+		boolean pento;
+		if(obj instanceof ParcelSettings){
+			ParcelSettings j = (ParcelSettings) obj;
+			pento=false;
+			Algorithm.putSettings(j);
+		}
+		else{
+			pento=true;
+			PentominoSettings j= (PentominoSettings) obj;
+			Algorithm.putSettings(j);
+		}
+
+		long start = System.nanoTime();
+		Knapsack k = Algorithm.greedy(before);
+		totalTakenTIME = System.nanoTime() - start;
+
+		knapsackGG= new KnapsackGroup(k,20);
+		updateLabels(k,Algorithm,pento);
+
+	}
 
 	public void refreshFrame() {MainFrame.setVisible(false);MainFrame.setVisible(true);}
 
@@ -598,7 +631,7 @@ public class UserInterface implements Files {
 
 		}
 	}
-
+	private static KnapsackGroup knapsackGG;
 	private static final double WIDTH = 800;
 	private static final double HEIGHT = 800;
 	private static final int angle = 5;
@@ -610,12 +643,12 @@ public class UserInterface implements Files {
 	private static final DoubleProperty angleY = new SimpleDoubleProperty(0);
 	public static Group root ;
 	public static Scene scene;
+
 	public static void draw(JFXPanel jfxPanel) {
-		System.out.println("Draw gets called");
+		//System.out.println("Draw gets called");
 		root = new Group();
 		scene = new Scene(root, leftSide.getWidth(),leftSide.getHeight(),true);
-		KnapsackGroup knapsackGroup = KnapsackGroup.example;
-		updateLabels(knapsackGroup);
+		KnapsackGroup knapsackGroup = knapsackGG;
 		PerspectiveCamera camera = new PerspectiveCamera();
 		camera.setTranslateZ(-500);
 		root.getChildren().addAll(knapsackGroup);
