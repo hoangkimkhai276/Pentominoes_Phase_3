@@ -23,7 +23,7 @@ public final class Colors {
 	 *  and makes it so that the generated colors differ more from each other than normal randomly generated colors would be.
 	 *  <br><br>this value should be at least around 10 and at most around 500 (the theoretically most distant two colors can be is
 	 *  765: black (0,0,0) to white (255,255,255))<br><br>By default, {@code minimal_color_distance} equals {@code 80}*/
-	public static int minimal_color_distance = 80;
+	public static int minimal_color_distance = 180;
 
 	/**
 	 * Generates a random color based on the {@link #minimal_color_distance} as step_size per R, G or B value to gradually move towards the specified

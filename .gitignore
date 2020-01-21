@@ -4,3 +4,5 @@
 /bin/
 .idea/
 .idea/workspace.xml
+out/
+basic/KnapsackDraw.java

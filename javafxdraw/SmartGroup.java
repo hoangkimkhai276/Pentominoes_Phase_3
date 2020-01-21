@@ -8,7 +8,7 @@ public abstract class SmartGroup extends Group {
 
 	private Rotate rotate;
     private Transform transform = new Rotate();
-    protected javafx.geometry.Point3D center;
+    public javafx.geometry.Point3D center;
 
     public void rotateByX(int angle){
         rotate = new Rotate(angle,Rotate.X_AXIS);
@@ -35,7 +35,7 @@ public abstract class SmartGroup extends Group {
     }
 
     private void setCenter() {
-        System.out.println(center);
+        //System.out.println(center);
         rotate.setPivotX(center.getX());
         rotate.setPivotY(center.getY());
         rotate.setPivotZ(center.getZ());

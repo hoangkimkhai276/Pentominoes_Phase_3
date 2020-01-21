@@ -11,7 +11,7 @@ import knapsack.parcel.Parcels;
 
 public class KnapsackGroup extends SmartGroup {
 
-    private static final Knapsack test = new Knapsack();
+    public static final Knapsack test = new Knapsack();
     public static final Knapsack test2 = test.getEmpty();
 
     static {
@@ -26,6 +26,12 @@ public class KnapsackGroup extends SmartGroup {
         ParcelCore p1 = Parcels.T.copy();
         ParcelCore p2 = Parcels.L.copy();
         ParcelCore p11 = Parcels.C.copy();
+
+        ParcelCore tParcel = Parcels.T.copy();
+        ParcelCore pParcel = Parcels.P.copy();
+        ParcelCore lParcel = Parcels.L.copy();
+
+
         p11.moveParcel(new Point3D(0,2,1));
         p1.moveParcel(new Point3D(0, 2, 0));
         p2.moveParcel(new Point3D(8, 3, 0));
@@ -36,7 +42,9 @@ public class KnapsackGroup extends SmartGroup {
         p7.moveParcel(new Point3D(14, 3, 0));
         p8.moveParcel(new Point3D(5, 3, 0));
         p9.moveParcel(new Point3D(31, 3, 0));
-
+        lParcel.moveParcel(new Point3D(1,0,0));
+        tParcel.moveParcel(new Point3D(4,1,0));
+        pParcel.moveParcel(new Point3D(8,1,2));
         test.putParcel(p1);
         test.putParcel(p2);
         test.putParcel(p3);
@@ -50,8 +58,9 @@ public class KnapsackGroup extends SmartGroup {
 
         ParcelCore p10 = Parcels.C.copy();
         p10.moveParcel(new Point3D(20,0,0));
-        test2.putParcel(p11);
-        test2.putParcel(p10);
+        test2.putParcel(lParcel);
+        test2.putParcel(tParcel);
+        test2.putParcel(pParcel);
     }
 
     public static final KnapsackGroup example = new KnapsackGroup(test, 20);

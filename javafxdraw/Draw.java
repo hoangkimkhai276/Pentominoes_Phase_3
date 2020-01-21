@@ -69,7 +69,7 @@ public class Draw extends Application {
         scene.setCamera(camera);
 
         initMouseControl(knapsackGroup, scene, primaryStage);
-        addEventHandler(primaryStage, knapsackGroup);
+        addEventHandler(scene, knapsackGroup);
 
         primaryStage.setTitle("Parcelminoes");
         primaryStage.setScene(scene);
@@ -105,7 +105,7 @@ public class Draw extends Application {
 
 
 
-    private void addEventHandler(Stage primaryStage, KnapsackGroup group) {
+    private void addEventHandler(Scene primaryStage, KnapsackGroup group) {
         primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
                     @Override
                     public void handle(KeyEvent t) {
@@ -173,5 +173,12 @@ public class Draw extends Application {
     private void rotateByZ(KnapsackGroup knapsackGroup, int angle){
         knapsackGroup.rotateByZ(angle);
     }
+
+
+
+
+
+
+
 
 }

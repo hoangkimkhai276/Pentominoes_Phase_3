@@ -18,6 +18,8 @@ public abstract class ParcelCore implements Parcel {
 	private Color color;
 	private String name;
 
+	public static int color_variation = 30;
+
 	protected ParcelCore(Point3D origin, int value, Color color, String name) {
 		this.value = value;
 		this.color = color;
@@ -96,7 +98,21 @@ public abstract class ParcelCore implements Parcel {
 
 	/** Rotate around the height-/z-axis at an angle of 90 degrees (right or left rotation is consistent but no direction is ensured) */
 	public abstract void rotateHeight();
+	public abstract <T extends ParcelCore> T duplicate();
 
+	@Override
+	public final <T extends Parcel> T copy() {
+		ParcelCore result = (ParcelCore) duplicate();
+		Color color = result.getColor();
+		int R = -1, G = -1, B = -1;
+		while (R < 0 || R > 255 || G < 0 || G > 255 || B < 0 || B > 255) {
+			R = color.getRed() + (int)(color_variation * (Math.random()*2-1));
+			G = color.getGreen() + (int)(color_variation * (Math.random()*2-1));
+			B = color.getBlue() + (int)(color_variation * (Math.random()*2-1));
+		}
+		result.setColor(new Color(R, G, B));
+		return (T)result;
+	}
 	public javafx.scene.paint.Color getFXColor() {
 		return new javafx.scene.paint.Color(color.getRed()/255d, color.getGreen()/255d, color.getBlue()/255d, color.getAlpha()/255d);
 	}

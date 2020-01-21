@@ -27,13 +27,6 @@ public class SimpleParcel extends ParcelCore {
 		this(length, width, height, value, Point3D.ZERO, color, name);
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T extends Parcel> T copy() {
-		SimpleParcel copy =  new SimpleParcel(shape.getLength(), shape.getWidth(), shape.getHeight(), getValue(), this.getOrigin(), getColor(), getName());
-		return (T) copy;
-	}
-	
 	@Override
 	public int getVolume() {
 		return shape.getVolume();
@@ -97,13 +90,19 @@ public class SimpleParcel extends ParcelCore {
 	@Override
 	public String toString() {
 		Point3D p = getOrigin();
-		return "\n"+toString_nocoord()+" at ("+p.getX()+", "+p.getY()+", "+p.getZ()+") with value of "+getValue();
+		return toString_nocoord()+" at ("+p.getX()+", "+p.getY()+", "+p.getZ()+") with value of "+getValue()+"\n";
 	}
 	public String toString_nocoord() {
 		Size3D  s = getHitBox();
 		return "SimpleParcel of "+s.length+"x"+s.width+"x"+s.height;
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends ParcelCore> T duplicate() {
+		SimpleParcel copy =  new SimpleParcel(shape.getLength(), shape.getWidth(), shape.getHeight(), getValue(), this.getOrigin(), getColor(), getName());
+		return (T) copy;
+	}
 	public int getLength() {
 		return shape.getLength();
 	}
