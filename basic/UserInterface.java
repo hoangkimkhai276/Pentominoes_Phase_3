@@ -108,22 +108,22 @@ public class UserInterface implements Files {
 
 		MainMenu= new JPanel(){
 			@Override
-            public void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            try {
-				final BufferedImage image = ImageIO.read(new File(Files.MAIN_BG));
-				g.drawImage(image, 0, 0, null);
-			} catch (IOException e) {
+			public void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				try {
+					final BufferedImage image = ImageIO.read(new File(Files.MAIN_BG));
+					g.drawImage(image, 0, 0, null);
+				} catch (IOException e) {
 
-				Point p1 = new Point(10, getHeight() - 10);
-	            Point p2 = new Point(getWidth() - 10, 10);
+					Point p1 = new Point(10, getHeight() - 10);
+					Point p2 = new Point(getWidth() - 10, 10);
 
-	            GradientPaint gp = new GradientPaint( p1, gradient1,  p2, gradient2, true);
+					GradientPaint gp = new GradientPaint( p1, gradient1,  p2, gradient2, true);
 
-	            Graphics2D g2 = (Graphics2D) g;
-	            g2.setPaint(gp);
-	            g.fillRect(0, 0, getWidth(), getHeight());
-			}
+					Graphics2D g2 = (Graphics2D) g;
+					g2.setPaint(gp);
+					g.fillRect(0, 0, getWidth(), getHeight());
+				}
 
 			}
 		};
@@ -158,22 +158,22 @@ public class UserInterface implements Files {
 	public void SetUpParcelMenu() {
 		ParcelPanel= new JPanel(){
 			@Override
-            public void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            try {
-				final BufferedImage image = ImageIO.read(new File(Files.BG));
-				g.drawImage(image, 0, 0, null);
-			} catch (IOException e) {
+			public void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				try {
+					final BufferedImage image = ImageIO.read(new File(Files.BG));
+					g.drawImage(image, 0, 0, null);
+				} catch (IOException e) {
 
-				Point p1 = new Point(10, getHeight() - 10);
-	            Point p2 = new Point(getWidth() - 10, 10);
+					Point p1 = new Point(10, getHeight() - 10);
+					Point p2 = new Point(getWidth() - 10, 10);
 
-	            GradientPaint gp = new GradientPaint( p1, gradient1,  p2, gradient2, true);
+					GradientPaint gp = new GradientPaint( p1, gradient1,  p2, gradient2, true);
 
-	            Graphics2D g2 = (Graphics2D) g;
-	            g2.setPaint(gp);
-	            g.fillRect(0, 0, getWidth(), getHeight());
-			}
+					Graphics2D g2 = (Graphics2D) g;
+					g2.setPaint(gp);
+					g.fillRect(0, 0, getWidth(), getHeight());
+				}
 
 			}
 		};
@@ -189,41 +189,41 @@ public class UserInterface implements Files {
 		Back_Button.setBounds(5, 640, 100, 100);
 
 		NumberFormat format = NumberFormat.getInstance();
-	    NumberFormatter formatter = new NumberFormatter(format);
-	    formatter.setValueClass(Integer.class);
-	    formatter.setMinimum(0);
-	    formatter.setMaximum(Integer.MAX_VALUE);
-	    formatter.setAllowsInvalid(false);
+		NumberFormatter formatter = new NumberFormatter(format);
+		formatter.setValueClass(Integer.class);
+		formatter.setMinimum(0);
+		formatter.setMaximum(Integer.MAX_VALUE);
+		formatter.setAllowsInvalid(false);
 
-	    formatter.setCommitsOnValidEdit(true);
+		formatter.setCommitsOnValidEdit(true);
 
-	    JFormattedTextField vA_Value = new JFormattedTextField(formatter);vA_Value.setBounds(0,0,40,40);vA_Value.setBounds(335,285,50,50);vA_Value.setText("3");vA_Value.setFont(myFont2);
-	    JFormattedTextField vB_Value = new JFormattedTextField(formatter);vB_Value.setBounds(50,50,40,40);vB_Value.setBounds(435,285,50,50);vB_Value.setText("4");vB_Value.setFont(myFont2);
-	    JFormattedTextField vC_Value = new JFormattedTextField(formatter);vC_Value.setBounds(100,100,40,40);vC_Value.setBounds(535,285,50,50);vC_Value.setText("5");vC_Value.setFont(myFont2);
+		JFormattedTextField vA_Value = new JFormattedTextField(formatter);vA_Value.setBounds(0,0,40,40);vA_Value.setBounds(335,285,50,50);vA_Value.setText("3");vA_Value.setFont(myFont2);
+		JFormattedTextField vB_Value = new JFormattedTextField(formatter);vB_Value.setBounds(50,50,40,40);vB_Value.setBounds(435,285,50,50);vB_Value.setText("4");vB_Value.setFont(myFont2);
+		JFormattedTextField vC_Value = new JFormattedTextField(formatter);vC_Value.setBounds(100,100,40,40);vC_Value.setBounds(535,285,50,50);vC_Value.setText("5");vC_Value.setFont(myFont2);
 
-	    JFormattedTextField vA_Quantity = new JFormattedTextField(formatter);vA_Quantity.setBounds(150,150,40,40);vA_Quantity.setBounds(335,365,50,50);vA_Quantity.setText("100");vA_Quantity.setFont(myFont2);
-	    JFormattedTextField vB_Quantity = new JFormattedTextField(formatter);vB_Quantity.setBounds(200,200,40,40);vB_Quantity.setBounds(435,365,50,50);vB_Quantity.setText("100");vB_Quantity.setFont(myFont2);
-	    JFormattedTextField vC_Quantity = new JFormattedTextField(formatter);vC_Quantity.setBounds(250,250,40,40);vC_Quantity.setBounds(535,365,50,50);vC_Quantity.setText("100");vC_Quantity.setFont(myFont2);
+		JFormattedTextField vA_Quantity = new JFormattedTextField(formatter);vA_Quantity.setBounds(150,150,40,40);vA_Quantity.setBounds(335,365,50,50);vA_Quantity.setText("100");vA_Quantity.setFont(myFont2);
+		JFormattedTextField vB_Quantity = new JFormattedTextField(formatter);vB_Quantity.setBounds(200,200,40,40);vB_Quantity.setBounds(435,365,50,50);vB_Quantity.setText("100");vB_Quantity.setFont(myFont2);
+		JFormattedTextField vC_Quantity = new JFormattedTextField(formatter);vC_Quantity.setBounds(250,250,40,40);vC_Quantity.setBounds(535,365,50,50);vC_Quantity.setText("100");vC_Quantity.setFont(myFont2);
 
-	    JLabel Parcel_Label= new JLabel("Parcel:");Parcel_Label.setFont(myFont);Parcel_Label.setForeground(myColor);Parcel_Label.setBounds(170,188,150,80);
-	    JLabel Quantity_Label= new JLabel("Quantity:");Quantity_Label.setFont(myFont);Quantity_Label.setForeground(myColor);Quantity_Label.setBounds(170,348,150,80);
-	    JLabel Value_Label= new JLabel("Value:");Value_Label.setFont(myFont);Value_Label.setForeground(myColor);Value_Label.setBounds(170,268,150,80);
+		JLabel Parcel_Label= new JLabel("Parcel:");Parcel_Label.setFont(myFont);Parcel_Label.setForeground(myColor);Parcel_Label.setBounds(170,188,150,80);
+		JLabel Quantity_Label= new JLabel("Quantity:");Quantity_Label.setFont(myFont);Quantity_Label.setForeground(myColor);Quantity_Label.setBounds(170,348,150,80);
+		JLabel Value_Label= new JLabel("Value:");Value_Label.setFont(myFont);Value_Label.setForeground(myColor);Value_Label.setBounds(170,268,150,80);
 
-	    JLabel A_Label= new JLabel("A");A_Label.setFont(myFont);A_Label.setForeground(myColor);A_Label.setBounds(350,188,150,80);
-	    JLabel B_Label= new JLabel("B");B_Label.setFont(myFont);B_Label.setForeground(myColor);B_Label.setBounds(450,188,150,80);
-	    JLabel C_Label= new JLabel("C");C_Label.setFont(myFont);C_Label.setForeground(myColor);C_Label.setBounds(550,188,150,80);
+		JLabel A_Label= new JLabel("A");A_Label.setFont(myFont);A_Label.setForeground(myColor);A_Label.setBounds(350,188,150,80);
+		JLabel B_Label= new JLabel("B");B_Label.setFont(myFont);B_Label.setForeground(myColor);B_Label.setBounds(450,188,150,80);
+		JLabel C_Label= new JLabel("C");C_Label.setFont(myFont);C_Label.setForeground(myColor);C_Label.setBounds(550,188,150,80);
 
-	    JCheckBox show = new JCheckBox("Show Steps "); show.setBounds(300, 400, 200, 100);show.setOpaque(false);show.setFont(myFont3);show.setForeground(myColor);
+		JCheckBox show = new JCheckBox("Show Steps "); show.setBounds(300, 400, 200, 100);show.setOpaque(false);show.setFont(myFont3);show.setForeground(myColor);
 
-	    ParcelPanel.add(show);
+		ParcelPanel.add(show);
 
-	    ParcelPanel.add(vA_Value);
-	    ParcelPanel.add(vB_Value);
-	    ParcelPanel.add(vC_Value);
+		ParcelPanel.add(vA_Value);
+		ParcelPanel.add(vB_Value);
+		ParcelPanel.add(vC_Value);
 
-	    ParcelPanel.add(vA_Quantity);
-	    ParcelPanel.add(vB_Quantity);
-	    ParcelPanel.add(vC_Quantity);
+		ParcelPanel.add(vA_Quantity);
+		ParcelPanel.add(vB_Quantity);
+		ParcelPanel.add(vC_Quantity);
 
 		ParcelPanel.add(Parcel_Label);
 		ParcelPanel.add(Quantity_Label);
@@ -257,22 +257,22 @@ public class UserInterface implements Files {
 	public void SetUpPentominoMenu() {
 		PentominoPanel= new JPanel(){
 			@Override
-            public void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            try {
-				final BufferedImage image = ImageIO.read(new File(Files.BG));
-				g.drawImage(image, 0, 0, null);
-			} catch (IOException e) {
+			public void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				try {
+					final BufferedImage image = ImageIO.read(new File(Files.BG));
+					g.drawImage(image, 0, 0, null);
+				} catch (IOException e) {
 
-				Point p1 = new Point(10, getHeight() - 10);
-	            Point p2 = new Point(getWidth() - 10, 10);
+					Point p1 = new Point(10, getHeight() - 10);
+					Point p2 = new Point(getWidth() - 10, 10);
 
-	            GradientPaint gp = new GradientPaint( p1, gradient1,  p2, gradient2, true);
+					GradientPaint gp = new GradientPaint( p1, gradient1,  p2, gradient2, true);
 
-	            Graphics2D g2 = (Graphics2D) g;
-	            g2.setPaint(gp);
-	            g.fillRect(0, 0, getWidth(), getHeight());
-			}
+					Graphics2D g2 = (Graphics2D) g;
+					g2.setPaint(gp);
+					g.fillRect(0, 0, getWidth(), getHeight());
+				}
 
 			}
 		};
@@ -289,50 +289,50 @@ public class UserInterface implements Files {
 
 
 		NumberFormat format = NumberFormat.getInstance();
-	    NumberFormatter formatter = new NumberFormatter(format);
-	    formatter.setValueClass(Integer.class);
-	    formatter.setMinimum(0);
-	    formatter.setMaximum(Integer.MAX_VALUE);
-	    formatter.setAllowsInvalid(false);
+		NumberFormatter formatter = new NumberFormatter(format);
+		formatter.setValueClass(Integer.class);
+		formatter.setMinimum(0);
+		formatter.setMaximum(Integer.MAX_VALUE);
+		formatter.setAllowsInvalid(false);
 
-	    formatter.setCommitsOnValidEdit(true);
+		formatter.setCommitsOnValidEdit(true);
 
 
-	    JFormattedTextField L_Value = new JFormattedTextField(formatter);L_Value.setBounds(335,285,50,50);L_Value.setText("3");L_Value.setFont(myFont2);
-	    JFormattedTextField P_Value = new JFormattedTextField(formatter);P_Value.setBounds(435,285,50,50);P_Value.setText("4");P_Value.setFont(myFont2);
-	    JFormattedTextField T_Value = new JFormattedTextField(formatter);T_Value.setBounds(535,285,50,50);T_Value.setText("5");T_Value.setFont(myFont2);
+		JFormattedTextField L_Value = new JFormattedTextField(formatter);L_Value.setBounds(335,285,50,50);L_Value.setText("3");L_Value.setFont(myFont2);
+		JFormattedTextField P_Value = new JFormattedTextField(formatter);P_Value.setBounds(435,285,50,50);P_Value.setText("4");P_Value.setFont(myFont2);
+		JFormattedTextField T_Value = new JFormattedTextField(formatter);T_Value.setBounds(535,285,50,50);T_Value.setText("5");T_Value.setFont(myFont2);
 
-	    JFormattedTextField L_Quantity = new JFormattedTextField(formatter);L_Quantity.setBounds(335,365,50,50);L_Quantity.setText("100");L_Quantity.setFont(myFont2);
-	    JFormattedTextField P_Quantity = new JFormattedTextField(formatter);P_Quantity.setBounds(435,365,50,50);P_Quantity.setText("100");P_Quantity.setFont(myFont2);
-	    JFormattedTextField T_Quantity = new JFormattedTextField(formatter);T_Quantity.setBounds(535,365,50,50);T_Quantity.setText("100");T_Quantity.setFont(myFont2);
+		JFormattedTextField L_Quantity = new JFormattedTextField(formatter);L_Quantity.setBounds(335,365,50,50);L_Quantity.setText("100");L_Quantity.setFont(myFont2);
+		JFormattedTextField P_Quantity = new JFormattedTextField(formatter);P_Quantity.setBounds(435,365,50,50);P_Quantity.setText("100");P_Quantity.setFont(myFont2);
+		JFormattedTextField T_Quantity = new JFormattedTextField(formatter);T_Quantity.setBounds(535,365,50,50);T_Quantity.setText("100");T_Quantity.setFont(myFont2);
 
-	    JLabel Pentomino_Label= new JLabel("Pentomino:");Pentomino_Label.setFont(myFont);Pentomino_Label.setForeground(myColor);Pentomino_Label.setBounds(120,188,200,80);
-	    JLabel Quantity_Label= new JLabel("Quantity:");Quantity_Label.setFont(myFont);Quantity_Label.setForeground(myColor);Quantity_Label.setBounds(120,348,150,80);
-	    JLabel Value_Label= new JLabel("Value:");Value_Label.setFont(myFont);Value_Label.setForeground(myColor);Value_Label.setBounds(120,268,150,80);
+		JLabel Pentomino_Label= new JLabel("Pentomino:");Pentomino_Label.setFont(myFont);Pentomino_Label.setForeground(myColor);Pentomino_Label.setBounds(120,188,200,80);
+		JLabel Quantity_Label= new JLabel("Quantity:");Quantity_Label.setFont(myFont);Quantity_Label.setForeground(myColor);Quantity_Label.setBounds(120,348,150,80);
+		JLabel Value_Label= new JLabel("Value:");Value_Label.setFont(myFont);Value_Label.setForeground(myColor);Value_Label.setBounds(120,268,150,80);
 
-	    JLabel A_Label= new JLabel("L");A_Label.setFont(myFont);A_Label.setForeground(myColor);A_Label.setBounds(350,188,150,80);
-	    JLabel B_Label= new JLabel("P");B_Label.setFont(myFont);B_Label.setForeground(myColor);B_Label.setBounds(450,188,150,80);
-	    JLabel C_Label= new JLabel("T");C_Label.setFont(myFont);C_Label.setForeground(myColor);C_Label.setBounds(550,188,150,80);
+		JLabel A_Label= new JLabel("L");A_Label.setFont(myFont);A_Label.setForeground(myColor);A_Label.setBounds(350,188,150,80);
+		JLabel B_Label= new JLabel("P");B_Label.setFont(myFont);B_Label.setForeground(myColor);B_Label.setBounds(450,188,150,80);
+		JLabel C_Label= new JLabel("T");C_Label.setFont(myFont);C_Label.setForeground(myColor);C_Label.setBounds(550,188,150,80);
 
-	    JCheckBox show = new JCheckBox("Show Steps "); show.setBounds(300, 400, 200, 100);show.setOpaque(false);show.setFont(myFont3);show.setForeground(myColor);
+		JCheckBox show = new JCheckBox("Show Steps "); show.setBounds(300, 400, 200, 100);show.setOpaque(false);show.setFont(myFont3);show.setForeground(myColor);
 
-	    PentominoPanel.add(show);
+		PentominoPanel.add(show);
 
-	    PentominoPanel.add(L_Value);
-	    PentominoPanel.add(T_Value);
-	    PentominoPanel.add(P_Value);
+		PentominoPanel.add(L_Value);
+		PentominoPanel.add(T_Value);
+		PentominoPanel.add(P_Value);
 
-	    PentominoPanel.add(L_Quantity);
-	    PentominoPanel.add(T_Quantity);
-	    PentominoPanel.add(P_Quantity);
+		PentominoPanel.add(L_Quantity);
+		PentominoPanel.add(T_Quantity);
+		PentominoPanel.add(P_Quantity);
 
-	    PentominoPanel.add(Pentomino_Label);
-	    PentominoPanel.add(Quantity_Label);
-	    PentominoPanel.add(Value_Label);
+		PentominoPanel.add(Pentomino_Label);
+		PentominoPanel.add(Quantity_Label);
+		PentominoPanel.add(Value_Label);
 
-	    PentominoPanel.add(A_Label);
-	    PentominoPanel.add(B_Label);
-	    PentominoPanel.add(C_Label);
+		PentominoPanel.add(A_Label);
+		PentominoPanel.add(B_Label);
+		PentominoPanel.add(C_Label);
 
 		JButton Apply_Button = new JButton("Continue");
 		Apply_Button.setContentAreaFilled(false);
@@ -361,7 +361,7 @@ public class UserInterface implements Files {
 
 		if(j instanceof PentominoSettings) {
 			parcel=false;
-			}
+		}
 		else {
 			parcel=true;
 			ParcelSettings myS= (ParcelSettings) j;
@@ -394,7 +394,8 @@ public class UserInterface implements Files {
 		JLabel percentage= new JLabel("Percentage Filled:");percentage.setFont(myFont3);
 		JLabel time= new JLabel("Time Taken:");time.setFont(myFont3);
 		JLabel valueL= new JLabel("Total Value:");valueL.setFont(myFont3);
-		JLabel theoryV= new JLabel("Theoretical Best Value:");theoryV.setFont(myFont3);
+		JLabel theoryV= new JLabel("Theoretical");theoryV.setFont(myFont3);
+		JLabel theoryV2= new JLabel("Best Value:");theoryV2.setFont(myFont3);
 		JLabel usedValues= new JLabel("Used Values");usedValues.setFont(myFont3);
 
 		JLabel ALabel = new JLabel();ALabel.setFont(myFont3);
@@ -504,6 +505,7 @@ public class UserInterface implements Files {
 		rightSide.add(time);time.setBounds(10, 550, 200, 100);
 		rightSide.add(valueL);valueL.setBounds(10, 600, 200, 100);
 		rightSide.add(theoryV);theoryV.setBounds(10, 650, 300, 100);
+		rightSide.add(theoryV2);theoryV2.setBounds(15, 675, 300, 100);
 
 		rightSide.add(usedValues);usedValues.setBounds(10+rightSide.getWidth()/4,350,rightSide.getWidth()*2/3,100);
 		rightSide.add(ALabel);ALabel.setBounds(40, 385, rightSide.getWidth(), 100);
@@ -513,7 +515,7 @@ public class UserInterface implements Files {
 		rightSide.add(percentageFilled);percentageFilled.setBounds(rightSide.getWidth()-100, 500, 100, 100);
 		rightSide.add(timeTaken);timeTaken.setBounds(rightSide.getWidth()-100, 550, 100, 100);
 		rightSide.add(totalValue);totalValue.setBounds(rightSide.getWidth()-100, 600, 100, 100);
-		rightSide.add(theoryBest);theoryBest.setBounds(rightSide.getWidth()-100, 650, 100, 100);
+		rightSide.add(theoryBest);theoryBest.setBounds(rightSide.getWidth()-100, 675, 100, 100);
 
 		rightSide.add(usedA);usedA.setBounds(35, 420, rightSide.getWidth(), 100);
 		rightSide.add(usedB);usedB.setBounds(25+rightSide.getWidth()/3, 420, rightSide.getWidth(), 100);
@@ -534,15 +536,17 @@ public class UserInterface implements Files {
 
 	public static void updateLabels(KnapsackGroup x){
 
-		percentageFilled.setText("96 %");
-		timeTaken.setText("100 ms");
-		totalValue.setText("1000");
-		theoryBest.setText("1200");
-
-
-		usedA.setText("11");
-		usedB.setText("12");
-		usedC.setText("323");
+		percentageFilled.setText("");//Percentage Filled
+		timeTaken.setText("");//Time Taken to find answer
+		totalValue.setText("");//Total value of our solution
+		theoryBest.setText("");//Theoritcal best value
+		/*
+		When the alogrithm is added to the code, make sure to upadte these labels using this method.
+		Just add the text that has to be displayed.
+		 */
+		usedA.setText("");//Amount of parcel of size A or pentominoes of shape L
+		usedB.setText("");//Amount of parcel of size B or pentominoes of shape P
+		usedC.setText("");//Amount of parcel of size C or pentominoes of shape T
 	}
 
 	public void feedToAlgorithm(Object obj){}
