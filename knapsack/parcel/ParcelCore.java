@@ -14,7 +14,7 @@ import knapsack.Cube;
 public abstract class ParcelCore implements Parcel {
 
 	private Point3D origin;
-	private final int value;
+	private int value;
 	private Color color;
 	private String name;
 
@@ -48,6 +48,12 @@ public abstract class ParcelCore implements Parcel {
 	@Override
 	public int getValue() {
 		return value;
+	}
+	
+	public ParcelCore changeValue(int value) {
+		ParcelCore copy = copy();
+		copy.value = value;
+		return copy;
 	}
 	
 	@Override
