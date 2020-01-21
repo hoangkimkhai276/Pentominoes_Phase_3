@@ -57,7 +57,7 @@ public class ParcelminoesAlgorithm {
 	}
 	
 	public static void main(String[] args) {
-		ParcelminoesAlgorithm phase = new ParcelminoesAlgorithm(new Knapsack(5,5,8), Parcels.DEFAULT);
+		ParcelminoesAlgorithm phase = new ParcelminoesAlgorithm(new Knapsack(33,5,8), Parcels.DEFAULT);
 		boolean use_pentominoes = false;
 		System.out.println(phase.solveKnapsackFillingPentoFirst(use_pentominoes));
 	}

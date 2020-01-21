@@ -563,19 +563,19 @@ public class MiniSimpleParcel {
 	
 	public static void test2() {
 		MiniSimpleParcel result = NONE;
-		MiniSimpleParcel knapsack = K;
-		MiniSimpleParcel[] parcels = PARCELS;
-		bets_densevolume_densityrequirement = 0.95;
+		MiniSimpleParcel knapsack =K;
+		MiniSimpleParcel[] parcels = PENTOS;
+		bets_densevolume_densityrequirement = 0;
 		System.out.println("Maximizing "+knapsack+" with "+Arrays.toString(parcels)+" for total value");
 		long start_time = System.nanoTime();
-		result = maximizeKnapsackValue(knapsack, BEST_DENSEVOLUME, parcels, null);
+		result = maximizeKnapsackValue(knapsack, HIGHEST_VOLUME, parcels, null);
 		long delta_time = System.nanoTime() - start_time;
 		System.out.println("calculation took "+(float)(delta_time/1000000d)+"ms");
-		System.out.println("result value = "+result.getValue()+"\nresult = "+/*result.unravelComponents()*/""+" for a total of "+result
+		System.out.println("result value = "+result.getValue()+"\nresult = "+result.unravelComponents()+" for a total of "+result
 				+ " with a density of "+result.getDensity()+" made from "+result.counts());
 		System.out.println("filled volume = "+result.getVolume()+"/"+knapsack.getVolume());
 		System.out.println("amount of sub sections = "+getSubCount(knapsack, result));
-		System.out.println("parcel: "+result.convert(()->new Color(1,2,3)));
+		//System.out.println("parcel: "+result.convert(()->new Color(1,2,3)));
 	}
 	
 	public static void test1() {

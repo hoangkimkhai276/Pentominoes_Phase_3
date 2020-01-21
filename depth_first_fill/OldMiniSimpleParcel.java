@@ -481,8 +481,8 @@ public class OldMiniSimpleParcel {
 	public static void test2() {
 		OldMiniSimpleParcel result = NONE;
 		OldMiniSimpleParcel knapsack = K;
-		OldMiniSimpleParcel[] parcels = PARCELS;
-		bets_densevolume_densityrequirement = 0.95;
+		OldMiniSimpleParcel[] parcels = PENTOS;
+		bets_densevolume_densityrequirement = 0;
 		System.out.println("Maximizing "+knapsack+" with "+Arrays.toString(parcels)+" for total value");
 		long start_time = System.nanoTime();
 		result = maximizeKnapsackValue(knapsack, BEST_DENSEVOLUME, parcels);
