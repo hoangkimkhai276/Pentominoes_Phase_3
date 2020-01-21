@@ -21,12 +21,16 @@ public class ParcelInterface {
 	private int T_quantity = 5000;
 	private int L_quantity = 5000;
 	
+	private boolean dynamic = true;
+	private boolean pentoMode = true;
+	
 	public ParcelInterface() {
 		super();
 	}
-	public ParcelInterface(PentominoSettings default_pentos, ParcelSettings default_parcels) {
+	public ParcelInterface(PentominoSettings default_pentos, ParcelSettings default_parcels, boolean pentoMode) {
 		putSettings(default_pentos);
 		putSettings(default_parcels);
+		this.pentoMode = pentoMode;
 	}
 	
 	public ParcelCore[] getPentominoParcels() {
@@ -66,28 +70,35 @@ public class ParcelInterface {
 	public void putSettings(PentominoSettings settings) {
 		setPentominoValues(settings.vP, settings.vT, settings.vL);
 		setPentominoLimits(settings.qP, settings.qT, settings.qL);
+		dynamic = settings.steps;
 	}
 	public void putSettings(ParcelSettings settings) {
 		setSimpleValues(settings.vA, settings.vB, settings.vC);
 		setSimpleLimits(settings.qC, settings.qB, settings.qC);
+		dynamic = settings.steps;
 	}
 	
 	public Knapsack greedyPentominoesNotDynamic(Knapsack toSolve) {
-		Knapsack copy = toSolve.getEmpty();
-		greedyPentominoesDynamic(copy);
-		return copy;
+		return greedyPentominoesDynamic(toSolve.getEmpty());
 	}
-	public void greedyPentominoesDynamic(Knapsack toSolve) {
+	public Knapsack greedyPentominoesDynamic(Knapsack toSolve) {
 		SimpleStartingCode.simpleStochasticGreedy(toSolve, getPentominoParcels(), getPentominoLimits());
+		return toSolve;
 	}
 	
 	public Knapsack greedySimpleNotDynamic(Knapsack toSolve) {
-		Knapsack copy = toSolve.getEmpty();
-		greedySimpleDynamic(copy);
-		return copy;
+		return greedySimpleDynamic(toSolve.getEmpty());
 	}
-	public void greedySimpleDynamic(Knapsack toSolve) {
+	public Knapsack greedySimpleDynamic(Knapsack toSolve) {
 		SimpleStartingCode.simpleStochasticGreedy(toSolve, getSimpleParcels(), getSimpleLimits());
+		return toSolve;
+	}
+	
+	public Knapsack greedy(Knapsack input) {
+		if (dynamic && pentoMode) return greedyPentominoesDynamic(input);
+		if (!dynamic && pentoMode) return greedyPentominoesNotDynamic(input);
+		if (dynamic && !pentoMode) return greedySimpleDynamic(input);
+		return greedySimpleNotDynamic(input);
 	}
 	
 }
