@@ -1,14 +1,17 @@
 package depth_first_fill;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
-import knapsack.Knapsack;
+import javafxstuff.Point3D;
 import knapsack.Size3D;
 import knapsack.parcel.Parcels;
+import knapsack.parcel.SimpleParcel;
 
 public class MiniSimpleParcel {
 
@@ -38,14 +41,6 @@ public class MiniSimpleParcel {
 		LL.count_L = 2; PTP.count_P = 2; PTP.count_T = 1; PP.count_P = 2;
 	}
 	
-	/** If you have the intend of using a different knapsack than the default size for turning MiniSimpleParcel objects into Parcel objects,
-	 *   then this variable has to be changed to the prefered knapsack <b>before</b> any additional MiniSimpleParcel objects are created */
-	public static Knapsack reference = new Knapsack();
-	
-	private static int getCoord(int x, int y, int z) {
-		return reference.to1DCoord(x, y, z);
-	}
-	
 	public static boolean care_about_rotation_in_equals = true;
 	public static double bets_densevolume_densityrequirement = 0.95;
 	
@@ -68,7 +63,8 @@ public class MiniSimpleParcel {
 		return pick;
 	};
 	
-	private int length, width, height, value, count, count_A, count_B, count_C, count_P, count_T, count_L, coord;
+	private int length, width, height, value, count, count_A, count_B, count_C, count_P, count_T, count_L;
+	private Point3D origin;
 	private ArrayList<MiniSimpleParcel> components;
 	
 	private int[] getCounts() {
@@ -100,7 +96,7 @@ public class MiniSimpleParcel {
 		this.height = height;
 		this.value = value;
 		count = 1;
-		coord = 0;
+		origin = Point3D.ZERO;
 		components = new ArrayList<MiniSimpleParcel>();
 		components.add(this);
 		setCounts(counts);
@@ -117,58 +113,62 @@ public class MiniSimpleParcel {
 		for (ArrayList<MiniSimpleParcel> set : components) this.components.addAll(set);
 	}
 	
-	private MiniSimpleParcel getWithCoord(int coord) {
-		MiniSimpleParcel clone = clone();
-		clone.setCoord(coord);
-		return clone;
+	private MiniSimpleParcel getWithCoord(Point3D origin) {
+		return clone().setOrigin(origin);
 	}
-	private MiniSimpleParcel setCoord(int coord) {
-		this.coord = coord;
+	private MiniSimpleParcel setOrigin(Point3D origin) {
+		this.origin = origin;
 		return this;
 	}
 	
 	public MiniSimpleParcel rotateX() {
-		return new MiniSimpleParcel(length, height, width, value, getCounts(), components).setCoord(coord);
+		ArrayList<MiniSimpleParcel> components = new ArrayList<MiniSimpleParcel>();
+		for (MiniSimpleParcel parcel : this.components) components.add(parcel.getWithCoord(parcel.origin.rotateXAround(origin)));
+		return new MiniSimpleParcel(length, height, width, value, getCounts(), components).setOrigin(origin);
 	}
 	public MiniSimpleParcel rotateY() {
-		return new MiniSimpleParcel(height, width, length, value, getCounts(), components).setCoord(coord);
+		ArrayList<MiniSimpleParcel> components = new ArrayList<MiniSimpleParcel>();
+		for (MiniSimpleParcel parcel : this.components) components.add(parcel.getWithCoord(parcel.origin.rotateYAround(origin)));
+		return new MiniSimpleParcel(height, width, length, value, getCounts(), components).setOrigin(origin);
 	}
 	public MiniSimpleParcel rotateZ() {
-		return new MiniSimpleParcel(width, length, height, value, getCounts(), components).setCoord(coord);
+		ArrayList<MiniSimpleParcel> components = new ArrayList<MiniSimpleParcel>();
+		for (MiniSimpleParcel parcel : this.components) components.add(parcel.getWithCoord(parcel.origin.rotateZAround(origin)));
+		return new MiniSimpleParcel(width, length, height, value, getCounts(), components).setOrigin(origin);
 	}
 	
 	public MiniSimpleParcel multiplyX(int count) {
 		ArrayList<MiniSimpleParcel> components = new ArrayList<MiniSimpleParcel>(this.components);
 		for (int i=1; i < count; i++) {
 			ArrayList<MiniSimpleParcel> clonedList = new ArrayList<MiniSimpleParcel>();
-			for (MiniSimpleParcel parcel : this.components) clonedList.add(parcel.getWithCoord(coord + getCoord(length, 0, 0)));
+			for (MiniSimpleParcel parcel : this.components) clonedList.add(parcel.getWithCoord(origin.add(length, 0, 0)));
 			components.addAll(clonedList);
 		}
-		return new MiniSimpleParcel(length * count, width, height, value * count, getCounts(count), components).setCoord(coord);
+		return new MiniSimpleParcel(length * count, width, height, value * count, getCounts(count), components).setOrigin(origin);
 	}
 	public MiniSimpleParcel multiplyY(int count) {
 		ArrayList<MiniSimpleParcel> components = new ArrayList<MiniSimpleParcel>(this.components);
 		for (int i=1; i < count; i++) {
 			ArrayList<MiniSimpleParcel> clonedList = new ArrayList<MiniSimpleParcel>();
-			for (MiniSimpleParcel parcel : this.components) clonedList.add(parcel.getWithCoord(coord + getCoord(0, width, 0)));
+			for (MiniSimpleParcel parcel : this.components) clonedList.add(parcel.getWithCoord(origin.add(0, width, 0)));
 			components.addAll(clonedList);
 		}
-		return new MiniSimpleParcel(length, width * count, height, value * count, getCounts(count), components).setCoord(coord);
+		return new MiniSimpleParcel(length, width * count, height, value * count, getCounts(count), components).setOrigin(origin);
 	}
 	public MiniSimpleParcel multiplyZ(int count) {
 		ArrayList<MiniSimpleParcel> components = new ArrayList<MiniSimpleParcel>(this.components);
 		for (int i=1; i < count; i++) {
 			ArrayList<MiniSimpleParcel> clonedList = new ArrayList<MiniSimpleParcel>();
-			for (MiniSimpleParcel parcel : this.components) clonedList.add(parcel.getWithCoord(coord + getCoord(0, 0, height)));
+			for (MiniSimpleParcel parcel : this.components) clonedList.add(parcel.getWithCoord(origin.add(0, 0, height)));
 			components.addAll(clonedList);
 		}
-		return new MiniSimpleParcel(length, width, height * count, value * count, getCounts(count), components).setCoord(coord);
+		return new MiniSimpleParcel(length, width, height * count, value * count, getCounts(count), components).setOrigin(origin);
 	}
 	
 	/** creates a low-level copy of this {@code MiniSimpleParcel} */
 	@Override
 	public MiniSimpleParcel clone() {
-		return new MiniSimpleParcel(length, width, height, value, getCounts(), components).setCoord(coord);
+		return new MiniSimpleParcel(length, width, height, value, getCounts(), components).setOrigin(origin);
 	}
 	public MiniSimpleParcel deepClone() {
 		MiniSimpleParcel clone = this.clone();
@@ -201,15 +201,29 @@ public class MiniSimpleParcel {
 		for (MiniSimpleParcel parcel : reduced_components) if (parcel.count > 0) result.add(parcel);
 		return result;
 	}
-	
+	int xsd = 0;
 	public MiniSimpleParcel add(MiniSimpleParcel other) {
 		if (this.equals(NONE) || other.equals(NONE))
-			return new MiniSimpleParcel(other.length + length, other.width + width, other.height + height, value + other.value, getCounts(other.getCounts()), this.components, other.components).setCoord(coord + other.coord);
+			return new MiniSimpleParcel(other.length + length, other.width + width, other.height + height, value + other.value, getCounts(other.getCounts()), this.components, other.components).setOrigin(origin.add(other.origin));
 		int c = getSimilar(other);
 		if (!isSimilar(c)) return null;
-		if ((c & WIDTH)  == 0) return new MiniSimpleParcel(length, other.width + width, height, value + other.value, getCounts(other.getCounts()), this.components, other.components).setCoord(coord + getCoord(0, width, 0));
-		if ((c & HEIGHT) == 0) return new MiniSimpleParcel(length, width, other.height + height, value + other.value, getCounts(other.getCounts()), this.components, other.components).setCoord(coord + getCoord(0, 0, height));
-		return new MiniSimpleParcel(other.length + length, width, height, value + other.value, getCounts(other.getCounts()), this.components, other.components).setCoord(coord + getCoord(length, 0, 0));
+		if ((c & WIDTH)  == 0) {
+			//System.out.println("\n---NOW ADDING "+this+" at "+origin+" and "+other+" at "+other.origin);
+			ArrayList<MiniSimpleParcel> components = new ArrayList<MiniSimpleParcel>(this.components);
+			for (MiniSimpleParcel component : other.components) {
+				components.add(component.clone().setOrigin(origin.add(component.origin.subtract(other.origin).add(0, width, 0))));
+				//System.out.println("adding "+component+" at "+origin.add(component.origin.subtract(other.origin).add(0, width, 0)));
+			}
+			return new MiniSimpleParcel(length, other.width + width, height, value + other.value, getCounts(other.getCounts()), components).setOrigin(origin);
+		}
+		if ((c & HEIGHT) == 0) {
+			ArrayList<MiniSimpleParcel> components = new ArrayList<MiniSimpleParcel>(this.components);
+			for (MiniSimpleParcel component : other.components) components.add(component.clone().setOrigin(origin.add(component.origin.subtract(other.origin).add(0, 0, height))));
+			return new MiniSimpleParcel(length, width, other.height + height, value + other.value, getCounts(other.getCounts()), this.components, other.components).setOrigin(origin);
+		}
+		ArrayList<MiniSimpleParcel> components = new ArrayList<MiniSimpleParcel>(this.components);
+		for (MiniSimpleParcel component : other.components) components.add(component.clone().setOrigin(origin.add(component.origin.subtract(other.origin).add(length, 0, 0))));
+		return new MiniSimpleParcel(other.length + length, width, height, value + other.value, getCounts(other.getCounts()), this.components, other.components).setOrigin(origin);
 	}
 	
 	public MiniSimpleParcel subtract(MiniSimpleParcel other) {
@@ -219,15 +233,15 @@ public class MiniSimpleParcel {
 		if (!isSimilar(c)) return null;
 		if ((c & LENGTH) == 0) {
 			if (other.length > length) return null;
-			return new MiniSimpleParcel(length - other.length, width, height, value - other.value, subtractCounts(other.getCounts())).setCoord(coord - getCoord(other.length, 0, 0));
+			return new MiniSimpleParcel(length - other.length, width, height, value - other.value, subtractCounts(other.getCounts()));
 		}
 		if ((c & WIDTH)  == 0) {
 			if (other.width > width) return null;
-			return new MiniSimpleParcel(length, width - other.width, height, value - other.value, subtractCounts(other.getCounts())).setCoord(coord - getCoord(0, other.width, 0));
+			return new MiniSimpleParcel(length, width - other.width, height, value - other.value, subtractCounts(other.getCounts()));
 		}
 		if ((c & HEIGHT) == 0) {
 			if (other.height > height) return null;
-			return new MiniSimpleParcel(length, width, height - other.height, value - other.value, subtractCounts(other.getCounts())).setCoord(coord - getCoord(0, 0, other.height));
+			return new MiniSimpleParcel(length, width, height - other.height, value - other.value, subtractCounts(other.getCounts()));
 		}
 		return null;
 	}
@@ -238,6 +252,7 @@ public class MiniSimpleParcel {
 	 * @return a parcel that is a rotated version of the original parcel such that it is similar to {@code other}
 	 */
 	public MiniSimpleParcel rotateUntilSimilar(MiniSimpleParcel other, int[] similarCountAndOrder) {
+		int[] old = {length, width, height};
 		int[] nlwh = {length, width, height};
 		boolean got_length = false, got_width = false, got_height = false;
 		int odd = -1;
@@ -253,9 +268,18 @@ public class MiniSimpleParcel {
 			if 		(!got_length) nlwh[odd] = length;
 			else if (!got_width)  nlwh[odd] = width;
 			else if (!got_height) nlwh[odd] = height;
-			//TODO gather from this, what rotations were performed
+			int similar = getSimilar(old, nlwh);
+			if (similar==LENGTH) return rotateX();
+			else if (similar==WIDTH) return rotateY();
+			else if (similar==HEIGHT) return rotateZ();
+			else {
+				int temp = old[0]; old[0] = old[1]; old[1] = temp;
+				similar = getSimilar(old, nlwh);
+				if (similar==LENGTH) return rotateZ().rotateX();
+				else if (similar==WIDTH) return rotateZ().rotateY();
+			}
 		}
-		return new MiniSimpleParcel(nlwh[0], nlwh[1], nlwh[2], value, getCounts(), components).setCoord(coord);
+		return new MiniSimpleParcel(nlwh[0], nlwh[1], nlwh[2], value, getCounts(), components).setOrigin(origin);
 	}
 	
 	/**
@@ -278,6 +302,13 @@ public class MiniSimpleParcel {
 		if (length==other.length) c |= LENGTH;
 		if (width==other.width  ) c |= WIDTH;
 		if (height==other.height) c |= HEIGHT;
+		return c;
+	}
+	public static int getSimilar(int[] a, int[] b) {
+		int c = 0;
+		if (a[0]==b[0]) c |= LENGTH;
+		if (a[1]==b[1]  ) c |= WIDTH;
+		if (a[2]==b[2]) c |= HEIGHT;
 		return c;
 	}
 	public boolean canBeSimilar(MiniSimpleParcel other) {
@@ -338,7 +369,7 @@ public class MiniSimpleParcel {
 			if (simo[i+1] == 2) res[1] = lwh_t[i];
 			if (simo[i+1] == 4) res[2] = lwh_t[i];
 		}
-		return new MiniSimpleParcel(res[0], res[1], res[2], value, getCounts(), components).setCoord(coord);
+		return new MiniSimpleParcel(res[0], res[1], res[2], value, getCounts(), components).setOrigin(origin);
 	}
 	
 	public Size3D getHitBox() {
@@ -352,6 +383,31 @@ public class MiniSimpleParcel {
 	}
 	public double getDensity() {
 		return getValue()/((double)getVolume());
+	}
+	
+	public ArrayList<SimpleParcel> convert(Supplier<Color> colorer) {
+		
+		System.out.print(this+" consists of ");
+		for (MiniSimpleParcel comp : components) System.out.print(comp+" ");
+		if (components.size() <= 1) return null;
+		for (MiniSimpleParcel comp : components) {
+			System.out.println();
+			comp.convert(colorer);
+		}
+		
+		return null;
+		
+		/*for (MiniSimpleParcel component : components) if (component==NONE) components.remove(component);
+		if (components.size()==1 && components.get(0) == this) {
+			String type = (count_A>=1)?"A":(count_B>=1)?"B":(count_C>=1)?"C":(count_P>=1)?"P":(count_T>=1)?"T":(count_L>=1)?"L":"none";
+			ArrayList<SimpleParcel> parcel = new ArrayList<SimpleParcel>(Arrays.asList(new SimpleParcel[]{new SimpleParcel(length, width, height, value, colorer.get(), type)}));
+			parcel.get(0).setOrigin(origin);
+			return parcel;
+		} else {
+			ArrayList<SimpleParcel> result = new ArrayList<SimpleParcel>();
+			for (MiniSimpleParcel component : components) result.addAll(component.convert(colorer));
+			return result;
+		} */
 	}
 	
 	public MiniSimpleParcel[] getRotations() {
@@ -509,16 +565,17 @@ public class MiniSimpleParcel {
 		MiniSimpleParcel result = NONE;
 		MiniSimpleParcel knapsack = K;
 		MiniSimpleParcel[] parcels = PARCELS;
-		bets_densevolume_densityrequirement = 0;
+		bets_densevolume_densityrequirement = 0.95;
 		System.out.println("Maximizing "+knapsack+" with "+Arrays.toString(parcels)+" for total value");
 		long start_time = System.nanoTime();
 		result = maximizeKnapsackValue(knapsack, BEST_DENSEVOLUME, parcels, null);
 		long delta_time = System.nanoTime() - start_time;
 		System.out.println("calculation took "+(float)(delta_time/1000000d)+"ms");
-		System.out.println("result value = "+result.getValue()+"\nresult = "+result.unravelComponents()+" for a total of "+result
+		System.out.println("result value = "+result.getValue()+"\nresult = "+/*result.unravelComponents()*/""+" for a total of "+result
 				+ " with a density of "+result.getDensity()+" made from "+result.counts());
 		System.out.println("filled volume = "+result.getVolume()+"/"+knapsack.getVolume());
 		System.out.println("amount of sub sections = "+getSubCount(knapsack, result));
+		System.out.println("parcel: "+result.convert(()->new Color(1,2,3)));
 	}
 	
 	public static void test1() {
