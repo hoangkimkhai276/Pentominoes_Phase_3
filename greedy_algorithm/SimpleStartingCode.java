@@ -19,10 +19,9 @@ public class SimpleStartingCode {
 	 *         to solve the <b>unbounded</b> knapsack problem
 	 * @return the modified knapsack, filled with the given parcels
 	 */
-	public static Knapsack simpleGreedy(Knapsack _knapsack, ParcelCore[] parcels, int[] limits) {
+	public static void simpleGreedy(Knapsack knapsack, ParcelCore[] parcels, int[] limits) {
 		count = 0;
 		boolean ignore_limit = limits==null;
-		Knapsack knapsack = _knapsack.getEmpty();
 		ParcelCore[] _rotations = Parcels.createParcelPermutations(parcels);
 		ArrayList<ParcelCore> rotations = new ArrayList<ParcelCore>(Arrays.asList(_rotations));
 		Parcels.sortByDensity(rotations);
@@ -40,13 +39,11 @@ public class SimpleStartingCode {
 						}
 					}
 				}
-		return knapsack;
 	}
 	
-	public static Knapsack simpleStochasticGreedy(Knapsack _knapsack, ParcelCore[] parcels, int[] limits) {
+	public static void simpleStochasticGreedy(Knapsack knapsack, ParcelCore[] parcels, int[] limits) {
 		count = 0;
 		boolean ignore_limit = limits==null;
-		Knapsack knapsack = _knapsack.getEmpty();
 		ParcelCore[][] parcel_rotations = Parcels.createLayeredParcelPermutations(parcels);
 		ArrayList<ArrayList<ParcelCore>> rotations = new ArrayList<ArrayList<ParcelCore>>();
 		for (ParcelCore[] list : parcel_rotations) rotations.add(new ArrayList<ParcelCore>(Arrays.asList(list)));
@@ -68,7 +65,6 @@ public class SimpleStartingCode {
 						}
 					}
 				}
-		return knapsack;
 	}
 	
 	public static int indexOf(ParcelCore parcel, ParcelCore[] parcels) {
@@ -79,8 +75,9 @@ public class SimpleStartingCode {
 	public static void main(String[] args) {
 		Knapsack before = new Knapsack();
 		long start = System.nanoTime();
-		Knapsack after = simpleStochasticGreedy(before, Parcels.PENTOS, null);
+		simpleStochasticGreedy(before, Parcels.PENTOS, null);
 		long delta = System.nanoTime() - start;
+		Knapsack after = before;
 		System.out.println("after "+(delta/1000000d)+"ms, the following result is gathered:");
 		System.out.println("volume filled: "+after.getFilledVolume()+"/"+after.getVolume());
 		System.out.println("total value: "+after.getValue()+"$");
