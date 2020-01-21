@@ -10,7 +10,10 @@ import knapsack.Plane3D;
 import knapsack.Size3D;
 
 public class PentominoParcel extends ParcelCore {
-	
+	@Override
+	public <T extends ParcelCore> T duplicate() {
+		return (T) new PentominoParcel(length, width, height, relative_origin_points, getValue(), getOrigin(), getColor(), getName());
+	}
 	/**
 	 * These are the origin points of the unit cubes representing the pentomino <br>
 	 * They are relative to the origin point of this parcel (thus the origin of this set will always be
@@ -58,16 +61,10 @@ public class PentominoParcel extends ParcelCore {
 	}
 	
 	private void calculateCubes() {
-		if (cubes==null) cubes = new Cube[relative_origin_points.size()];
-		for (int i=0; i < cubes.length; i++)
+		if (cubes == null) cubes = new Cube[relative_origin_points.size()];
+		for (int i = 0; i < cubes.length; i++)
 			cubes[i] = new Cube(1, relative_origin_points.get(i));
 		cubes_calculated = true;
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T extends Parcel> T copy() {
-		return (T) new PentominoParcel(length, width, height, relative_origin_points, getValue(), getOrigin(), getColor(), getName());
 	}
 
 	@Override

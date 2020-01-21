@@ -678,8 +678,8 @@ public class UserInterface implements Files {
 		scene.setOnMousePressed(event -> {
 			anchorX = event.getSceneX();
 			anchorY = event.getSceneY();
-			anchorAngleX = angleX.get();
-			anchorAngleY = angleY.get();
+			anchorAngleX = angleY.get();
+			anchorAngleY = angleX.get();
 		});
 		scene.setOnMouseDragged(event -> {
 			angleX.set(anchorAngleX - (anchorY - event.getSceneY()));

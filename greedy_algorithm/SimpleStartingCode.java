@@ -13,7 +13,7 @@ public class SimpleStartingCode {
 
 	/**
 	 * 
-	 * @param _knapsack the knapsack to fill, doesn't get mutated
+	 * @param knapsack the knapsack to fill, doesn't get mutated
 	 * @param parcels the parcels to use, doesn't get mutated
 	 * @param limits the maximum amount of parcels allowed per type of parcel (sorted in the order of {@code parcels}), set to <b>{@code null}</b>
 	 *         to solve the <b>unbounded</b> knapsack problem
