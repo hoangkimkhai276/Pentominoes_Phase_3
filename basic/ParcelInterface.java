@@ -67,17 +67,6 @@ public class ParcelInterface {
 		this.A_value = A_value; this.B_value = B_value; this.C_value = C_value;
 	}
 	
-	public void putSettings(PentominoSettings settings) {
-		setPentominoValues(settings.vP, settings.vT, settings.vL);
-		setPentominoLimits(settings.qP, settings.qT, settings.qL);
-		dynamic = settings.steps;
-	}
-	public void putSettings(ParcelSettings settings) {
-		setSimpleValues(settings.vA, settings.vB, settings.vC);
-		setSimpleLimits(settings.qC, settings.qB, settings.qC);
-		dynamic = settings.steps;
-	}
-	
 	public Knapsack greedyPentominoesNotDynamic(Knapsack toSolve) {
 		return greedyPentominoesDynamic(toSolve.getEmpty());
 	}
@@ -92,6 +81,19 @@ public class ParcelInterface {
 	public Knapsack greedySimpleDynamic(Knapsack toSolve) {
 		SimpleStartingCode.simpleStochasticGreedy(toSolve, getSimpleParcels(), getSimpleLimits());
 		return toSolve;
+	}
+	
+	public void putSettings(PentominoSettings settings) {
+		setPentominoValues(settings.vP, settings.vT, settings.vL);
+		setPentominoLimits(settings.qP, settings.qT, settings.qL);
+		dynamic = settings.steps;
+		pentoMode = true;
+	}
+	public void putSettings(ParcelSettings settings) {
+		setSimpleValues(settings.vA, settings.vB, settings.vC);
+		setSimpleLimits(settings.qC, settings.qB, settings.qC);
+		dynamic = settings.steps;
+		pentoMode = false;
 	}
 	
 	public Knapsack greedy(Knapsack input) {
