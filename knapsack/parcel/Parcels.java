@@ -17,6 +17,7 @@ public final class Parcels {
 	public static final ParcelCore A = new SimpleParcel(2, 2, 4, 3, SELECTED_COLORS[0], "A");
 	public static final ParcelCore B = new SimpleParcel(2, 3, 4, 4, SELECTED_COLORS[1], "B");
 	public static final ParcelCore C = new SimpleParcel(3, 3, 3, 5, SELECTED_COLORS[2], "C");
+	// length = big length, width = small length, height = 1
 	public static final ParcelCore P = new PentominoParcel(new boolean[][]{{true, false},{true, true}, {true, true}}, 4, SELECTED_COLORS[0], "P");
 	public static final ParcelCore L = new PentominoParcel(new boolean[][]{{true, true},{true, false},{true, false},{true, false}}, 3, SELECTED_COLORS[1], "L");
 	public static final ParcelCore T = new PentominoParcel(new boolean[][]{{true, true, true}, {false, true, false}, {false, true, false}}, 5, SELECTED_COLORS[2], "T");

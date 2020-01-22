@@ -10,6 +10,7 @@ import javafxdraw.Colors;
 import javafxstuff.Point3D;
 import knapsack.Knapsack;
 import knapsack.Size3D;
+import knapsack.parcel.ParcelCore;
 import knapsack.parcel.Parcels;
 import knapsack.parcel.PentominoParcel;
 import knapsack.parcel.SimpleParcel;
@@ -207,7 +208,7 @@ public class MiniSimpleParcel {
 		for (SimpleParcel parcel : parcels) knapsack.putParcel(parcel);
 	}
 	
-	public ArrayList<PentominoParcel> pentoConvert() {
+	/*public ArrayList<PentominoParcel> pentoConvert() {
 		cleanup();
 		return cleanpentoConvert(baseOrigin);
 	}
@@ -234,6 +235,19 @@ public class MiniSimpleParcel {
 		}
 		return result;
 	}
+	
+	private static PentominoParcel[] getPP(MiniSimpleParcel rotation) {
+		care_about_rotation_in_equals = true;
+		// {{T,T},{T,T},{T,T}} is a (3x2x1)
+		PentominoParcel P1xy = new PentominoParcel(new boolean[][] {{true, true}, {true, true}, {true, false}}, rotation.value, Colors.randomDeviation(Parcels.P.getColor(), color_variation), "P");
+		PentominoParcel P2xy = new PentominoParcel(new boolean[][] {{false, true}, {true, true}, {true, true}}, rotation.value, Colors.randomDeviation(Parcels.P.getColor(), color_variation), "P");
+		if (rotation.equals(new MiniSimpleParcel(5,2,1,0))) return new PentominoParcel[] {P1xy, P2xy};
+		if (rotation.equals(new MiniSimpleParcel(2,5,1,0))) return new PentominoParcel[] {  };
+		if (rotation.equals(new MiniSimpleParcel(5,1,2,0))) return new PentominoParcel[] {  };
+		if (rotation.equals(new MiniSimpleParcel(2,1,5,0))) return new PentominoParcel[] {  };
+		if (rotation.equals(new MiniSimpleParcel(1,5,2,0))) return new PentominoParcel[] {  };
+		if (rotation.equals(new MiniSimpleParcel(1,2,5,0))) return new PentominoParcel[] {  };
+	} */
 	
 	public ArrayList<SimpleParcel> convert() {
 		cleanup();
