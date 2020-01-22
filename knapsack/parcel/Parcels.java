@@ -10,10 +10,9 @@ import java.util.function.Function;
 
 import javafxdraw.Colors;
 import knapsack.Knapsack;
+import static knapsack.Variables.SELECTED_COLORS;
 
 public final class Parcels {
-	
-	public static final Color[] SELECTED_COLORS = Colors.getRandomColors(3, 0.8f, 0f);
 	
 	public static final ParcelCore A = new SimpleParcel(2, 2, 4, 3, SELECTED_COLORS[0], "A");
 	public static final ParcelCore B = new SimpleParcel(2, 3, 4, 4, SELECTED_COLORS[1], "B");

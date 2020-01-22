@@ -8,8 +8,10 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 
 import javafx.scene.shape.DrawMode;
+import javafxdraw.Colors;
 import javafxstuff.Point3D;
 import knapsack.Cube;
+import static knapsack.Variables.color_variation;;
 
 public abstract class ParcelCore implements Parcel {
 
@@ -17,8 +19,6 @@ public abstract class ParcelCore implements Parcel {
 	private int value;
 	private Color color;
 	private String name;
-
-	public static int color_variation = 30;
 
 	protected ParcelCore(Point3D origin, int value, Color color, String name) {
 		this.value = value;
@@ -104,14 +104,7 @@ public abstract class ParcelCore implements Parcel {
 	@Override
 	public final <T extends Parcel> T copy() {
 		ParcelCore result = (ParcelCore) duplicate();
-		Color color = result.getColor();
-		int R = -1, G = -1, B = -1;
-		while (R < 0 || R > 255 || G < 0 || G > 255 || B < 0 || B > 255) {
-			R = color.getRed() + (int)(color_variation * (Math.random()*2-1));
-			G = color.getGreen() + (int)(color_variation * (Math.random()*2-1));
-			B = color.getBlue() + (int)(color_variation * (Math.random()*2-1));
-		}
-		result.setColor(new Color(R, G, B));
+		result.setColor(Colors.randomDeviation(result.getColor(), color_variation));
 		return (T)result;
 	}
 	public javafx.scene.paint.Color getFXColor() {

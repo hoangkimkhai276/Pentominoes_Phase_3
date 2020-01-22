@@ -90,7 +90,7 @@ public class SimpleParcel extends ParcelCore {
 	@Override
 	public String toString() {
 		Point3D p = getOrigin();
-		return toString_nocoord()+" at ("+p.getX()+", "+p.getY()+", "+p.getZ()+") with value of "+getValue()+"\n";
+		return "\n"+toString_nocoord()+" at ("+p.getX()+", "+p.getY()+", "+p.getZ()+") with value of "+getValue();
 	}
 	public String toString_nocoord() {
 		Size3D  s = getHitBox();

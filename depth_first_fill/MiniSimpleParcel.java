@@ -1,14 +1,19 @@
 package depth_first_fill;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.function.Function;
 
+import javafxdraw.Colors;
+import javafxstuff.Point3D;
 import knapsack.Knapsack;
 import knapsack.Size3D;
 import knapsack.parcel.Parcels;
+import knapsack.parcel.SimpleParcel;
+import static knapsack.Variables.color_variation;
+import static knapsack.Variables.SELECTED_COLORS;
 
 public class MiniSimpleParcel {
 
@@ -20,9 +25,11 @@ public class MiniSimpleParcel {
 	}
 	
 	private static final int LENGTH = 1;
-	private static final int WIDTH = 2;
+	private static final int WIDTH  = 2;
 	private static final int HEIGHT = 4;
 	
+	public static final String AUG_NAME = "AUG";
+	public static final String NO_NAME = "N/A";
 	public static final MiniSimpleParcel NONE = new MiniSimpleParcel(0,0,0,0, new int[6]);
 	public static final MiniSimpleParcel K = new MiniSimpleParcel(33,5,8,0);
 	public static final MiniSimpleParcel A = new MiniSimpleParcel(2,2,4,3);
@@ -64,9 +71,6 @@ public class MiniSimpleParcel {
 		return pick;
 	};
 	
-	private int length, width, height, value, count, count_A, count_B, count_C, count_P, count_T, count_L;
-	private ArrayList<MiniSimpleParcel> components;
-	
 	private int[] getCounts() {
 		return new int[] {count_A, count_B, count_C, count_P, count_T, count_L};
 	}
@@ -93,6 +97,11 @@ public class MiniSimpleParcel {
 		count_A = counts[0]; count_B = counts[1]; count_C = counts[2];
 		count_P = counts[3]; count_T = counts[4]; count_L = counts[5];
 	}
+	
+	private int length, width, height, value, count, count_A, count_B, count_C, count_P, count_T, count_L;
+	private ArrayList<MiniSimpleParcel> components;
+	private Point3D baseOrigin;
+	
 	public MiniSimpleParcel(int length, int width, int height, int value) {
 		this(length, width, height, value, new int[6]);
 	}
@@ -102,6 +111,7 @@ public class MiniSimpleParcel {
 		this.height = height;
 		this.value = value;
 		count = 1;
+		baseOrigin = Point3D.ZERO;
 		components = toList(this);
 		setCounts(counts);
 	}
@@ -170,36 +180,63 @@ public class MiniSimpleParcel {
 			expand(sub, spaces+" ");
 	}
 	
+	public void cleanup() {
+		if (isItself()) { components = new ArrayList<MiniSimpleParcel>(); return; }
+		for (MiniSimpleParcel component : components) component.cleanup();
+	}
+	
 	public boolean isItself() {
 		if (components.size() == 1 && components.get(0) == this) return true;
 		if (components.size() == 1) return components.get(0).isItself();
 		return false;
 	}
 	
+	public ArrayList<SimpleParcel> convert() {
+		cleanup();
+		return cleanconvert(baseOrigin);	
+	}
+	private ArrayList<SimpleParcel> cleanconvert(Point3D base) {
+		ArrayList<SimpleParcel> result = new ArrayList<SimpleParcel>();
+		if (isItself() || components.size() == 0) {
+			String name = getNameFromCounts(); Color color;
+			if (name.equals("A") || name.equals("P")) color = SELECTED_COLORS[0];
+			else if (name.equals("B") || name.equals("L")) color = SELECTED_COLORS[1];
+			else if (name.equals("C") || name.equals("T")) color = SELECTED_COLORS[2];
+			else color = new Color(100,100,100);
+			result.add(new SimpleParcel(length, width, height, value, base, color, name));
+			return result;
+		}
+		MiniSimpleParcel comp1 = components.get(0);
+		int c = getSimilar(comp1);
+		Point3D totaldelta = Point3D.ZERO;
+		Point3D delta = new Point3D(1,0,0);
+		if ((c & WIDTH) == 0) delta = new Point3D(0,1,0);
+		else if ((c & HEIGHT) == 0) delta = new Point3D(0,0,1);
+		for (MiniSimpleParcel component : components) {
+			result.addAll(component.cleanconvert(base.add(totaldelta)));
+			totaldelta = totaldelta.add(product(delta, new Point3D(component.length, component.width, component.height)));
+		}
+		return result;
+	}
+	private Point3D product(Point3D a, Point3D b) {
+		return new Point3D(a.getX() * b.getX(), a.getY() * b.getY(), a.getZ() * b.getZ());
+	}
+	
+	public String getNameFromCounts() {
+		int[] counts = getCounts(); int variants = 0;
+		for (int i=0; i < counts.length; i++) if (counts[i]!=0) variants++;
+		if (variants == 0) return NO_NAME; if (variants > 1) return AUG_NAME;
+		if (count_A != 0) return "A"; if (count_B != 0) return "B";
+		if (count_C != 0) return "C"; if (count_P != 0) return "P";
+		if (count_T != 0) return "T"; return "L";
+	}
+	
 	public static void main(String[] args) {
 		best_densevolume_densityrequirement = 0;
 		MiniSimpleParcel result = MiniSimpleParcel.maximizeKnapsackValue(K, BEST_DENSEVOLUME, PARCELS, null);
+		result.cleanup();
 		expand(result, "");
-	}
-	
-	public HashSet<MiniSimpleParcel> unravelComponents() {
-		ArrayList<MiniSimpleParcel> all_components = new ArrayList<MiniSimpleParcel>();
-		for (MiniSimpleParcel component : components)
-			for (int c=0; c < component.count; c++) {
-				if (component.components.size()==1) all_components.add(component);
-				else all_components.addAll(component.unravelComponents());
-			}
-		while (all_components.contains(NONE)) all_components.remove(NONE);
-		HashSet<MiniSimpleParcel> reduced_components = new HashSet<MiniSimpleParcel>();
-		reduced_components.addAll(all_components);
-		for (MiniSimpleParcel parcel : reduced_components) {
-			while (all_components.contains(parcel)) {
-				all_components.remove(parcel);
-				parcel.count++;
-			} parcel.count--;
-		} HashSet<MiniSimpleParcel> result = new HashSet<MiniSimpleParcel>();
-		for (MiniSimpleParcel parcel : reduced_components) if (parcel.count > 0) result.add(parcel);
-		return result;
+		System.out.println(result.convert());
 	}
 	
 	public MiniSimpleParcel add(MiniSimpleParcel other) {
@@ -386,7 +423,7 @@ public class MiniSimpleParcel {
 	}
 	
 	public static MiniSimpleParcel maximizeKnapsackFilling(MiniSimpleParcel knapsack, MiniSimpleParcel... parcels) {
-		ArrayList<MiniSimpleParcel> generated = generateSortedPatchworkPool(knapsack, parcels);
+		ArrayList<MiniSimpleParcel> generated = generatePatchworkPool(knapsack, parcels);
 		generated.sort(SORT_VOLUME);
 		System.out.println(generated);
 		return generated.get(0);
@@ -402,8 +439,7 @@ public class MiniSimpleParcel {
 	 * @return a single MiniSimpleParcel representing an optimum parcel combination that maximizes whatever the {@code Picker} wants
 	 */
 	public static MiniSimpleParcel maximizeKnapsackValue(MiniSimpleParcel knapsack, Picker picker, MiniSimpleParcel[] parcels, int[] limits) {
-		ArrayList<MiniSimpleParcel> generated = generateSortedPatchworkPool(limits, knapsack, parcels);
-		generated.sort(SORT_VALUE);
+		ArrayList<MiniSimpleParcel> generated = generatePatchworkPool(limits, knapsack, parcels);
 		//TODO implement segmentation of subdivisions and recursive filling of those
 		return picker.pick(generated);
 	}
@@ -477,11 +513,11 @@ public class MiniSimpleParcel {
 		return 3 - knapsack.getSimilarCount(placedBlock);
 	}
 	
-	public static ArrayList<MiniSimpleParcel> generateSortedPatchworkPool(MiniSimpleParcel knapsack, MiniSimpleParcel...parcels) {
-		return generateSortedPatchworkPool(null, knapsack, parcels);
+	public static ArrayList<MiniSimpleParcel> generatePatchworkPool(MiniSimpleParcel knapsack, MiniSimpleParcel...parcels) {
+		return generatePatchworkPool(null, knapsack, parcels);
 	}
 	
-	public static ArrayList<MiniSimpleParcel> generateSortedPatchworkPool(int[] countLimits, MiniSimpleParcel knapsack, MiniSimpleParcel... parcels) {
+	public static ArrayList<MiniSimpleParcel> generatePatchworkPool(int[] countLimits, MiniSimpleParcel knapsack, MiniSimpleParcel... parcels) {
 		boolean ignore_limit = countLimits==null;
 		boolean care = care_about_rotation_in_equals;
 		care_about_rotation_in_equals = false;
@@ -519,10 +555,6 @@ public class MiniSimpleParcel {
 		for (MiniSimpleParcel parcel : parcels) putParcel(ignore_limit, limits, patchwork_pool, to_add, knapsack, parcel);
 	}
 	
-	/*public static void main(String[] args) {
-		test2();
-	}*/
-	
 	public static void test2() {
 		MiniSimpleParcel result = NONE;
 		MiniSimpleParcel knapsack = K;
@@ -533,8 +565,8 @@ public class MiniSimpleParcel {
 		result = maximizeKnapsackValue(knapsack, BEST_DENSEVOLUME, parcels, null);
 		long delta_time = System.nanoTime() - start_time;
 		System.out.println("calculation took "+(float)(delta_time/1000000d)+"ms");
-		System.out.println("result value = "+result.getValue()+"\nresult = "+/*result.unravelComponents()*/""+" for a total of "+result
-				+ " with a density of "+result.getDensity()+" made from "+result.counts());
+		System.out.println("result value = "+result.getValue()+"\nresult = "+result.counts()+" for a total of "+result
+				+" with a density of "+result.getDensity());
 		System.out.println("filled volume = "+result.getVolume()+"/"+knapsack.getVolume());
 		System.out.println("amount of sub sections = "+getSubCount(knapsack, result));
 		
@@ -549,7 +581,7 @@ public class MiniSimpleParcel {
 		result = maximizeKnapsackFilling(knapsack, parcels);
 		long delta_time = System.nanoTime() - start_time;
 		System.out.println("calculation took "+(float)(delta_time/1000000d)+"ms");
-		System.out.println("It found the best solution:\n"+result.unravelComponents()+" for a total of "+result+" made from "+result.counts());
+		System.out.println("It found the best solution:\n"+result.counts()+" for a total of "+result);
 	}
 	@Override
 	public String toString() {
@@ -569,7 +601,16 @@ public class MiniSimpleParcel {
 	}
 	
 	public String counts() {
-		return "A: "+count_A+"x, B: "+count_B+"x, C: "+count_C+"x, P: "+count_P+"x, T: "+count_T+"x, L: "+count_L+"x";
+		String result = "";
+		if (count_A!=0) result += "A: x"+count_A;
+		if (count_B!=0) result += addcomma(result)+"B: x"+count_B;
+		if (count_C!=0) result += addcomma(result)+"C: x"+count_C;
+		if (count_P!=0) result += addcomma(result)+"P: x"+count_P;
+		if (count_T!=0) result += addcomma(result)+"T: x"+count_T;
+		if (count_L!=0) result += addcomma(result)+"L: x"+count_L;
+		return result;
 	}
-	
+	private static String addcomma(String a) {
+		return (a.length() > 0)?", ":"";
+	}
 }

@@ -164,5 +164,15 @@ public final class Colors {
 			}
 		});
 	}
+	
+	public static Color randomDeviation(Color color, int color_variation) {
+		int R = -1, G = -1, B = -1;
+		while (R < 0 || R > 255 || G < 0 || G > 255 || B < 0 || B > 255) {
+			R = color.getRed() + (int)(color_variation * (Math.random()*2-1));
+			G = color.getGreen() + (int)(color_variation * (Math.random()*2-1));
+			B = color.getBlue() + (int)(color_variation * (Math.random()*2-1));
+		}
+		return new Color(R, G, B);
+	}
 
 }
