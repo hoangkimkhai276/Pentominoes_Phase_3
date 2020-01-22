@@ -89,20 +89,24 @@ public class ParcelInterface {
         this.C_value = C_value;
     }
 
+    public int[] getTotalLimits() {
+        return new int[]{A_quantity, B_quantity, C_quantity, P_quantity, T_quantity, L_quantity};
+    }
+
     public Knapsack augmentedPentominoes(Knapsack toSolve) {
     	return augmentedPentominoesDynamic(toSolve.getEmpty());
     }
     
     public Knapsack augmentedPentominoesDynamic(Knapsack toSolve) {
-		int[] limits = getPentominoLimits();
-        int[] used = getPentominoLimits();
-		MiniSimpleParcel result = MiniSimpleParcel.maximizeKnapsackValue(MiniSimpleParcel.getFromKnapsack(toSolve), MiniSimpleParcel.PENTOS, limits);
-		result.adjustLimits(limits);
+		int[] limits = getTotalLimits();
+        int[] used = getTotalLimits();
+		MiniSimpleParcel result = MiniSimpleParcel.maximizeKnapsackValue(MiniSimpleParcel.getFromKnapsack(toSolve), MiniSimpleParcel.PENTOS, used);
+		result.adjustLimits(used);
 		result.putInKnapsack(toSolve);
 		calculateUsed(limits, used);
-        P_quantity_used = used[0];
-		T_quantity_used = used[1];
-		L_quantity_used = used[2];
+        P_quantity_used = used[3];
+		T_quantity_used = used[4];
+		L_quantity_used = used[5];
 		return toSolve;
     }
     
@@ -122,14 +126,14 @@ public class ParcelInterface {
     }
 
     public Knapsack augmentedSimple(Knapsack toSolve) {
-    	return augmentedPentominoesDynamic(toSolve.getEmpty());
+    	return augmentedSimpleDynamic(toSolve.getEmpty());
     }
     
     public Knapsack augmentedSimpleDynamic(Knapsack toSolve) {
-		int[] limits = getSimpleLimits();
-        int[] used = getSimpleLimits();
-		MiniSimpleParcel result = MiniSimpleParcel.maximizeKnapsackValue(MiniSimpleParcel.getFromKnapsack(toSolve), MiniSimpleParcel.PARCELS, limits);
-		result.adjustLimits(limits);
+		int[] limits = getTotalLimits();
+        int[] used = getTotalLimits();
+		MiniSimpleParcel result = MiniSimpleParcel.maximizeKnapsackValue(MiniSimpleParcel.getFromKnapsack(toSolve), MiniSimpleParcel.PARCELS, used);
+		result.adjustLimits(used);
 		result.putInKnapsack(toSolve);
 		calculateUsed(limits, used);
         A_quantity_used = used[0];

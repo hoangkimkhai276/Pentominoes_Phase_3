@@ -186,7 +186,7 @@ public class UserInterface implements Files {
 		NumberFormatter formatter = new NumberFormatter(format);
 		formatter.setValueClass(Integer.class);
 		formatter.setMinimum(0);
-		formatter.setMaximum(Integer.MAX_VALUE);
+		formatter.setMaximum(999);
 		formatter.setAllowsInvalid(false);
 
 		formatter.setCommitsOnValidEdit(true);
@@ -237,10 +237,10 @@ public class UserInterface implements Files {
 				ParcelSettings x = new ParcelSettings(Integer.parseInt(vA_Value.getText()), Integer.parseInt(vB_Value.getText()), Integer.parseInt(vC_Value.getText()), Integer.parseInt(vA_Quantity.getText()), Integer.parseInt(vB_Quantity.getText()), Integer.parseInt(vC_Quantity.getText()),false);
 				MainFrame.remove(ParcelPanel);
 				resultWindow(x);
-				if (show.getSelectedItem().equals("Greedy")) {
-					feedToAlgorithm(x);
-				}
-				else{feedToAugmentation(x);}
+				boolean greedy;
+				if(show.getSelectedItem().equals("Greedy")) greedy = true;
+				else greedy = false;
+				feedToAlgorithm(x,greedy);
 				displayKnapsack();
 			}});
 		Apply_Button.setFont(myFont);
@@ -285,11 +285,11 @@ public class UserInterface implements Files {
 		Back_Button2.setBounds(5, 640, 100, 100);
 
 
-		NumberFormat format = NumberFormat.getInstance();
+		NumberFormat format = NumberFormat.getIntegerInstance();
 		NumberFormatter formatter = new NumberFormatter(format);
 		formatter.setValueClass(Integer.class);
 		formatter.setMinimum(0);
-		formatter.setMaximum(Integer.MAX_VALUE);
+		formatter.setMaximum(999);
 		formatter.setAllowsInvalid(false);
 
 		formatter.setCommitsOnValidEdit(true);
@@ -299,9 +299,9 @@ public class UserInterface implements Files {
 		JFormattedTextField P_Value = new JFormattedTextField(formatter);P_Value.setBounds(435,285,50,50);P_Value.setText("4");P_Value.setFont(myFont2);
 		JFormattedTextField T_Value = new JFormattedTextField(formatter);T_Value.setBounds(535,285,50,50);T_Value.setText("5");T_Value.setFont(myFont2);
 
-		JFormattedTextField L_Quantity = new JFormattedTextField(formatter);L_Quantity.setBounds(335,365,50,50);L_Quantity.setText("100");L_Quantity.setFont(myFont2);
-		JFormattedTextField P_Quantity = new JFormattedTextField(formatter);P_Quantity.setBounds(435,365,50,50);P_Quantity.setText("100");P_Quantity.setFont(myFont2);
-		JFormattedTextField T_Quantity = new JFormattedTextField(formatter);T_Quantity.setBounds(535,365,50,50);T_Quantity.setText("100");T_Quantity.setFont(myFont2);
+		JFormattedTextField L_Quantity = new JFormattedTextField(formatter);L_Quantity.setBounds(335,365,50,50);L_Quantity.setText("500");L_Quantity.setFont(myFont2);
+		JFormattedTextField P_Quantity = new JFormattedTextField(formatter);P_Quantity.setBounds(435,365,50,50);P_Quantity.setText("500");P_Quantity.setFont(myFont2);
+		JFormattedTextField T_Quantity = new JFormattedTextField(formatter);T_Quantity.setBounds(535,365,50,50);T_Quantity.setText("500");T_Quantity.setFont(myFont2);
 
 		JLabel Pentomino_Label= new JLabel("Pentomino:");Pentomino_Label.setFont(myFont);Pentomino_Label.setForeground(myColor);Pentomino_Label.setBounds(120,188,200,80);
 		JLabel Quantity_Label= new JLabel("Quantity:");Quantity_Label.setFont(myFont);Quantity_Label.setForeground(myColor);Quantity_Label.setBounds(120,348,150,80);
@@ -341,11 +341,10 @@ public class UserInterface implements Files {
 				PentominoSettings x = new PentominoSettings(Integer.parseInt(L_Value.getText()), Integer.parseInt(P_Value.getText()), Integer.parseInt(T_Value.getText()), Integer.parseInt(L_Quantity.getText()), Integer.parseInt(P_Quantity.getText()), Integer.parseInt(T_Quantity.getText()),false	);
 				MainFrame.remove(PentominoPanel);
 				resultWindow(x);
-
-				if (show.getSelectedItem().equals("Greedy")) {
-					feedToAlgorithm(x);
-				}
-				else{feedToAugmentation(x);}
+				boolean greedy;
+				if(show.getSelectedItem().equals("Greedy")) greedy = true;
+				else greedy = false;
+				feedToAlgorithm(x,greedy);
 				displayKnapsack();
 			}});
 		Apply_Button.setFont(myFont);
@@ -394,7 +393,7 @@ public class UserInterface implements Files {
 		JLabel percentage= new JLabel("Percentage Filled:");percentage.setFont(myFont3);percentage.setForeground(myColor);
 		JLabel time= new JLabel("Time Taken:");time.setFont(myFont3);time.setForeground(myColor);
 		JLabel valueL= new JLabel("Total Value:");valueL.setFont(myFont3);valueL.setForeground(myColor);
-		JLabel theoryV= new JLabel("Theoretical");theoryV.setFont(myFont3);theoryV.setForeground(myColor);
+		JLabel theoryV= new JLabel("Filled Volume:");theoryV.setFont(myFont3);theoryV.setForeground(myColor);
 		JLabel theoryV2= new JLabel("Best Value:");theoryV2.setFont(myFont3);theoryV2.setForeground(myColor);
 		JLabel usedValues= new JLabel("Used Values");usedValues.setFont(myFont3);usedValues.setForeground(myColor);
 
@@ -504,7 +503,7 @@ public class UserInterface implements Files {
 		rightSide.add(percentage);percentage.setBounds(10,500,300,100);
 		rightSide.add(time);time.setBounds(10, 550, 200, 100);
 		rightSide.add(valueL);valueL.setBounds(10, 600, 200, 100);
-//		rightSide.add(theoryV);theoryV.setBounds(10, 650, 300, 100);
+		rightSide.add(theoryV);theoryV.setBounds(10, 650, 300, 100);
 //		rightSide.add(theoryV2);theoryV2.setBounds(15, 675, 300, 100);
 
 		rightSide.add(usedValues);usedValues.setBounds(10+rightSide.getWidth()/4,350,rightSide.getWidth()*2/3,100);
@@ -515,7 +514,7 @@ public class UserInterface implements Files {
 		rightSide.add(percentageFilled);percentageFilled.setBounds(rightSide.getWidth()-100, 500, 100, 100);
 		rightSide.add(timeTaken);timeTaken.setBounds(rightSide.getWidth()-100, 550, 100, 100);
 		rightSide.add(totalValue);totalValue.setBounds(rightSide.getWidth()-100, 600, 100, 100);
-		rightSide.add(theoryBest);theoryBest.setBounds(rightSide.getWidth()-100, 675, 100, 100);
+		rightSide.add(theoryBest);theoryBest.setBounds(rightSide.getWidth()-100, 650, 100, 100);
 
 		rightSide.add(usedA);usedA.setBounds(35, 420, rightSide.getWidth(), 100);
 		rightSide.add(usedB);usedB.setBounds(25+rightSide.getWidth()/3, 420, rightSide.getWidth(), 100);
@@ -546,7 +545,7 @@ public class UserInterface implements Files {
 		percentageFilled.setText(st+" %");//Percentage Filled
 		timeTaken.setText(String.valueOf((totalTakenTIME/1000000d)).substring(0,5)+" ms");//Time Taken to find answer
 		totalValue.setText(k.getValue()+"");//Total value of our solution
-		//theoryBest.setText("");//Theoritcal best value
+		theoryBest.setText(y+"");
 		if(pento) {
 			usedA.setText(a.L_quantity_used+"");//Amount of parcel of size A or pentominoes of shape L
 			usedB.setText(a.P_quantity_used+"");//Amount of parcel of size B or pentominoes of shape P
@@ -559,14 +558,7 @@ public class UserInterface implements Files {
 		}
 	}
 
-	public void feedToAugmentation(Object obj){
-		if (obj instanceof ParcelSettings){ParcelSettings j= (ParcelSettings)obj;}
-		else{PentominoSettings j = (PentominoSettings) obj;}
-
-
-	}
-
-	public void feedToAlgorithm(Object obj){
+	public void feedToAlgorithm(Object obj, boolean greedy){
 		Knapsack before = new Knapsack();
 		ParcelInterface Algorithm = new ParcelInterface();
 		boolean pento;
@@ -580,11 +572,17 @@ public class UserInterface implements Files {
 			PentominoSettings j= (PentominoSettings) obj;
 			Algorithm.putSettings(j);
 		}
-
-		long start = System.nanoTime();
-		Knapsack k = Algorithm.greedy(before);
-		totalTakenTIME = System.nanoTime() - start;
-
+		Knapsack k;
+		if(greedy) {
+			long start = System.nanoTime();
+			k = Algorithm.greedy(before);
+			totalTakenTIME = System.nanoTime() - start;
+		}
+		else{
+			long start = System.nanoTime();
+			k = Algorithm.augmented(before);
+			totalTakenTIME = System.nanoTime() - start;
+		}
 		knapsackGG= new KnapsackGroup(k,20);
 		updateLabels(k,Algorithm,pento);
 

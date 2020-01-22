@@ -246,7 +246,7 @@ public class MiniSimpleParcel {
 			if (name.equals("A") || name.equals("P")) color = Colors.randomDeviation(SELECTED_COLORS[0], color_variation);
 			else if (name.equals("B") || name.equals("L")) color = Colors.randomDeviation(SELECTED_COLORS[1], color_variation);
 			else if (name.equals("C") || name.equals("T")) color = Colors.randomDeviation(SELECTED_COLORS[2], color_variation);
-			else color = new Color(100,100,100);
+			else color = Colors.randomDeviation(SELECTED_COLORS[2], color_variation);
 			result.add(new SimpleParcel(length, width, height, value, base, color, name));
 			return result;
 		}
