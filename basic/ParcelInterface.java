@@ -6,6 +6,8 @@ import knapsack.Knapsack;
 import knapsack.parcel.ParcelCore;
 import knapsack.parcel.Parcels;
 
+import java.util.Arrays;
+
 public class ParcelInterface {
 
     private int A_value = 3;
@@ -39,6 +41,21 @@ public class ParcelInterface {
         putSettings(default_pentos);
         putSettings(default_parcels);
         this.pentoMode = pentoMode;
+    }
+
+    public MiniSimpleParcel[] getMiniPentominoParcels() {
+        MiniSimpleParcel[] result = new MiniSimpleParcel[3];
+        result[0] = MiniSimpleParcel.LL.changeValue(L_value * 2);
+        result[1] = MiniSimpleParcel.PTP.changeValue(T_value + P_value * 2);
+        result[2] = MiniSimpleParcel.PP.changeValue(P_value * 2);
+        return result;
+    }
+    public MiniSimpleParcel[] getMiniSimpleParcels() {
+        MiniSimpleParcel[] result = new MiniSimpleParcel[3];
+        result[0] = MiniSimpleParcel.A.changeValue(A_value);
+        result[1] = MiniSimpleParcel.B.changeValue(B_value);
+        result[2] = MiniSimpleParcel.C.changeValue(C_value);
+        return result;
     }
 
     public ParcelCore[] getPentominoParcels() {
@@ -100,7 +117,7 @@ public class ParcelInterface {
     public Knapsack augmentedPentominoesDynamic(Knapsack toSolve) {
 		int[] limits = getTotalLimits();
         int[] used = getTotalLimits();
-		MiniSimpleParcel result = MiniSimpleParcel.maximizeKnapsackValue(MiniSimpleParcel.getFromKnapsack(toSolve), MiniSimpleParcel.PENTOS, used);
+		MiniSimpleParcel result = MiniSimpleParcel.maximizeKnapsackValue(MiniSimpleParcel.getFromKnapsack(toSolve), getMiniPentominoParcels(), used);
 		result.adjustLimits(used);
 		result.putInKnapsack(toSolve);
 		calculateUsed(limits, used);
@@ -132,7 +149,7 @@ public class ParcelInterface {
     public Knapsack augmentedSimpleDynamic(Knapsack toSolve) {
 		int[] limits = getTotalLimits();
         int[] used = getTotalLimits();
-		MiniSimpleParcel result = MiniSimpleParcel.maximizeKnapsackValue(MiniSimpleParcel.getFromKnapsack(toSolve), MiniSimpleParcel.PARCELS, used);
+		MiniSimpleParcel result = MiniSimpleParcel.maximizeKnapsackValue(MiniSimpleParcel.getFromKnapsack(toSolve),getMiniSimpleParcels(), used);
 		result.adjustLimits(used);
 		result.putInKnapsack(toSolve);
 		calculateUsed(limits, used);
