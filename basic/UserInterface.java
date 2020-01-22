@@ -374,12 +374,12 @@ public class UserInterface implements Files {
 		leftSide= new JPanel();leftSide.setBounds(MainFrame.getWidth()/5,0, MainFrame.getWidth()-MainFrame.getWidth()/5, MainFrame.getHeight());
 		MainFrame.add(rightSide);
 		MainFrame.add(leftSide);
-		rightSide.setBackground(gradient1);
-		leftSide.setBackground(gradient2);
+		rightSide.setBackground(gradient2);
+		leftSide.setBackground(gradient1);
 
 		setUpLeftSide();
 
-		JButton BackToMenu = new JButton("Main Menu");BackToMenu.setFont(myFont3);
+		JButton BackToMenu = new JButton("Main Menu");BackToMenu.setFont(myFont3);BackToMenu.setForeground(myColor);
 
 		rightSide.add(BackToMenu);
 		BackToMenu.setBounds(0,rightSide.getHeight()-90,130,50);BackToMenu.setOpaque(false);BackToMenu.setBorder(null);BackToMenu.setBackground(null);
@@ -393,25 +393,25 @@ public class UserInterface implements Files {
 
 		});
 
-		JLabel percentage= new JLabel("Percentage Filled:");percentage.setFont(myFont3);
-		JLabel time= new JLabel("Time Taken:");time.setFont(myFont3);
-		JLabel valueL= new JLabel("Total Value:");valueL.setFont(myFont3);
-		JLabel theoryV= new JLabel("Theoretical");theoryV.setFont(myFont3);
-		JLabel theoryV2= new JLabel("Best Value:");theoryV2.setFont(myFont3);
-		JLabel usedValues= new JLabel("Used Values");usedValues.setFont(myFont3);
+		JLabel percentage= new JLabel("Percentage Filled:");percentage.setFont(myFont3);percentage.setForeground(myColor);
+		JLabel time= new JLabel("Time Taken:");time.setFont(myFont3);time.setForeground(myColor);
+		JLabel valueL= new JLabel("Total Value:");valueL.setFont(myFont3);valueL.setForeground(myColor);
+		JLabel theoryV= new JLabel("Theoretical");theoryV.setFont(myFont3);theoryV.setForeground(myColor);
+		JLabel theoryV2= new JLabel("Best Value:");theoryV2.setFont(myFont3);theoryV2.setForeground(myColor);
+		JLabel usedValues= new JLabel("Used Values");usedValues.setFont(myFont3);usedValues.setForeground(myColor);
 
-		JLabel ALabel = new JLabel();ALabel.setFont(myFont3);
-		JLabel BLabel = new JLabel();BLabel.setFont(myFont3);
-		JLabel CLabel = new JLabel();CLabel.setFont(myFont3);
+		JLabel ALabel = new JLabel();ALabel.setFont(myFont3);ALabel.setForeground(myColor);
+		JLabel BLabel = new JLabel();BLabel.setFont(myFont3);BLabel.setForeground(myColor);
+		JLabel CLabel = new JLabel();CLabel.setFont(myFont3);CLabel.setForeground(myColor);
 
-		percentageFilled= new JLabel();percentageFilled.setFont(myFont3);
-		timeTaken= new JLabel();timeTaken.setFont(myFont3);
-		totalValue= new JLabel();totalValue.setFont(myFont3);
-		theoryBest= new JLabel();theoryBest.setFont(myFont3);
+		percentageFilled= new JLabel();percentageFilled.setFont(myFont3);percentageFilled.setForeground(myColor);
+		timeTaken= new JLabel();timeTaken.setFont(myFont3);timeTaken.setForeground(myColor);
+		totalValue= new JLabel();totalValue.setFont(myFont3);totalValue.setForeground(myColor);
+		theoryBest= new JLabel();theoryBest.setFont(myFont3);theoryBest.setForeground(myColor);
 
-		usedA= new JLabel();usedA.setFont(myFont3);
-		usedB= new JLabel();usedB.setFont(myFont3);
-		usedC= new JLabel();usedC.setFont(myFont3);
+		usedA= new JLabel();usedA.setFont(myFont3);usedA.setForeground(myColor);
+		usedB= new JLabel();usedB.setFont(myFont3);usedB.setForeground(myColor);
+		usedC= new JLabel();usedC.setFont(myFont3);usedC.setForeground(myColor);
 
 
 		if(!parcel) {
@@ -422,13 +422,13 @@ public class UserInterface implements Files {
 			BLabel.setText("P");
 			CLabel.setText("T");
 
-			JLabel titel_L = new JLabel("Pentomino Knapsack");titel_L.setFont(myFont3);
-			JLabel l = new JLabel("Pentomino");l.setFont(myFont3);
-			JLabel lv = new JLabel("Value");lv.setFont(myFont3);
-			JLabel lq = new JLabel("Quantity");lq.setFont(myFont3);
-			JLabel l1 = new JLabel("L:");l1.setFont(myFont3);
-			JLabel l2 = new JLabel("P:");l2.setFont(myFont3);
-			JLabel l3 = new JLabel("T:");l3.setFont(myFont3);
+			JLabel titel_L = new JLabel("Pentomino Knapsack");titel_L.setFont(myFont3);titel_L.setForeground(myColor);
+			JLabel l = new JLabel("Pentomino");l.setFont(myFont3);l.setForeground(myColor);
+			JLabel lv = new JLabel("Value");lv.setFont(myFont3);lv.setForeground(myColor);
+			JLabel lq = new JLabel("Quantity");lq.setFont(myFont3);lq.setForeground(myColor);
+			JLabel l1 = new JLabel("L:");l1.setFont(myFont3);l1.setForeground(myColor);
+			JLabel l2 = new JLabel("P:");l2.setFont(myFont3);l2.setForeground(myColor);
+			JLabel l3 = new JLabel("T:");l3.setFont(myFont3);l3.setForeground(myColor);
 
 
 			rightSide.add(titel_L);titel_L.setBounds(rightSide.getWidth()/5,10,rightSide.getWidth()*2/3,100);
@@ -444,9 +444,9 @@ public class UserInterface implements Files {
 			JLabel vB = new JLabel(""+myS.vP);JLabel qB = new JLabel(""+myS.qP);
 			JLabel vC = new JLabel(""+myS.vT);JLabel qC = new JLabel(""+myS.qT);
 
-			vA.setFont(myFont3);qA.setFont(myFont3);
-			vB.setFont(myFont3);qB.setFont(myFont3);
-			vC.setFont(myFont3);qC.setFont(myFont3);
+			vA.setFont(myFont3);qA.setFont(myFont3);vA.setForeground(myColor);qA.setForeground(myColor);
+			vB.setFont(myFont3);qB.setFont(myFont3);vB.setForeground(myColor);qB.setForeground(myColor);
+			vC.setFont(myFont3);qC.setFont(myFont3);vC.setForeground(myColor);qC.setForeground(myColor);
 
 			rightSide.add(vA);vA.setBounds(40+rightSide.getWidth()/3, 150, rightSide.getWidth(), 100);
 			rightSide.add(vB);vB.setBounds(40+rightSide.getWidth()/3, 200, rightSide.getWidth(), 100);
@@ -466,13 +466,13 @@ public class UserInterface implements Files {
 			BLabel.setText("B");
 			CLabel.setText("C");
 
-			JLabel titel_L = new JLabel("Parcel Knapsack");titel_L.setFont(myFont3);
-			JLabel l = new JLabel("Parcel");l.setFont(myFont3);
-			JLabel lv = new JLabel("Value");lv.setFont(myFont3);
-			JLabel lq = new JLabel("Quantity");lq.setFont(myFont3);
-			JLabel l1 = new JLabel("A:");l1.setFont(myFont3);
-			JLabel l2 = new JLabel("B:");l2.setFont(myFont3);
-			JLabel l3 = new JLabel("C:");l3.setFont(myFont3);
+			JLabel titel_L = new JLabel("Parcel Knapsack");titel_L.setFont(myFont3);titel_L.setForeground(myColor);
+			JLabel l = new JLabel("Parcel");l.setFont(myFont3);l.setForeground(myColor);
+			JLabel lv = new JLabel("Value");lv.setFont(myFont3);lv.setForeground(myColor);
+			JLabel lq = new JLabel("Quantity");lq.setFont(myFont3);lq.setForeground(myColor);
+			JLabel l1 = new JLabel("A:");l1.setFont(myFont3);l1.setForeground(myColor);
+			JLabel l2 = new JLabel("B:");l2.setFont(myFont3);l2.setForeground(myColor);
+			JLabel l3 = new JLabel("C:");l3.setFont(myFont3);l3.setForeground(myColor);
 
 
 			rightSide.add(titel_L);titel_L.setBounds(rightSide.getWidth()/5,10,rightSide.getWidth()*2/3,100);
@@ -488,9 +488,9 @@ public class UserInterface implements Files {
 			JLabel vB = new JLabel(""+myS.vB);JLabel qB = new JLabel(""+myS.qB);
 			JLabel vC = new JLabel(""+myS.vC);JLabel qC = new JLabel(""+myS.qC);
 
-			vA.setFont(myFont3);qA.setFont(myFont3);
-			vB.setFont(myFont3);qB.setFont(myFont3);
-			vC.setFont(myFont3);qC.setFont(myFont3);
+			vA.setFont(myFont3);qA.setFont(myFont3);vA.setForeground(myColor);qA.setForeground(myColor);
+			vB.setFont(myFont3);qB.setFont(myFont3);vB.setForeground(myColor);qB.setForeground(myColor);
+			vC.setFont(myFont3);qC.setFont(myFont3);vC.setForeground(myColor);qC.setForeground(myColor);
 
 			rightSide.add(vA);vA.setBounds(40+rightSide.getWidth()/3, 150, rightSide.getWidth(), 100);
 			rightSide.add(vB);vB.setBounds(40+rightSide.getWidth()/3, 200, rightSide.getWidth(), 100);
