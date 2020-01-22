@@ -11,6 +11,7 @@ import javafxstuff.Point3D;
 import knapsack.Knapsack;
 import knapsack.Size3D;
 import knapsack.parcel.Parcels;
+import knapsack.parcel.PentominoParcel;
 import knapsack.parcel.SimpleParcel;
 import static knapsack.Variables.color_variation;
 import static knapsack.Variables.SELECTED_COLORS;
@@ -20,7 +21,6 @@ public class MiniSimpleParcel {
 	@FunctionalInterface
 	static abstract interface Picker extends Function<ArrayList<MiniSimpleParcel>, MiniSimpleParcel> {
 		MiniSimpleParcel pick(ArrayList<MiniSimpleParcel> list);
-		
 		default MiniSimpleParcel apply(ArrayList<MiniSimpleParcel> list) { return pick(list); }
 	}
 	
@@ -205,6 +205,34 @@ public class MiniSimpleParcel {
 		MiniSimpleParcel to_put = rotateToFitInside(getFromKnapsack(knapsack));
 		ArrayList<SimpleParcel> parcels = to_put.convert();
 		for (SimpleParcel parcel : parcels) knapsack.putParcel(parcel);
+	}
+	
+	public ArrayList<PentominoParcel> pentoConvert() {
+		cleanup();
+		return cleanpentoConvert(baseOrigin);
+	}
+	private ArrayList<PentominoParcel> cleanpentoConvert(Point3D base) {
+		ArrayList<PentominoParcel> result = new ArrayList<PentominoParcel>();
+		if (isItself() || components.size() == 0) {
+			if (equals(PP)) {
+				// TODO add PP
+			} if (equals(PTP)) {
+				// TODO add PTP
+			} if (equals(LL)) {
+				// TODO add LL
+			} return result;
+		}
+		MiniSimpleParcel comp1 = components.get(0);
+		int c = getSimilar(comp1);
+		Point3D totaldelta = Point3D.ZERO;
+		Point3D delta = new Point3D(1,0,0);
+		if ((c & WIDTH) == 0) delta = new Point3D(0,1,0);
+		else if ((c & HEIGHT) == 0) delta = new Point3D(0,0,1);
+		for (MiniSimpleParcel component : components) {
+			result.addAll(component.cleanpentoConvert(base.add(totaldelta)));
+			totaldelta = totaldelta.add(product(delta, new Point3D(component.length, component.width, component.height)));
+		}
+		return result;
 	}
 	
 	public ArrayList<SimpleParcel> convert() {
@@ -583,7 +611,6 @@ public class MiniSimpleParcel {
 			patchwork_pool.addAll(to_add);
 			if (to_add.size() > 0) keep_going = true;
 			amount_added += to_add.size();
-			System.out.println("added "+to_add.size()+" elements");
 		}
 		if (amount_added <= 0)
 			for (int i=0; i < patchwork_pool.size(); i++) if (patchwork_pool.get(i).exceedsLimit(countLimits)) patchwork_pool.remove(i--);
