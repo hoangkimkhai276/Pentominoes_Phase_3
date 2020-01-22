@@ -1,7 +1,5 @@
 package basic;
 
-import java.util.Arrays;
-
 import depth_first_fill.MiniSimpleParcel;
 import greedy_algorithm.SimpleStartingCode;
 import knapsack.Knapsack;
