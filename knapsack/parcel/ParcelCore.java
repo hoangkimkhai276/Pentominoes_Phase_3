@@ -100,6 +100,7 @@ public abstract class ParcelCore implements Parcel {
 	public abstract void rotateHeight();
 	public abstract <T extends ParcelCore> T duplicate();
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public final <T extends Parcel> T copy() {
 		ParcelCore result = (ParcelCore) duplicate();
@@ -130,6 +131,11 @@ public abstract class ParcelCore implements Parcel {
 		if (!pset.equals(tset)) return false;
 		// as soon as there is a point that isn't in both objects' occupied-grid-space, return false
 		return true;
+	}
+	
+	@Override
+	public Object clone() {
+		return copy();
 	}
 
 }

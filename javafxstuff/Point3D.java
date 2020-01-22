@@ -448,7 +448,7 @@ public class Point3D {
      * The returned string might be empty but cannot be {@code null}.
      */
     @Override public String toString() {
-        return "Point3D [x = " + getX() + ", y = " + getY() + ", z = " + getZ() + "]";
+        return "(" + getX() + ", " + getY() + ", " + getZ() + ")";
     }
 
     public javafx.geometry.Point3D convert() {
