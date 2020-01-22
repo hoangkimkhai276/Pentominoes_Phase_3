@@ -72,7 +72,12 @@ public class MiniSimpleParcel {
 		while (pick.getDensity() < best_densevolume_densityrequirement * list1.get(0).getDensity()) pick = list2.get(++index);
 		return pick;
 	};
-	
+
+	public MiniSimpleParcel changeValue(int value) {
+		this.value = value;
+		return this;
+	}
+
 	private int[] getCounts() {
 		return new int[] {count_A, count_B, count_C, count_P, count_T, count_L};
 	}
@@ -251,7 +256,8 @@ public class MiniSimpleParcel {
 	
 	public ArrayList<SimpleParcel> convert() {
 		cleanup();
-		return cleanconvert(baseOrigin);	
+		expand(this, "");
+		return cleanconvert(baseOrigin);
 	}
 	private ArrayList<SimpleParcel> cleanconvert(Point3D base) {
 		ArrayList<SimpleParcel> result = new ArrayList<SimpleParcel>();
