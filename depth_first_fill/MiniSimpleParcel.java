@@ -61,6 +61,7 @@ public class MiniSimpleParcel {
 	public static final Picker HIGHEST_VOLUME   = p -> { p.sort(SORT_VOLUME);  return p.get(0); };
 	@SuppressWarnings("unchecked")
 	public static final Picker BEST_DENSEVOLUME = p -> {
+		if (p.size() == 0) return NONE;
 		ArrayList<MiniSimpleParcel> list1 = (ArrayList<MiniSimpleParcel>) p.clone();
 		ArrayList<MiniSimpleParcel> list2 = (ArrayList<MiniSimpleParcel>) p.clone();
 		list1.sort(SORT_DENSITY);
@@ -85,6 +86,11 @@ public class MiniSimpleParcel {
 	}
 	public boolean exceedsLimit(int[] limits) {
 		return count_A > limits[0] || count_B > limits[1] || count_C > limits[2] || count_P > limits[3] || count_T > limits[4] || count_L > limits[5];
+	}
+	
+	public void adjustLimits(int[] limits) {
+		int[] counts = getCounts();
+		for (int i=0; i < counts.length; i++) limits[i] -= counts[i];
 	}
 	
 	private static ArrayList<MiniSimpleParcel> toList(MiniSimpleParcel...components) {
@@ -191,8 +197,12 @@ public class MiniSimpleParcel {
 		return false;
 	}
 	
+	public static MiniSimpleParcel getFromKnapsack(Knapsack knapsack) {
+		return new MiniSimpleParcel(knapsack.getLength(), knapsack.getWidth(), knapsack.getHeight(), 0);
+	}
+	
 	public void putInKnapsack(Knapsack knapsack) {
-		MiniSimpleParcel to_put = rotateToFitInside(new MiniSimpleParcel(knapsack.getLength(), knapsack.getWidth(), knapsack.getHeight(), 0));
+		MiniSimpleParcel to_put = rotateToFitInside(getFromKnapsack(knapsack));
 		ArrayList<SimpleParcel> parcels = to_put.convert();
 		for (SimpleParcel parcel : parcels) knapsack.putParcel(parcel);
 	}
@@ -239,13 +249,15 @@ public class MiniSimpleParcel {
 	
 	public static void main(String[] args) {
 		best_densevolume_densityrequirement = 0;
-		MiniSimpleParcel result = MiniSimpleParcel.maximizeKnapsackValue(K, BEST_DENSEVOLUME, PENTOS, null);
-		//result.cleanup();
-		//expand(result, "");
+		int[] limits = {0,20,10,0,0,0};
+		MiniSimpleParcel result = MiniSimpleParcel.maximizeKnapsackValue(K, PENTOS, null);
+		result.adjustLimits(limits);
+		System.out.println(Arrays.toString(limits));
+		expand(result, "");
+		System.out.println(result.counts());
 		Knapsack knapsack = new Knapsack();
 		result.putInKnapsack(knapsack);
-		System.out.println(knapsack.getFilledVolume());
-		
+		System.out.println(knapsack.getFilledVolume()+"/"+knapsack.getVolume());
 	}
 	
 	public MiniSimpleParcel add(MiniSimpleParcel other) {
@@ -458,11 +470,22 @@ public class MiniSimpleParcel {
 	 *         count_C, count_P, count_T, count_L]), let this be <b>{@code null}</b> to solve the <b>unbounded</b> knapsack problem
 	 * @return a single MiniSimpleParcel representing an optimum parcel combination that maximizes whatever the {@code Picker} wants
 	 */
-	public static MiniSimpleParcel maximizeKnapsackValue(MiniSimpleParcel knapsack, Picker picker, MiniSimpleParcel[] parcels, int[] limits) {
+	public static MiniSimpleParcel maximizeKnapsackPicker(MiniSimpleParcel knapsack, Picker picker, MiniSimpleParcel[] parcels, int[] limits) {
 		ArrayList<MiniSimpleParcel> generated = generatePatchworkPool(limits, knapsack, parcels);
-		//TODO implement segmentation of subdivisions and recursive filling of those
 		return picker.pick(generated);
 	}
+	
+	public static MiniSimpleParcel maximizeKnapsackValue(MiniSimpleParcel knapsack, MiniSimpleParcel[] parcels, int[] limits) {
+		return maximizeKnapsackPicker(knapsack, HIGHEST_VALUE, parcels, limits);
+	}
+	
+	/*public static ArrayList<MiniSimpleParcel> createSegmentedAugmentationParcels(MiniSimpleParcel knapsack, Picker picker, MiniSimpleParcel[] parcels, int[] limits) {
+		ArrayList<MiniSimpleParcel> generated = generatePatchworkPool(limits, knapsack, parcels);
+		if (generated.size() < 1) return new ArrayList<MiniSimpleParcel>(0);
+		MiniSimpleParcel nextPlacement = picker.pick(generated);
+		
+		//TODO implement segmentation of subdivisions and recursive filling of those
+	} */
 	
 	public static MiniSimpleParcel[][] getSubDivisions(MiniSimpleParcel knapsack, MiniSimpleParcel placedBlock) {
 		MiniSimpleParcel[][] result; int subcount = getSubCount(knapsack, placedBlock);
@@ -538,7 +561,7 @@ public class MiniSimpleParcel {
 	}
 	
 	public static ArrayList<MiniSimpleParcel> generatePatchworkPool(int[] countLimits, MiniSimpleParcel knapsack, MiniSimpleParcel... parcels) {
-		boolean ignore_limit = countLimits==null;
+		boolean ignore_limit = countLimits==null; int amount_added = 0;
 		boolean care = care_about_rotation_in_equals;
 		care_about_rotation_in_equals = false;
 		ArrayList<MiniSimpleParcel> patchwork_pool = new ArrayList<MiniSimpleParcel>(Arrays.asList(parcels));
@@ -559,8 +582,11 @@ public class MiniSimpleParcel {
 			}
 			patchwork_pool.addAll(to_add);
 			if (to_add.size() > 0) keep_going = true;
+			amount_added += to_add.size();
 			System.out.println("added "+to_add.size()+" elements");
 		}
+		if (amount_added <= 0)
+			for (int i=0; i < patchwork_pool.size(); i++) if (patchwork_pool.get(i).exceedsLimit(countLimits)) patchwork_pool.remove(i--);
 		care_about_rotation_in_equals = care;
 		return patchwork_pool;
 	}
@@ -582,7 +608,7 @@ public class MiniSimpleParcel {
 		best_densevolume_densityrequirement = 0;
 		System.out.println("Maximizing "+knapsack+" with "+Arrays.toString(parcels)+" for total value");
 		long start_time = System.nanoTime();
-		result = maximizeKnapsackValue(knapsack, BEST_DENSEVOLUME, parcels, null);
+		result = maximizeKnapsackPicker(knapsack, BEST_DENSEVOLUME, parcels, null);
 		long delta_time = System.nanoTime() - start_time;
 		System.out.println("calculation took "+(float)(delta_time/1000000d)+"ms");
 		System.out.println("result value = "+result.getValue()+"\nresult = "+result.counts()+" for a total of "+result

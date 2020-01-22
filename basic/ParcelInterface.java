@@ -1,5 +1,8 @@
 package basic;
 
+import java.util.Arrays;
+
+import depth_first_fill.MiniSimpleParcel;
 import greedy_algorithm.SimpleStartingCode;
 import knapsack.Knapsack;
 import knapsack.parcel.ParcelCore;
@@ -28,7 +31,6 @@ public class ParcelInterface {
     private int T_quantity = 5000;
     private int L_quantity = 5000;
 
-    private boolean dynamic = true;
     private boolean pentoMode = true;
 
     public ParcelInterface() {
@@ -89,7 +91,24 @@ public class ParcelInterface {
         this.C_value = C_value;
     }
 
-    public Knapsack greedyPentominoesNotDynamic(Knapsack toSolve) {
+    public Knapsack augmentedPentominoes(Knapsack toSolve) {
+    	return augmentedPentominoesDynamic(toSolve.getEmpty());
+    }
+    
+    public Knapsack augmentedPentominoesDynamic(Knapsack toSolve) {
+		int[] limits = getPentominoLimits();
+        int[] used = getPentominoLimits();
+		MiniSimpleParcel result = MiniSimpleParcel.maximizeKnapsackValue(MiniSimpleParcel.getFromKnapsack(toSolve), MiniSimpleParcel.PENTOS, limits);
+		result.adjustLimits(limits);
+		result.putInKnapsack(toSolve);
+		calculateUsed(limits, used);
+        P_quantity_used = used[0];
+		T_quantity_used = used[1];
+		L_quantity_used = used[2];
+		return toSolve;
+    }
+    
+    public Knapsack greedyPentominoes(Knapsack toSolve) {
         return greedyPentominoesDynamic(toSolve.getEmpty());
     }
 
@@ -104,9 +123,24 @@ public class ParcelInterface {
 		return toSolve;
     }
 
-
-
-    public Knapsack greedySimpleNotDynamic(Knapsack toSolve) {
+    public Knapsack augmentedSimple(Knapsack toSolve) {
+    	return augmentedPentominoesDynamic(toSolve.getEmpty());
+    }
+    
+    public Knapsack augmentedSimpleDynamic(Knapsack toSolve) {
+		int[] limits = getSimpleLimits();
+        int[] used = getSimpleLimits();
+		MiniSimpleParcel result = MiniSimpleParcel.maximizeKnapsackValue(MiniSimpleParcel.getFromKnapsack(toSolve), MiniSimpleParcel.PARCELS, limits);
+		result.adjustLimits(limits);
+		result.putInKnapsack(toSolve);
+		calculateUsed(limits, used);
+        A_quantity_used = used[0];
+		B_quantity_used = used[1];
+		C_quantity_used = used[2];
+		return toSolve;
+    }
+    
+    public Knapsack greedySimple(Knapsack toSolve) {
         return greedySimpleDynamic(toSolve.getEmpty());
     }
 
@@ -130,23 +164,23 @@ public class ParcelInterface {
     public void putSettings(PentominoSettings settings) {
         setPentominoValues(settings.vP, settings.vT, settings.vL);
         setPentominoLimits(settings.qP, settings.qT, settings.qL);
-        dynamic = settings.steps;
         pentoMode = true;
     }
 
     public void putSettings(ParcelSettings settings) {
         setSimpleValues(settings.vA, settings.vB, settings.vC);
         setSimpleLimits(settings.qA, settings.qB, settings.qC);
-        dynamic = settings.steps;
         pentoMode = false;
     }
 
     public Knapsack greedy(Knapsack input) {
-        if (dynamic && pentoMode) return greedyPentominoesDynamic(input);
-        if (!dynamic && pentoMode) return greedyPentominoesNotDynamic(input);
-        if (dynamic && !pentoMode) return greedySimpleDynamic(input);
-        return greedySimpleNotDynamic(input);
+        if (pentoMode) return greedyPentominoes(input);
+        return greedySimple(input);
     }
-
-
+    
+    public Knapsack augmented(Knapsack input) {
+    	if (pentoMode) return augmentedPentominoes(input);
+    	return augmentedSimple(input);
+    }
+    
 }
