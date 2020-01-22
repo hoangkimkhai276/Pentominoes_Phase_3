@@ -483,9 +483,9 @@ public class MiniSimpleParcel {
 		ArrayList<MiniSimpleParcel> generated = generatePatchworkPool(limits, knapsack, parcels);
 		if (generated.size() < 1) return new ArrayList<MiniSimpleParcel>(0);
 		MiniSimpleParcel nextPlacement = picker.pick(generated);
-		
+		MiniSimpleParcel[][] subdivisions = getSubDivisions(knapsack, nextPlacement);
 		//TODO implement segmentation of subdivisions and recursive filling of those
-	} */
+	}*/
 	
 	public static MiniSimpleParcel[][] getSubDivisions(MiniSimpleParcel knapsack, MiniSimpleParcel placedBlock) {
 		MiniSimpleParcel[][] result; int subcount = getSubCount(knapsack, placedBlock);
