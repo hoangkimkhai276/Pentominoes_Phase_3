@@ -1,11 +1,16 @@
 package greedy_algorithm;
 
+import java.awt.*;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javafxdraw.Colors;
 import knapsack.Knapsack;
 import knapsack.parcel.ParcelCore;
 import knapsack.parcel.Parcels;
+import knapsack.parcel.PentominoParcel;
+import knapsack.parcel.SimpleParcel;
 
 public class SimpleStartingCode {
 	
@@ -71,18 +76,88 @@ public class SimpleStartingCode {
 		for (int i=0; i < parcels.length; i++) if (parcel.isSameType(parcels[i])) return i;
 		return -1;
 	}
-	
+
+	public static final Color[] SELECTED_COLORS = Colors.getRandomColors(3, 0.8f, 0f);
+
+
 	public static void main(String[] args) {
-		Knapsack before = new Knapsack();
-		long start = System.nanoTime();
-		simpleStochasticGreedy(before, Parcels.PENTOS, null);
-		long delta = System.nanoTime() - start;
-		Knapsack after = before;
-		System.out.println("after "+(delta/1000000d)+"ms, the following result is gathered:");
-		System.out.println("volume filled: "+after.getFilledVolume()+"/"+after.getVolume());
-		System.out.println("total value: "+after.getValue()+"$");
-		System.out.println("parcels used: "+count+"\n");
-		
+		int[][] limitsList= {{0, 100, 100}, {0, 500, 500}, {0, 100, 500}, {0, 500, 100}, {0, 0, 500}, {0, 500, 0}, {0, 0, 100}, {0, 100, 0},
+				{100, 100, 100}, {100, 500, 500}, {100, 100, 500}, {100, 500, 100}, {100, 0, 500}, {100, 500, 0}, {100, 0, 100},
+				{100, 100, 0}, {500, 100, 100}, {500, 500, 500}, {500, 100, 500}, {500, 500, 100}, {500, 0, 500},
+				{500, 500, 0}, {500, 0, 100}, {500, 100, 0}, {100, 0, 0}, {500, 0, 0}};
+		try {
+			FileWriter csvWriter = new FileWriter("PentoTestValue2.csv");
+			csvWriter.append("P");
+			csvWriter.append(",");
+			csvWriter.append("L");
+			csvWriter.append(",");
+			csvWriter.append("T");
+			csvWriter.append(",");
+			csvWriter.append("i");
+			csvWriter.append(",");
+			csvWriter.append("Time");
+			csvWriter.append(",");
+			csvWriter.append("Value");
+			csvWriter.append(",");
+			csvWriter.append("Number used");
+			csvWriter.append(",");
+			csvWriter.append("Volume");
+			csvWriter.append("\n");
+			for (int ii = 0; ii < 26; ii++) {
+				long avgTime = 0;
+				long avgValue = 0;
+				long avgNumberUsed = 0;
+				long avgVolume = 0;
+				csvWriter.append(limitsList[ii][0]+"");
+				csvWriter.append(",");
+				csvWriter.append(limitsList[ii][1]+"");
+				csvWriter.append(",");
+				csvWriter.append(limitsList[ii][2]+"");
+				csvWriter.append(",");
+				csvWriter.append(ii+"");
+				csvWriter.append(",");
+
+				for (int i = 0; i < 1000; i++) {
+					int[] limits = new int[3];
+
+					for (int j = 0; j < 3; j++) {
+						limits[j] = limitsList[ii][j];
+					}
+					ParcelCore P = new PentominoParcel(new boolean[][]{{true, false},{true, true}, {true, true}}, limits[0], SELECTED_COLORS[0], "P");
+					ParcelCore L = new PentominoParcel(new boolean[][]{{true, true},{true, false},{true, false},{true, false}}, limits[1], SELECTED_COLORS[1], "L");
+					ParcelCore T = new PentominoParcel(new boolean[][]{{true, true, true}, {false, true, false}, {false, true, false}}, limits[2], SELECTED_COLORS[2], "T");
+					ParcelCore[] PARCELS = {P,L,T};
+					Knapsack before = new Knapsack();
+
+					long start = System.nanoTime();
+					simpleStochasticGreedy(before, PARCELS, null);
+
+					long delta = System.nanoTime() - start;
+					Knapsack after = before;
+//					System.out.println("after " + (delta / 1000000d) + "ms, the following result is gathered:");
+//					System.out.println("volume filled: " + after.getFilledVolume() + "/" + after.getVolume());
+//					System.out.println("total value: " + after.getValue() + "$");
+//					System.out.println("parcels used: " + count + "\n");
+					avgTime += (delta / 1000000d);
+					avgValue += after.getValue();
+					avgNumberUsed += count;
+					avgVolume += after.getFilledVolume();
+
+				}
+				csvWriter.append((avgTime/1000d)+"");
+				csvWriter.append(",");
+				csvWriter.append((avgValue/1000d)+"");
+				csvWriter.append(",");
+				csvWriter.append((avgNumberUsed/1000d)+"");
+				csvWriter.append(",");
+				csvWriter.append((avgVolume/1000d)+"");
+				csvWriter.append("\n");
+
+			}
+			csvWriter.flush();
+			csvWriter.close();
+		}
+		catch (Exception e){e.printStackTrace();}
 		/*int[] starting_limits = {50,40,200}; // P L T
 		int[] limits = Arrays.copyOf(starting_limits, 3);
 		start = System.nanoTime();

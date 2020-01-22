@@ -90,14 +90,6 @@ public class UserInterface implements Files {
 	}
 
 	public void reset(){
-//		MainFrame = new JFrame(Title);
-//		MainFrame.setSize(x, y);
-//		SetUpMainMenu();
-//		SetUpParcelMenu();
-//		SetUpPentominoMenu();
-//		MainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		MainFrame.setResizable(false);
-//		MainFrame.setVisible(true);
 		MainFrame.setVisible(false);
 		MainFrame=null;
 		new UserInterface();
@@ -214,8 +206,8 @@ public class UserInterface implements Files {
 		JLabel A_Label= new JLabel("A");A_Label.setFont(myFont);A_Label.setForeground(myColor);A_Label.setBounds(350,188,150,80);
 		JLabel B_Label= new JLabel("B");B_Label.setFont(myFont);B_Label.setForeground(myColor);B_Label.setBounds(450,188,150,80);
 		JLabel C_Label= new JLabel("C");C_Label.setFont(myFont);C_Label.setForeground(myColor);C_Label.setBounds(550,188,150,80);
-
-		JCheckBox show = new JCheckBox("Show Steps "); show.setBounds(300, 400, 200, 100);show.setOpaque(false);show.setFont(myFont3);show.setForeground(myColor);
+		String[] choices= {"Greedy","Augmentation"};
+		JComboBox<String> show = new JComboBox<String>(choices); show.setBounds(300, 450, 200, 50);show.setFont(myFont3);show.setForeground(myColor);show.setBackground(gradient2);
 
 		ParcelPanel.add(show);
 
@@ -242,10 +234,13 @@ public class UserInterface implements Files {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ParcelSettings x = new ParcelSettings(Integer.parseInt(vA_Value.getText()), Integer.parseInt(vB_Value.getText()), Integer.parseInt(vC_Value.getText()), Integer.parseInt(vA_Quantity.getText()), Integer.parseInt(vB_Quantity.getText()), Integer.parseInt(vC_Quantity.getText()),show.isSelected());
+				ParcelSettings x = new ParcelSettings(Integer.parseInt(vA_Value.getText()), Integer.parseInt(vB_Value.getText()), Integer.parseInt(vC_Value.getText()), Integer.parseInt(vA_Quantity.getText()), Integer.parseInt(vB_Quantity.getText()), Integer.parseInt(vC_Quantity.getText()),false);
 				MainFrame.remove(ParcelPanel);
 				resultWindow(x);
-				feedToAlgorithm(x);
+				if (show.getSelectedItem().equals("Greedy")) {
+					feedToAlgorithm(x);
+				}
+				else{feedToAugmentation(x);}
 				displayKnapsack();
 			}});
 		Apply_Button.setFont(myFont);
@@ -315,8 +310,8 @@ public class UserInterface implements Files {
 		JLabel A_Label= new JLabel("L");A_Label.setFont(myFont);A_Label.setForeground(myColor);A_Label.setBounds(350,188,150,80);
 		JLabel B_Label= new JLabel("P");B_Label.setFont(myFont);B_Label.setForeground(myColor);B_Label.setBounds(450,188,150,80);
 		JLabel C_Label= new JLabel("T");C_Label.setFont(myFont);C_Label.setForeground(myColor);C_Label.setBounds(550,188,150,80);
-
-		JCheckBox show = new JCheckBox("Show Steps "); show.setBounds(300, 400, 200, 100);show.setOpaque(false);show.setFont(myFont3);show.setForeground(myColor);
+		String[] choices= {"Greedy","Augmentation"};
+		JComboBox<String> show = new JComboBox<String>(choices); show.setBounds(300, 450, 200, 50);show.setFont(myFont3);show.setForeground(myColor);show.setBackground(gradient2);
 
 		PentominoPanel.add(show);
 
@@ -343,12 +338,15 @@ public class UserInterface implements Files {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				PentominoSettings x = new PentominoSettings(Integer.parseInt(L_Value.getText()), Integer.parseInt(P_Value.getText()), Integer.parseInt(T_Value.getText()), Integer.parseInt(L_Quantity.getText()), Integer.parseInt(P_Quantity.getText()), Integer.parseInt(T_Quantity.getText()),show.isSelected());
+				PentominoSettings x = new PentominoSettings(Integer.parseInt(L_Value.getText()), Integer.parseInt(P_Value.getText()), Integer.parseInt(T_Value.getText()), Integer.parseInt(L_Quantity.getText()), Integer.parseInt(P_Quantity.getText()), Integer.parseInt(T_Quantity.getText()),false	);
 				MainFrame.remove(PentominoPanel);
 				resultWindow(x);
-				feedToAlgorithm(x);
-				displayKnapsack();
 
+				if (show.getSelectedItem().equals("Greedy")) {
+					feedToAlgorithm(x);
+				}
+				else{feedToAugmentation(x);}
+				displayKnapsack();
 			}});
 		Apply_Button.setFont(myFont);
 		Apply_Button.setForeground(myColor);
@@ -561,6 +559,12 @@ public class UserInterface implements Files {
 		}
 	}
 
+	public void feedToAugmentation(Object obj){
+		if (obj instanceof ParcelSettings){ParcelSettings j= (ParcelSettings)obj;}
+		else{PentominoSettings j = (PentominoSettings) obj;}
+
+
+	}
 
 	public void feedToAlgorithm(Object obj){
 		Knapsack before = new Knapsack();
