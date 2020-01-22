@@ -191,6 +191,12 @@ public class MiniSimpleParcel {
 		return false;
 	}
 	
+	public void putInKnapsack(Knapsack knapsack) {
+		MiniSimpleParcel to_put = rotateToFitInside(new MiniSimpleParcel(knapsack.getLength(), knapsack.getWidth(), knapsack.getHeight(), 0));
+		ArrayList<SimpleParcel> parcels = to_put.convert();
+		for (SimpleParcel parcel : parcels) knapsack.putParcel(parcel);
+	}
+	
 	public ArrayList<SimpleParcel> convert() {
 		cleanup();
 		return cleanconvert(baseOrigin);	
@@ -199,9 +205,9 @@ public class MiniSimpleParcel {
 		ArrayList<SimpleParcel> result = new ArrayList<SimpleParcel>();
 		if (isItself() || components.size() == 0) {
 			String name = getNameFromCounts(); Color color;
-			if (name.equals("A") || name.equals("P")) color = SELECTED_COLORS[0];
-			else if (name.equals("B") || name.equals("L")) color = SELECTED_COLORS[1];
-			else if (name.equals("C") || name.equals("T")) color = SELECTED_COLORS[2];
+			if (name.equals("A") || name.equals("P")) color = Colors.randomDeviation(SELECTED_COLORS[0], color_variation);
+			else if (name.equals("B") || name.equals("L")) color = Colors.randomDeviation(SELECTED_COLORS[1], color_variation);
+			else if (name.equals("C") || name.equals("T")) color = Colors.randomDeviation(SELECTED_COLORS[2], color_variation);
 			else color = new Color(100,100,100);
 			result.add(new SimpleParcel(length, width, height, value, base, color, name));
 			return result;
@@ -233,10 +239,13 @@ public class MiniSimpleParcel {
 	
 	public static void main(String[] args) {
 		best_densevolume_densityrequirement = 0;
-		MiniSimpleParcel result = MiniSimpleParcel.maximizeKnapsackValue(K, BEST_DENSEVOLUME, PARCELS, null);
-		result.cleanup();
-		expand(result, "");
-		System.out.println(result.convert());
+		MiniSimpleParcel result = MiniSimpleParcel.maximizeKnapsackValue(K, BEST_DENSEVOLUME, PENTOS, null);
+		//result.cleanup();
+		//expand(result, "");
+		Knapsack knapsack = new Knapsack();
+		result.putInKnapsack(knapsack);
+		System.out.println(knapsack.getFilledVolume());
+		
 	}
 	
 	public MiniSimpleParcel add(MiniSimpleParcel other) {
@@ -373,6 +382,7 @@ public class MiniSimpleParcel {
 	}
 	
 	public MiniSimpleParcel rotateToFitInside(MiniSimpleParcel other) {
+		int[] old   = {length, width, height};
 		int[] lwh_t = {length, width, height};
 		int[] lwh_o = {other.length, other.width, other.height};
 		Arrays.sort(lwh_t);
@@ -392,6 +402,16 @@ public class MiniSimpleParcel {
 			if (simo[i+1] == 1) res[0] = lwh_t[i];
 			if (simo[i+1] == 2) res[1] = lwh_t[i];
 			if (simo[i+1] == 4) res[2] = lwh_t[i];
+		}
+		int similar = getSimilar(old, res);
+		if (similar==LENGTH) return rotateX();
+		else if (similar==WIDTH) return rotateY();
+		else if (similar==HEIGHT) return rotateZ();
+		else {
+			int temp = old[0]; old[0] = old[1]; old[1] = temp;
+			similar = getSimilar(old, res);
+			if (similar==LENGTH) return rotateZ().rotateX();
+			else if (similar==WIDTH) return rotateZ().rotateY();
 		}
 		return new MiniSimpleParcel(res[0], res[1], res[2], value, getCounts(), this);
 	}
@@ -558,7 +578,7 @@ public class MiniSimpleParcel {
 	public static void test2() {
 		MiniSimpleParcel result = NONE;
 		MiniSimpleParcel knapsack = K;
-		MiniSimpleParcel[] parcels = PARCELS;
+		MiniSimpleParcel[] parcels = PENTOS;
 		best_densevolume_densityrequirement = 0;
 		System.out.println("Maximizing "+knapsack+" with "+Arrays.toString(parcels)+" for total value");
 		long start_time = System.nanoTime();
