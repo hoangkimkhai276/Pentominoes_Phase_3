@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import depth_first_fill.MiniSimpleParcel;
 import javafxdraw.Colors;
 import knapsack.Knapsack;
 import knapsack.parcel.ParcelCore;
@@ -77,21 +78,15 @@ public class SimpleStartingCode {
 		return -1;
 	}
 
-	public static final Color[] SELECTED_COLORS = Colors.getRandomColors(3, 0.8f, 0f);
-
-
 	public static void main(String[] args) {
-		int[][] limitsList= {{0, 100, 100}, {0, 500, 500}, {0, 100, 500}, {0, 500, 100}, {0, 0, 500}, {0, 500, 0}, {0, 0, 100}, {0, 100, 0},
-				{100, 100, 100}, {100, 500, 500}, {100, 100, 500}, {100, 500, 100}, {100, 0, 500}, {100, 500, 0}, {100, 0, 100},
-				{100, 100, 0}, {500, 100, 100}, {500, 500, 500}, {500, 100, 500}, {500, 500, 100}, {500, 0, 500},
-				{500, 500, 0}, {500, 0, 100}, {500, 100, 0}, {100, 0, 0}, {500, 0, 0}};
+		int[][] limitsList= {{500,500,500,0,0,0}};
 		try {
-			FileWriter csvWriter = new FileWriter("PentoTestValue2.csv");
-			csvWriter.append("P");
+			FileWriter csvWriter = new FileWriter("SimpleTestAugmented.csv");
+			csvWriter.append("A");
 			csvWriter.append(",");
-			csvWriter.append("L");
+			csvWriter.append("B");
 			csvWriter.append(",");
-			csvWriter.append("T");
+			csvWriter.append("C");
 			csvWriter.append(",");
 			csvWriter.append("i");
 			csvWriter.append(",");
@@ -103,7 +98,7 @@ public class SimpleStartingCode {
 			csvWriter.append(",");
 			csvWriter.append("Volume");
 			csvWriter.append("\n");
-			for (int ii = 0; ii < 26; ii++) {
+			for (int ii = 0; ii < limitsList.length; ii++) {
 				long avgTime = 0;
 				long avgValue = 0;
 				long avgNumberUsed = 0;
@@ -118,21 +113,20 @@ public class SimpleStartingCode {
 				csvWriter.append(",");
 
 				for (int i = 0; i < 1000; i++) {
-					int[] limits = new int[3];
+					int[] limits = new int[6];
 
-					for (int j = 0; j < 3; j++) {
+					for (int j = 0; j < 6; j++) {
 						limits[j] = limitsList[ii][j];
 					}
-					ParcelCore P = new PentominoParcel(new boolean[][]{{true, false},{true, true}, {true, true}}, limits[0], SELECTED_COLORS[0], "P");
-					ParcelCore L = new PentominoParcel(new boolean[][]{{true, true},{true, false},{true, false},{true, false}}, limits[1], SELECTED_COLORS[1], "L");
-					ParcelCore T = new PentominoParcel(new boolean[][]{{true, true, true}, {false, true, false}, {false, true, false}}, limits[2], SELECTED_COLORS[2], "T");
-					ParcelCore[] PARCELS = {P,L,T};
 					Knapsack before = new Knapsack();
 
 					long start = System.nanoTime();
-					simpleStochasticGreedy(before, PARCELS, null);
-
+					MiniSimpleParcel result = MiniSimpleParcel.maximizeKnapsackValue(MiniSimpleParcel.getFromKnapsack(before), MiniSimpleParcel.PARCELS, limits);
+					result.putInKnapsack(before);
+					result.adjustLimits(limits);
+					
 					long delta = System.nanoTime() - start;
+					System.out.println(i+": "+delta);
 					Knapsack after = before;
 //					System.out.println("after " + (delta / 1000000d) + "ms, the following result is gathered:");
 //					System.out.println("volume filled: " + after.getFilledVolume() + "/" + after.getVolume());
